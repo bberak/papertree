@@ -6,56 +6,21 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  Navigator
+  AppRegistry
 } from 'react-native';
 import Login from './js/login'
-import Main from './js/main'
+import Home from './js/home'
+import { Scene, Router } from 'react-native-router-flux';
 
 export default class papertree extends Component {
   render() {
-    return (
-      <Navigator
-        initialRoute={{ name: "Login" }}
-        configureScene={configureTransitions}
-        renderScene={renderNavigation} />
-    );
+    return <Router>
+            <Scene key="root">
+              <Scene key="login" component={Login} title="Login" hideNavBar={true}/>
+              <Scene key="home" component={Home} title="Home" hideNavBar={true} direction="vertical" />
+            </Scene>
+          </Router>
   }
 }
-
-const configureTransitions = (route, routeStack) => { 
-  return route.transition || Navigator.SceneConfigs.HorizontalSwipeJump;
-}
-
-const renderNavigation = (route, navigator) => {  
-  switch (route.name) {
-    case "Login":
-      return <Login navigator={navigator} {...route.passProps} />
-    case "Main":
-      return <Main navigator={navigator} {...route.passProps} />
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 AppRegistry.registerComponent('papertree', () => papertree);

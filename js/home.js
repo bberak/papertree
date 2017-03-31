@@ -1,7 +1,7 @@
 import React, { Component, } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
-class Main extends Component {
+class Home extends Component {
 
   static propTypes = {}
 
@@ -15,7 +15,7 @@ class Main extends Component {
   render() {
     return (
       <View style={styles.mainView}>
-        <Text>Main Screen :)</Text>
+        <Text>Home Screen :)</Text>
       </View>
     )
   }
@@ -23,9 +23,9 @@ class Main extends Component {
 
 const styles = StyleSheet.create({
   mainView: {
-    marginTop: 50,
+    marginTop: 70,
     backgroundColor: "#eee"
   }
 })
 
-export default Main
+export default Home
