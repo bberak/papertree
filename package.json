@@ -7,8 +7,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "base-64": "^0.1.0",
     "react": "15.4.2",
     "react-native": "0.42.3",
+    "react-native-keychain": "^1.2.0",
     "react-native-router-flux": "^3.38.0"
   },
   "devDependencies": {
