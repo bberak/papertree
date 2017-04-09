@@ -24,7 +24,7 @@ let testCredentialsAndGenerateAuthHeader = async (email, password) => {
 };
 
 module.exports = Object.freeze({
-  isAuthenticated: async () => {
+  isLoggedIn: async () => {
     if (authHeader)
       return true;
     try {
@@ -35,8 +35,11 @@ module.exports = Object.freeze({
       return false;
     }
   },
-  authenticate: async (email, password) => {
-    authHeader = await testCredentialsAndGenerateAuthHeader(email, password)
-    await Keychain.setGenericPassword(email, password)
+  login: async (email, password) => {
+    authHeader = await testCredentialsAndGenerateAuthHeader(email, password);
+    await Keychain.setGenericPassword(email, password);
+  },
+  logout: async () => {
+    await Keychain.resetGenericPassword();
   }
 })

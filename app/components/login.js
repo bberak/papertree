@@ -1,49 +1,73 @@
 import React, { Component, } from 'react'
-import { View, Text, TouchableOpacity, TextInput } from 'react-native'
+import { View, ActivityIndicator, Image, StatusBar, Text } from 'react-native'
+import api  from '../utils/papertrailApi'
 import { Actions } from 'react-native-router-flux'
-import api from '../utils/papertrailApi'
+import EStyleSheet from 'react-native-extended-stylesheet';
+import Background from './background'
+import * as Animatable from 'react-native-animatable';
 
 class Login extends Component {
-
-  static propTypes = {}
-
-  static defaultProps = {}
-
   constructor(props) {
     super(props)
     this.state = {
-      email: "",
-      password: ""
+      loading: true
     }
   }
   
-  onLogin = async () => {
-    try {
-      await api.authenticate(this.state.email, this.state.password);
-      this.setState({
-        email: "",
-        password: ""
-      })
+  componentDidMount = async () => {
+    await api.logout();
+    if (await api.isLoggedIn())
       Actions.home();
-    } catch (error) {
-      console.log(error)
-      alert("Incorrect credentials");
-    }
-  };
+    else
+      this.setState({loading: false});
+  }
 
   render() {
+    
+    let form = this.state.loading ? 
+        <ActivityIndicator color={EStyleSheet.value("$indicatorColor")} /> :
+        <Animatable.View animation={"fadeIn"}>
+            <Text>Form goes here</Text>
+            <Text>Form goes here</Text>
+            <Text>Form goes here</Text>
+            <Text>Form goes here</Text>
+            <Text>Form goes here</Text>
+            <Text>Form goes here</Text>
+          </Animatable.View>
+    
     return (
-      <View style={{marginTop: 70}}>
-        <Text>Logo goes here</Text>
+      <Background containerStyle={css.container}>
         
-        <TextInput style={{height: 20}} value={this.state.email} placeholder={"Email"} onChangeText={(text) => this.setState({email: text})} autoCapitalize={"none"} autoCorrect={false} keyboardType={"email-address"} returnKeyType={"next"} />
-        <TextInput style={{height: 20}} value={this.state.password} placeholder={"Password"} onChangeText={(text) => this.setState({password: text})} autoCapitalize={"none"} autoCorrect={false} returnKeyType={"go"} secureTextEntry={true} />
-        <TouchableOpacity onPress={this.onLogin}>
-          <Text>Login</Text>
-        </TouchableOpacity>
-      </View>
+        <StatusBar hidden={false} barStyle="light-content" />
+        
+        <View style={css.logoContainer}>
+          <Image source={require("../images/logo.png")} />
+        </View>
+        
+        <View style={css.formContainer}>
+          {form}  
+        </View>
+        
+      </Background>
     )
   }
 }
+
+const css = EStyleSheet.create({
+  container: {
+    backgroundColor: "$primaryColor",
+    flex: 1
+  },
+  logoContainer: {
+    flex: 0.5,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  formContainer: {
+    flex: 0.5,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+})
 
 export default Login
