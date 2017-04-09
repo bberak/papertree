@@ -2,9 +2,9 @@ import React, { Component, } from 'react'
 import { View, ActivityIndicator, Image, StatusBar, Text } from 'react-native'
 import api  from '../utils/papertrailApi'
 import { Actions } from 'react-native-router-flux'
-import EStyleSheet from 'react-native-extended-stylesheet';
+import EStyleSheet from 'react-native-extended-stylesheet'
 import Background from './background'
-import * as Animatable from 'react-native-animatable';
+import LoginForm from './loginForm'
 
 class Login extends Component {
   constructor(props) {
@@ -26,14 +26,7 @@ class Login extends Component {
     
     let form = this.state.loading ? 
         <ActivityIndicator color={EStyleSheet.value("$indicatorColor")} /> :
-        <Animatable.View animation={"fadeIn"}>
-            <Text>Form goes here</Text>
-            <Text>Form goes here</Text>
-            <Text>Form goes here</Text>
-            <Text>Form goes here</Text>
-            <Text>Form goes here</Text>
-            <Text>Form goes here</Text>
-          </Animatable.View>
+        <LoginForm />
     
     return (
       <Background containerStyle={css.container}>
