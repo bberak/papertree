@@ -10,6 +10,10 @@ class TextBox extends Component {
     this.state = {}
   }
   
+  focus = () => {
+    this.refs.input.focus();
+  }
+  
   onFocus = () => {
     this.refs.container.transitionTo({shadowRadius: 8, shadowOpacity: 0.9, transform: [{scale: 1.03}]})
   }
@@ -20,7 +24,13 @@ class TextBox extends Component {
 
   render() {
     let clearButton = this.props.value ?
-        <TouchableOpacity style={css.padding} activeOpacity={0.5} onPress={() => this.props.onChangeText("")}>
+        <TouchableOpacity 
+          style={css.padding} 
+          activeOpacity={0.5} 
+          onPress={() => { 
+            this.props.onChangeText("");
+            this.focus(); 
+          }}>
           <Image source={require("../images/clear.png")} />
         </TouchableOpacity> :
         <View style={css.padding}></View>;
@@ -32,6 +42,7 @@ class TextBox extends Component {
         </View>
         
         <TextInput
+          ref={"input"}
           {...this.props}
           style={css.text} 
           onFocus={this.onFocus} 
@@ -50,7 +61,7 @@ const css = EStyleSheet.create({
   container: {
     width: "$inputWidth",
     height: "$inputHeight",
-    backgroundColor: "$textInputBackgroundColor",
+    backgroundColor: "$textInputColor",
     borderRadius: 11,
     flexDirection: "row",
     alignItems: "center",
@@ -65,11 +76,11 @@ const css = EStyleSheet.create({
     height: "$inputHeight",
     backgroundColor: "transparent",
     textAlign: "center",
-    flex: 0.8
+    flex: 0.7
   },
   padding: {
     backgroundColor: "transparent", 
-    flex: 0.1, 
+    flex: 0.15, 
     height: "$inputHeight", 
     alignItems: "center", 
     justifyContent: "center"

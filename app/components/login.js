@@ -5,6 +5,7 @@ import { Actions } from 'react-native-router-flux'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import Background from './background'
 import LoginForm from './loginForm'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class Login extends Component {
   constructor(props) {
@@ -15,7 +16,6 @@ class Login extends Component {
   }
   
   componentDidMount = async () => {
-    await api.logout();
     if (await api.isLoggedIn())
       Actions.home();
     else
@@ -33,13 +33,21 @@ class Login extends Component {
         
         <StatusBar hidden={false} barStyle="light-content" />
         
-        <View style={css.logoContainer}>
-          <Image source={require("../images/logo.png")} />
-        </View>
-        
-        <View style={css.formContainer}>
-          {form}  
-        </View>
+        <KeyboardAwareScrollView 
+          ref={"scroll"}
+          style={css.scrollContainer} 
+          contentContainerStyle={css.scrollContentContainer}
+          onKeyboardWillHide={() => this.refs.scroll.scrollToPosition(0, 0, true)}>
+          
+          <View style={css.logoContainer}>
+            <Image source={require("../images/logo.png")} />
+          </View>
+
+          <View style={css.formContainer}>
+            {form}  
+          </View>
+          
+        </KeyboardAwareScrollView>
         
       </Background>
     )
@@ -51,13 +59,19 @@ const css = EStyleSheet.create({
     backgroundColor: "$primaryColor",
     flex: 1
   },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flex: 1
+  },
   logoContainer: {
-    flex: 0.5,
+    flex: 0.45,
     alignItems: "center",
     justifyContent: "center"
   },
   formContainer: {
-    flex: 0.5,
+    flex: 0.55,
     alignItems: "center",
     justifyContent: "center"
   },
