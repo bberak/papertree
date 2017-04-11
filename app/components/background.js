@@ -12,7 +12,7 @@ class Background extends Component {
   render() {
     return (
       <Image 
-        style={[styles.backgroundImage, this.props.containerStyle]} 
+        style={[css.backgroundImage, this.props.containerStyle]} 
         resizeMode={this.props.resizeMode || "repeat"}
         source={this.props.imageSource || require('../images/tile.png')}
         blurRadius={this.props.blurRadius}>
@@ -22,9 +22,10 @@ class Background extends Component {
   }
 }
 
-const styles = EStyleSheet.create({
+const css = EStyleSheet.create({
   backgroundImage: {
     flex: 1,
+    backgroundColor: "$primaryColor",
     width: null,
     height: null
   }

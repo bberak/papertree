@@ -28,18 +28,17 @@ class Link extends Component {
           onPress={this.props.onPress}>
           <Animatable.Text style={css.text} ref={"text"}>{this.props.value}</Animatable.Text>
         </TouchableOpacity>
- 
     )
   }
 }
 
 const css = EStyleSheet.create({
   container: {
-    alignSelf: "center"
+    alignSelf: "center",
+    backgroundColor: "transparent"
   },
   text: {
     fontSize: "1.1rem",
-    backgroundColor: "transparent",
     padding: 4,
     color: "$buttonFontColor",
     fontWeight: "600",

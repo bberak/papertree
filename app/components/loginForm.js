@@ -30,17 +30,19 @@ class LoginForm extends Component {
   render() {
     return (
       <Animatable.View animation={"fadeIn"} ref={"form"} style={css.form}>
+        
         <Animatable.View ref={"textBoxes"} style={css.textBoxes}>
+          
           <TextBox 
-            ref={"email"}
-            placeholder={"Email"} 
-            value={this.state.email}
-            autoCorrect={false}
-            returnKeyType={"next"}
-            keyboardType={"email-address"}
-            autoCapitalize={"none"}
-            onSubmitEditing={() => this.refs.password.focus()}
-            onChangeText={(text) => this.setState({email: text})} />
+              ref={"email"}
+              placeholder={"Email"} 
+              value={this.state.email}
+              autoCorrect={false}
+              returnKeyType={"next"}
+              autoCapitalize={"none"}
+              onSubmitEditing={() => this.refs.password.focus()}
+              onChangeText={(text) => this.setState({email: text})} />
+        
             <TextBox 
               ref={"password"}
               placeholder={"Password"} 
@@ -51,10 +53,13 @@ class LoginForm extends Component {
               autoCapitalize={"none"}
               onSubmitEditing={this.onTryLogin}
               onChangeText={(text) => this.setState({password: text})} />
-          </Animatable.View>
+          
+        </Animatable.View>  
+        
         <Button value={"Login"} onPress={this.onTryLogin} />
         <Label value={"— or —"} />
         <Link value={"Create Account"} onPress={() => console.log("Pressed")} />
+
       </Animatable.View>
     )
   }
@@ -62,6 +67,7 @@ class LoginForm extends Component {
 
 const css = EStyleSheet.create({
   form: {
+    flex: 1,
     paddingBottom: 30
   },
   textBoxes: {

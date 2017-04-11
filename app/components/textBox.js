@@ -15,11 +15,11 @@ class TextBox extends Component {
   }
   
   onFocus = () => {
-    this.refs.container.transitionTo({shadowRadius: 8, shadowOpacity: 0.9, transform: [{scale: 1.03}]})
+    this.refs.textContainer.transitionTo({elevation: 8, shadowRadius: 8, shadowOpacity: 0.9, transform: [{scale: 1.03}]})
   }
   
   onBlur = () => {
-    this.refs.container.transitionTo({shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
+    this.refs.textContainer.transitionTo({elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
   }
 
   render() {
@@ -36,29 +36,35 @@ class TextBox extends Component {
         <View style={css.padding}></View>;
     
     return (
-      <Animatable.View style={css.container} ref={"container"}>
-        
-        <View style={css.padding}>
-        </View>
-        
-        <TextInput
-          ref={"input"}
-          {...this.props}
-          style={css.text} 
-          onFocus={this.onFocus} 
-          onBlur={this.onBlur} />
-        
-        {clearButton}
-        
-      </Animatable.View>
+      <View style={css.container}>
+        <Animatable.View style={css.textContainer} ref={"textContainer"}>
+
+          <View style={css.padding}>
+          </View>
+
+          <TextInput
+            ref={"input"}
+            {...this.props}
+            style={css.text} 
+            onFocus={this.onFocus} 
+            onBlur={this.onBlur}
+            underlineColorAndroid={"transparent"} />
+
+          {clearButton}
+
+        </Animatable.View>
+      </View>
     )
   }
 }
 
 const css = EStyleSheet.create({
+  container: {
+    alignItems: "center"
+  },
   $inputHeight: 44,
   $inputWidth: "80%",
-  container: {
+  textContainer: {
     width: "$inputWidth",
     height: "$inputHeight",
     backgroundColor: "$textInputColor",
@@ -70,7 +76,8 @@ const css = EStyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowColor: "$shadowColor",
     shadowOpacity: 0.5,
-    shadowRadius: 4
+    shadowRadius: 4,
+    elevation: 4
   },
   text: {
     height: "$inputHeight",

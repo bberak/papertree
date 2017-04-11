@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'
-import { View, ActivityIndicator, Image, StatusBar, Text } from 'react-native'
+import { View, ActivityIndicator, Image, StatusBar, Text, Platform } from 'react-native'
 import api  from '../utils/papertrailApi'
 import { Actions } from 'react-native-router-flux'
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -25,11 +25,13 @@ class Login extends Component {
   render() {
     
     let form = this.state.loading ? 
-        <ActivityIndicator color={EStyleSheet.value("$indicatorColor")} /> :
+        <View style={css.activityIndicatorContainer}>
+          <ActivityIndicator color={EStyleSheet.value("$indicatorColor")} />
+        </View> :
         <LoginForm />
     
     return (
-      <Background containerStyle={css.container}>
+      <Background>
         
         <StatusBar hidden={false} barStyle="light-content" />
         
@@ -55,10 +57,6 @@ class Login extends Component {
 }
 
 const css = EStyleSheet.create({
-  container: {
-    backgroundColor: "$primaryColor",
-    flex: 1
-  },
   scrollContainer: {
     flex: 1,
   },
@@ -71,10 +69,13 @@ const css = EStyleSheet.create({
     justifyContent: "center"
   },
   formContainer: {
-    flex: 0.55,
-    alignItems: "center",
-    justifyContent: "center"
+    flex: 0.55
   },
+  activityIndicatorContainer: {
+    flex: 1, 
+    alignItems: "center", 
+    justifyContent: "center"
+  }
 })
 
 export default Login

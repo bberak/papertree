@@ -11,37 +11,42 @@ class Button extends Component {
   }
   
   onPressIn = () => {
-    this.refs.container.transitionTo({shadowRadius: 1, shadowOpacity: 0.9, transform: [{scale: 0.95}]})
+    this.refs.buttonContainer.transitionTo({elevation: 1, shadowRadius: 1, shadowOpacity: 0.9, transform: [{scale: 0.95}]})
     this.refs.text.transitionTo({textShadowRadius: 0})
   }
   
   onPressOut = (e) => {
-    this.refs.container.transitionTo({shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
+    this.refs.buttonContainer.transitionTo({elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
     this.refs.text.transitionTo({textShadowRadius: 2})
   }
   
   render() {
     return (
-      <Animatable.View style={css.container} ref={"container"}>
-        
-        <TouchableOpacity 
-          style={css.textContainer} 
-          activeOpacity={1} 
-          onPressIn={this.onPressIn} 
-          onPressOut={this.onPressOut} 
-          onPress={this.props.onPress}>
-          <Animatable.Text style={css.text} ref={"text"}>{this.props.value}</Animatable.Text>
-        </TouchableOpacity>
-        
-      </Animatable.View>
+      <View style={css.container}>
+        <Animatable.View style={css.buttonContainer} ref={"buttonContainer"}>
+
+          <TouchableOpacity 
+            style={css.textContainer} 
+            activeOpacity={1} 
+            onPressIn={this.onPressIn} 
+            onPressOut={this.onPressOut} 
+            onPress={this.props.onPress}>
+            <Animatable.Text style={css.text} ref={"text"}>{this.props.value}</Animatable.Text>
+          </TouchableOpacity>
+
+        </Animatable.View>
+      </View>
     )
   }
 }
 
 const css = EStyleSheet.create({
+  container: {
+    alignItems: "center"
+  },
   $inputHeight: 44,
   $inputWidth: "80%",
-  container: {
+  buttonContainer: {
     width: "$inputWidth",
     height: "$inputHeight",
     backgroundColor: "$buttonColor",
@@ -53,7 +58,8 @@ const css = EStyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowColor: "$shadowColor",
     shadowOpacity: 0.5,
-    shadowRadius: 4
+    shadowRadius: 4,
+    elevation: 4
   },
   textContainer: {
     backgroundColor: "transparent", 
