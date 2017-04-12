@@ -31,7 +31,7 @@ class LoginForm extends Component {
     return (
       <Animatable.View animation={"fadeIn"} ref={"form"} style={css.form}>
         
-        <Animatable.View ref={"textBoxes"} style={css.textBoxes}>
+        <Animatable.View ref={"textBoxes"}>
           
           <TextBox 
               ref={"email"}
@@ -53,13 +53,12 @@ class LoginForm extends Component {
               autoCapitalize={"none"}
               onSubmitEditing={this.onTryLogin}
               onChangeText={(text) => this.setState({password: text})} />
-          
-        </Animatable.View>  
+          </Animatable.View> 
         
         <Button value={"Login"} onPress={this.onTryLogin} />
         <Label value={"— or —"} />
         <Link value={"Create Account"} onPress={() => console.log("Pressed")} />
-
+  
       </Animatable.View>
     )
   }
@@ -68,10 +67,6 @@ class LoginForm extends Component {
 const css = EStyleSheet.create({
   form: {
     flex: 1,
-    paddingBottom: 30
-  },
-  textBoxes: {
-    flex: 1
   }
 })
 

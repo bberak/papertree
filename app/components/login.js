@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'
-import { View, ActivityIndicator, Image, StatusBar, Text, Platform } from 'react-native'
+import { View, ActivityIndicator, Image, StatusBar, Text, KeyboardAvoidingView } from 'react-native'
 import api  from '../utils/papertrailApi'
 import { Actions } from 'react-native-router-flux'
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -38,8 +38,7 @@ class Login extends Component {
         <KeyboardAwareScrollView 
           ref={"scroll"}
           style={css.scrollContainer} 
-          contentContainerStyle={css.scrollContentContainer}
-          onKeyboardWillHide={() => this.refs.scroll.scrollToPosition(0, 0, true)}>
+          contentContainerStyle={css.scrollContentContainer}>
           
           <View style={css.logoContainer}>
             <Image source={require("../images/logo.png")} />
@@ -64,12 +63,12 @@ const css = EStyleSheet.create({
     flex: 1
   },
   logoContainer: {
-    flex: 0.45,
+    flex: 0.5,
     alignItems: "center",
     justifyContent: "center"
   },
   formContainer: {
-    flex: 0.55
+    flex: 0.5
   },
   activityIndicatorContainer: {
     flex: 1, 

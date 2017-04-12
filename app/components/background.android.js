@@ -31,7 +31,7 @@ class Background extends Component {
         
         {images}
         
-          <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}>
+          <View style={css.body}>
             {this.props.children}
           </View>
         
@@ -44,6 +44,10 @@ const css = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "$primaryColor"
+  },
+  body: {
+    position: "relative",
+    flex: 1
   }
 });
 
