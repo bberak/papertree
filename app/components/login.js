@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'
-import { View, ActivityIndicator, Image, StatusBar, Text, KeyboardAvoidingView } from 'react-native'
+import { View, ActivityIndicator, Image, StatusBar } from 'react-native'
 import api  from '../utils/papertrailApi'
 import { Actions } from 'react-native-router-flux'
 import EStyleSheet from 'react-native-extended-stylesheet'
