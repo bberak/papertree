@@ -19,18 +19,27 @@ class Button extends Component {
     this.refs.buttonContainer.transitionTo({elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
     this.refs.text.transitionTo({textShadowRadius: 2})
   }
+
+  onPress = (e) => {
+    if (this.props.disabled)
+      return;
+    else
+      this.props.onPress();
+  }
   
   render() {
     return (
       <View style={css.container}>
-        <Animatable.View style={css.buttonContainer} ref={"buttonContainer"}>
+        <Animatable.View 
+          style={[css.buttonContainer, {backgroundColor: EStyleSheet.value( this.props.disabled ? "$disabledButtonColor" : "$buttonColor")}]} 
+          ref={"buttonContainer"}>
 
           <TouchableOpacity 
             style={css.textContainer} 
             activeOpacity={1} 
             onPressIn={this.onPressIn} 
             onPressOut={this.onPressOut} 
-            onPress={this.props.onPress}>
+            onPress={this.onPress}>
             <Animatable.Text style={css.text} ref={"text"}>{this.props.value}</Animatable.Text>
           </TouchableOpacity>
 
@@ -44,7 +53,8 @@ const css = EStyleSheet.create({
   container: {
     alignItems: "center"
   },
-  $inputHeight: 44,
+  $fontHeight: "3.85%",
+  $inputHeight: "7.76%",
   $inputWidth: "80%",
   buttonContainer: {
     width: "$inputWidth",
@@ -69,7 +79,7 @@ const css = EStyleSheet.create({
     justifyContent: "center"
   },
   text: {
-    fontSize: "1.1rem",
+    fontSize: "$fontHeight",
     paddingBottom: 4,
     paddingTop: 4,
     color: "$buttonFontColor",
@@ -77,7 +87,7 @@ const css = EStyleSheet.create({
     textShadowOffset: {width: 0, height: 1},
     textShadowColor: "$shadowColor",
     textShadowRadius: 2,
-    letterSpacing: "$buttonLetterSpacing"
+    letterSpacing: 1.02
   }
 })
 

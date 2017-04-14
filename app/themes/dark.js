@@ -4,8 +4,8 @@ export default {
   textInputColor: "#FFF",
   shadowColor: "#000",
   buttonColor: "#4FA6DA",
+  disabledButtonColor: "#9B9B9B",
   buttonFontColor: "#FFF",
-  buttonLetterSpacing: 1.02,
   labelFontColor: "#FFF",
-  labelLetterSpacing: 1.02
+  secondaryColor: "#F99D1E"
 }

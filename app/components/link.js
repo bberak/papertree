@@ -11,11 +11,11 @@ class Link extends Component {
   }
   
   onPressIn = () => {
-    this.refs.text.transitionTo({textShadowRadius: 0, scale: 0.95})
+    this.refs.text.transitionTo({textShadowRadius: 0, scale: 0.95, color: EStyleSheet.value("$secondaryColor")})
   }
   
   onPressOut = (e) => {
-    this.refs.text.transitionTo({textShadowRadius: 2, scale: 1})
+    this.refs.text.transitionTo({textShadowRadius: 2, scale: 1, color: EStyleSheet.value("$buttonFontColor")})
   }
   
   render() {
@@ -37,15 +37,16 @@ const css = EStyleSheet.create({
     alignSelf: "center",
     backgroundColor: "transparent"
   },
+  $fontHeight: "3.85%",
   text: {
-    fontSize: "1.1rem",
+    fontSize: "$fontHeight",
     padding: 4,
     color: "$buttonFontColor",
     fontWeight: "600",
     textShadowOffset: {width: 0, height: 1},
     textShadowColor: "$shadowColor",
     textShadowRadius: 2,
-    letterSpacing: "$buttonLetterSpacing",
+    letterSpacing: 1.02,
     alignSelf: "center"
   }
 })

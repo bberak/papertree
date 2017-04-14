@@ -62,7 +62,8 @@ const css = EStyleSheet.create({
   container: {
     alignItems: "center"
   },
-  $inputHeight: 44,
+  $fontHeight: "3.85%",
+  $inputHeight: "7.76%",
   $inputWidth: "80%",
   textContainer: {
     width: "$inputWidth",
@@ -83,7 +84,11 @@ const css = EStyleSheet.create({
     height: "$inputHeight",
     backgroundColor: "transparent",
     textAlign: "center",
-    flex: 0.7
+    textAlignVertical: "center",
+    flex: 0.7,
+    fontSize: "$fontHeight",
+    paddingTop: 0,
+    paddingBottom: 0
   },
   padding: {
     backgroundColor: "transparent", 

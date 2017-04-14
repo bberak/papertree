@@ -15,16 +15,23 @@ class LoginForm extends Component {
     super(props)
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      connecting: false
     }
   }
   
-  onTryLogin = () => {
+  onTryLogin = async () => {
     if (this.state.email && this.state.password) {
-      
-    }
-    
-    this.refs.textBoxes.shake(400)
+      try {
+        this.setState({ connecting: true });
+        await api.login(this.state.email, this.state.password)
+        Actions.home();
+      } catch (error) {
+        this.setState({ connecting: false });
+        this.refs.textBoxes.shake(400)
+      }
+    } else 
+      this.refs.textBoxes.shake(400)
   }
 
   render() {
@@ -55,7 +62,7 @@ class LoginForm extends Component {
               onChangeText={(text) => this.setState({password: text})} />
           </Animatable.View> 
         
-        <Button value={"Login"} onPress={this.onTryLogin} />
+        <Button value={this.state.connecting ? "Connecting.." : "Login"} onPress={this.onTryLogin} disabled={this.state.connecting} />
         <Label value={"— or —"} />
         <Link value={"Create Account"} onPress={() => console.log("Pressed")} />
   

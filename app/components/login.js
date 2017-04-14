@@ -16,6 +16,7 @@ class Login extends Component {
   }
   
   componentDidMount = async () => {
+    await api.logout();
     if (await api.isLoggedIn())
       Actions.home();
     else

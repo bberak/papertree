@@ -21,8 +21,9 @@ class Label extends Component {
 }
 
 const css = EStyleSheet.create({
+  $fontHeight: "3.1%",
   text: {
-    fontSize: "1.0rem",
+    fontSize: "$fontHeight",
     backgroundColor: "transparent",
     paddingBottom: 4,
     paddingTop: 4,
@@ -31,7 +32,7 @@ const css = EStyleSheet.create({
     textShadowOffset: {width: 0, height: 1},
     textShadowColor: "$shadowColor",
     textShadowRadius: 2,
-    letterSpacing: "$labelLetterSpacing",
+    letterSpacing: 1.02,
     opacity: 0.67,
     textAlign: "center"
   }
