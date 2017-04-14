@@ -2534,6 +2534,11 @@
       "from": "react-native-animatable@latest",
       "resolved": "https://registry.npmjs.org/react-native-animatable/-/react-native-animatable-1.1.1.tgz"
     },
+    "react-native-custom-tabs": {
+      "version": "0.1.5",
+      "from": "react-native-custom-tabs@latest",
+      "resolved": "https://registry.npmjs.org/react-native-custom-tabs/-/react-native-custom-tabs-0.1.5.tgz"
+    },
     "react-native-experimental-navigation": {
       "version": "0.26.10",
       "from": "react-native-experimental-navigation@>=0.26.0 <0.27.0",
@@ -2558,6 +2563,11 @@
       "version": "3.38.0",
       "from": "react-native-router-flux@latest",
       "resolved": "https://registry.npmjs.org/react-native-router-flux/-/react-native-router-flux-3.38.0.tgz"
+    },
+    "react-native-safari-view": {
+      "version": "2.0.0",
+      "from": "react-native-safari-view@latest",
+      "resolved": "https://registry.npmjs.org/react-native-safari-view/-/react-native-safari-view-2.0.0.tgz"
     },
     "react-native-tabs": {
       "version": "1.0.9",

@@ -8,6 +8,7 @@ import TextBox from './textBox'
 import Button from './button'
 import Label from './label'
 import Link from './link'
+import Browser from  '../utils/browser'
 
 class LoginForm extends Component {
 
@@ -32,6 +33,10 @@ class LoginForm extends Component {
       }
     } else 
       this.refs.textBoxes.shake(400)
+  }
+
+  onCreateAccount = () => {
+    Browser.openURL("https://papertrailapp.com/signup?plan=free");
   }
 
   render() {
@@ -64,7 +69,7 @@ class LoginForm extends Component {
         
         <Button value={this.state.connecting ? "Connecting.." : "Login"} onPress={this.onTryLogin} disabled={this.state.connecting} />
         <Label value={"— or —"} />
-        <Link value={"Create Account"} onPress={() => console.log("Pressed")} />
+        <Link value={"Create Account"} onPress={this.onCreateAccount} />
   
       </Animatable.View>
     )
