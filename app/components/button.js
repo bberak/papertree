@@ -29,7 +29,7 @@ class Button extends Component {
   
   render() {
     return (
-      <View style={css.container}>
+      <View style={[css.container, this.props.containerStyle]}>
         <Animatable.View 
           style={[css.buttonContainer, {backgroundColor: EStyleSheet.value( this.props.disabled ? "$disabledButtonColor" : "$buttonColor")}]} 
           ref={"buttonContainer"}>
@@ -51,13 +51,11 @@ class Button extends Component {
 
 const css = EStyleSheet.create({
   container: {
-    alignItems: "center"
   },
   $fontHeight: "3.85%",
   $inputHeight: "7.76%",
-  $inputWidth: "80%",
   buttonContainer: {
-    width: "$inputWidth",
+    flexGrow: 1,
     height: "$inputHeight",
     backgroundColor: "$buttonColor",
     borderRadius: 11,
