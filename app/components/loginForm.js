@@ -52,20 +52,23 @@ class LoginForm extends Component {
               autoCorrect={false}
               returnKeyType={"next"}
               autoCapitalize={"none"}
+              containerStyle={css.textBoxContainerStyle}
               onSubmitEditing={() => this.refs.password.focus()}
               onChangeText={(text) => this.setState({email: text})} />
         
-            <TextBox 
-              ref={"password"}
-              placeholder={"Password"} 
-              secureTextEntry={true} 
-              value={this.state.password}
-              autoCorrect={false}
-              returnKeyType={"done"}
-              autoCapitalize={"none"}
-              onSubmitEditing={this.onTryLogin}
-              onChangeText={(text) => this.setState({password: text})} />
-          </Animatable.View> 
+          <TextBox 
+            ref={"password"}
+            placeholder={"Password"} 
+            secureTextEntry={true} 
+            value={this.state.password}
+            autoCorrect={false}
+            returnKeyType={"done"}
+            autoCapitalize={"none"}
+            containerStyle={css.textBoxContainerStyle}
+            onSubmitEditing={this.onTryLogin}
+            onChangeText={(text) => this.setState({password: text})} />
+
+        </Animatable.View> 
         
         <Button value={this.state.connecting ? "Connecting.." : "Login"} onPress={this.onTryLogin} disabled={this.state.connecting} />
         <Label value={"— or —"} />
@@ -78,7 +81,10 @@ class LoginForm extends Component {
 
 const css = EStyleSheet.create({
   form: {
-    flex: 1,
+    flex: 1
+  },
+  textBoxContainerStyle: {
+    paddingHorizontal: "10%"
   }
 })
 

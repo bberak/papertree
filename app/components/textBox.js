@@ -36,7 +36,7 @@ class TextBox extends Component {
         <View style={css.padding}></View>;
     
     return (
-      <View style={css.container}>
+      <View style={[css.container, this.props.containerStyle]}>
         <Animatable.View style={css.textContainer} ref={"textContainer"}>
 
           <View style={css.padding}>
@@ -60,13 +60,11 @@ class TextBox extends Component {
 
 const css = EStyleSheet.create({
   container: {
-    alignItems: "center"
   },
   $fontHeight: "3.85%",
   $inputHeight: "7.76%",
-  $inputWidth: "80%",
   textContainer: {
-    width: "$inputWidth",
+    flexGrow: 1,
     height: "$inputHeight",
     backgroundColor: "$textInputColor",
     borderRadius: 11,

@@ -43,7 +43,7 @@ class ToolBar extends Component {
 
         <View style={css.button} />
 
-        <TextBox placeholder={"Search"} />
+        <TextBox containerStyle={css.textBoxContainerStyle} placeholder={"Search"} />
 
         <View style={css.button} />
 
@@ -54,11 +54,13 @@ class ToolBar extends Component {
 
 const css = EStyleSheet.create({
   container: {
-    //paddingTop: (StatusBar.currentHeight || 20) + 5,
+    paddingTop: Platform.OS == "ios" ? 20 : 5,
     flexDirection: "row",
-    //flex: 1,
-    //paddingBottom: 5,
+    paddingBottom: 5,
     backgroundColor: "red"
+  },
+  textBoxContainerStyle: {
+    flex: 1
   },
   $inputHeight: "7.76%",
   button: {
