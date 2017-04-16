@@ -1,5 +1,7 @@
 import React, { Component, } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import EStyleSheet from 'react-native-extended-stylesheet'
+import ToolBar from './toolBar'
 
 class Home extends Component {
 
@@ -14,17 +16,18 @@ class Home extends Component {
 
   render() {
     return (
-      <View style={styles.mainView}>
-        <Text>Home Screen :)</Text>
+      <View style={css.mainView}>
+        <ToolBar />
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
+const css = EStyleSheet.create({
   mainView: {
-    marginTop: 70,
-    backgroundColor: "#eee"
+    backgroundColor: "$homeBackgroundColor",
+    flexDirection: "column",
+    flex: 1
   }
 })
 

@@ -7,5 +7,6 @@ export default {
   disabledButtonColor: "#9B9B9B",
   buttonFontColor: "#FFF",
   labelFontColor: "#FFF",
-  secondaryColor: "#F99D1E"
+  secondaryColor: "#F99D1E",
+  homeBackgroundColor: "#3D3E3F"
 }
