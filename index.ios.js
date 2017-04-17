@@ -18,12 +18,14 @@ export default class Papertree extends Component {
 						component={Login}
 						hideNavBar={true}
 						direction={"vertical"}
+						panHandlers={null}
 					/>
 					<Scene
 						key="home"
 						component={Home}
 						hideNavBar={true}
 						direction={"vertical"}
+						panHandlers={null}
 					/>
 				</Scene>
 			</Router>

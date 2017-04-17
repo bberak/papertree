@@ -1,35 +1,90 @@
-import React, { Component, } from 'react'
-import { View, Text, StyleSheet, StatusBar } from 'react-native'
-import EStyleSheet from 'react-native-extended-stylesheet'
-import ToolBar from './toolBar'
+import React, { Component } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  ListView,
+  RefreshControl
+} from "react-native";
+import EStyleSheet from "react-native-extended-stylesheet";
+import ToolBar from "./toolBar";
+import api from "../utils/papertrailApi";
+
+const ds = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1.id !== r2.id
+});
 
 class Home extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       searchTerm: "",
       filter: {},
-      logs: [],
-      savedSearches: []
-    }
+      events: ds.cloneWithRows([]),
+      savedSearches: [],
+      refreshing: true
+    };
   }
 
-  onSearch = (term) => {
+  componentDidMount = () => {
+    this.onSearch(this.state.searchTerm);
+  };
+
+  onSearch = async searchTerm => {
     this.setState({
-      searchTerm: term
-    })
+      searchTerm: searchTerm,
+      refreshing: true
+    });
 
-    alert(term)
-  }
+    let results = await api.search(searchTerm, this.state.filter);
+
+    this.setState({
+      events: ds.cloneWithRows(results.events),
+      refreshing: false
+    });
+  };
+
+  onRefresh = () => {
+    this.setState({
+      refreshing: true
+    });
+
+    setTimeout(() => {
+      this.setState({
+        refreshing: false
+      });
+    }, 2000);
+  };
 
   render() {
+    let refreshControl = (
+      <RefreshControl
+        refreshing={this.state.refreshing}
+        tintColor={EStyleSheet.value("$indicatorColor")}
+        colors={[
+          EStyleSheet.value("$indicatorColor"),
+          EStyleSheet.value("$indicatorColor2")
+        ]}
+        onRefresh={this.onRefresh}
+      />
+    );
+
     return (
       <View style={css.mainView}>
+
         <StatusBar hidden={false} barStyle="light-content" />
+
         <ToolBar searchTerm={this.state.searchTerm} onSearch={this.onSearch} />
+
+        <ListView
+          refreshControl={refreshControl}
+          dataSource={this.state.events}
+          renderRow={event => <Text>{event.message}</Text>}
+          enableEmptySections={true}
+        />
       </View>
-    )
+    );
   }
 }
 
@@ -39,6 +94,6 @@ const css = EStyleSheet.create({
     flexDirection: "column",
     flex: 1
   }
-})
+});
 
-export default Home
+export default Home;
