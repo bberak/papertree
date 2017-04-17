@@ -1140,6 +1140,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.papertree;
 				PRODUCT_NAME = papertree;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1165,6 +1166,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.papertree;
 				PRODUCT_NAME = papertree;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
