@@ -60,18 +60,19 @@ class TextBox extends Component {
 
 const css = EStyleSheet.create({
   container: {
+    flexDirection: "row",
+    marginTop: 10,
+    marginBottom: 10,
   },
   $fontHeight: "3.85%",
   $inputHeight: "7.76%",
   textContainer: {
     flexGrow: 1,
     height: "$inputHeight",
-    backgroundColor: "$textInputColor",
+    backgroundColor: "$textBoxColor",
     borderRadius: 11,
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 10,
     shadowOffset: {width: 0, height: 2},
     shadowColor: "$shadowColor",
     shadowOpacity: 0.5,

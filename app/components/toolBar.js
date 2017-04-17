@@ -1,14 +1,8 @@
 import React, { Component } from "react";
-import { View, Text, StatusBar, Platform } from "react-native";
-import api from "../utils/papertrailApi";
-import { Actions } from "react-native-router-flux";
+import { View, Text, Platform } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import * as Animatable from "react-native-animatable";
 import TextBox from "./textBox";
-import Button from "./button";
-import Label from "./label";
-import Link from "./link";
-import Browser from "../utils/browser";
+import ToolBarButton from "./toolBarButton";
 
 class ToolBar extends Component {
   constructor(props) {
@@ -41,11 +35,11 @@ class ToolBar extends Component {
     return (
       <View style={css.container}>
 
-        <View style={css.button} />
+        <ToolBarButton containerStyle={css.buttonContainerStyle} imageSource={require("../images/cog.png")} activeImageSource={require("../images/cog-active.png")} />
 
         <TextBox containerStyle={css.textBoxContainerStyle} placeholder={"Search"} />
 
-        <View style={css.button} />
+        <ToolBarButton containerStyle={css.buttonContainerStyle} imageSource={require("../images/filter.png")} activeImageSource={require("../images/filter-active.png")} />
 
       </View>
     );
@@ -56,20 +50,13 @@ const css = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS == "ios" ? 20 : 5,
     flexDirection: "row",
-    paddingBottom: 5,
-    backgroundColor: "red"
+    paddingBottom: 5
   },
   textBoxContainerStyle: {
-    flex: 1
+    flex: 1, 
   },
-  $inputHeight: "7.76%",
-  button: {
-    height: "$inputHeight",
-    width: "$inputHeight",
-    borderRadius: "$inputHeight",
-    backgroundColor: "#FFF",
-    marginTop: 10,
-    marginBottom: 10
+  buttonContainerStyle: {
+    marginHorizontal: "4.23%"
   }
 });
 

@@ -50,7 +50,7 @@ class LoginForm extends Component {
             autoCorrect={false}
             returnKeyType={"next"}
             autoCapitalize={"none"}
-            containerStyle={css.padding}
+            containerStyle={css.margin}
             onSubmitEditing={() => this.refs.password.focus()}
             onChangeText={text => this.setState({ email: text })}
           />
@@ -63,7 +63,7 @@ class LoginForm extends Component {
             autoCorrect={false}
             returnKeyType={"done"}
             autoCapitalize={"none"}
-            containerStyle={css.padding}
+            containerStyle={css.margin}
             onSubmitEditing={this.onTryLogin}
             onChangeText={text => this.setState({ password: text })}
           />
@@ -74,7 +74,7 @@ class LoginForm extends Component {
           value={this.state.connecting ? "Connecting.." : "Login"}
           onPress={this.onTryLogin}
           disabled={this.state.connecting}
-          containerStyle={css.padding}
+          containerStyle={css.margin}
         />
         <Label value={"— or —"} />
         <Link value={"Create Account"} onPress={this.onCreateAccount} />
@@ -88,8 +88,8 @@ const css = EStyleSheet.create({
   form: {
     flex: 1
   },
-  padding: {
-    paddingHorizontal: "10%"
+  margin: {
+    marginHorizontal: "10%"
   }
 });
 

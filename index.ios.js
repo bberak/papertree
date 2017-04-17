@@ -13,17 +13,15 @@ export default class Papertree extends Component {
 		return (
 			<Router>
 				<Scene key="root">
-
-					<Scene
-						key="login"
-						component={Login}
-						hideNavBar={true}
-						direction={"vertical"}
-					/>
-
 					<Scene
 						key="home"
 						component={Home}
+						hideNavBar={true}
+						direction={"vertical"}
+					/>
+					<Scene
+						key="login"
+						component={Login}
 						hideNavBar={true}
 						direction={"vertical"}
 					/>

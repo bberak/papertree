@@ -23,7 +23,7 @@ class Button extends Component {
   onPress = (e) => {
     if (this.props.disabled)
       return;
-    else
+    else if (this.props.onPress)
       this.props.onPress();
   }
   
@@ -51,6 +51,8 @@ class Button extends Component {
 
 const css = EStyleSheet.create({
   container: {
+    marginTop: 10,
+    marginBottom: 10,
   },
   $fontHeight: "3.85%",
   $inputHeight: "7.76%",
@@ -61,8 +63,6 @@ const css = EStyleSheet.create({
     borderRadius: 11,
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 10,
     shadowOffset: {width: 0, height: 2},
     shadowColor: "$shadowColor",
     shadowOpacity: 0.5,
