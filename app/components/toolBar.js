@@ -8,7 +8,7 @@ class ToolBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
+      searchTerm: props.searchTerm,
       password: "",
       connecting: false
     };
@@ -31,15 +31,52 @@ class ToolBar extends Component {
     Browser.openURL("https://papertrailapp.com/signup?plan=free");
   };
 
+  onSubmitEditing = () => {
+    if (this.props.searchTerm != this.state.searchTerm)
+      this.props.onSearch(this.state.searchTerm);
+  }
+
+  onChangeText = (text) =>{
+    this.setState({
+      searchTerm: text
+    })
+  }
+
+  onClear = () => {
+    this.setState({
+      searchTerm: ""
+    })
+    if (this.props.searchTerm != "")
+      this.props.onSearch("");
+  }
+
   render() {
     return (
       <View style={css.container}>
 
-        <ToolBarButton containerStyle={css.buttonContainerStyle} imageSource={require("../images/cog.png")} activeImageSource={require("../images/cog-active.png")} />
+        <ToolBarButton
+          containerStyle={css.buttonContainerStyle}
+          imageSource={require("../images/cog.png")}
+          activeImageSource={require("../images/cog-active.png")}
+        />
 
-        <TextBox containerStyle={css.textBoxContainerStyle} placeholder={"Search"} />
+        <TextBox
+          containerStyle={css.textBoxContainerStyle}
+          placeholder={"Search"}
+          value={this.state.searchTerm}
+          autoCorrect={false}
+          returnKeyType={"search"}
+          autoCapitalize={"none"}
+          onSubmitEditing={this.onSubmitEditing}
+          onChangeText={this.onChangeText}
+          onClear={this.onClear}
+        />
 
-        <ToolBarButton containerStyle={css.buttonContainerStyle} imageSource={require("../images/filter.png")} activeImageSource={require("../images/filter-active.png")} />
+        <ToolBarButton
+          containerStyle={css.buttonContainerStyle}
+          imageSource={require("../images/filter.png")}
+          activeImageSource={require("../images/filter-active.png")}
+        />
 
       </View>
     );
@@ -53,7 +90,7 @@ const css = EStyleSheet.create({
     paddingBottom: 5
   },
   textBoxContainerStyle: {
-    flex: 1, 
+    flex: 1
   },
   buttonContainerStyle: {
     marginHorizontal: "4.23%"

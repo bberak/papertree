@@ -7,13 +7,13 @@ class ToolBarButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pressed: false
+      active: false
     };
   }
 
   onPressIn = () => {
     this.setState({
-      pressed: !this.state.pressed
+      active: !this.state.active
     });
 
     this.refs.buttonContainer.transitionTo({
@@ -32,7 +32,8 @@ class ToolBarButton extends Component {
       transform: [{ scale: 1 }]
     });
 
-    if (this.props.onPress) this.props.onPress();
+    if (this.props.onPress) 
+      this.props.onPress();
   };
 
   render() {
@@ -49,7 +50,7 @@ class ToolBarButton extends Component {
             <Animatable.Image
               ref={"image"}
               source={
-                this.state.pressed
+                this.state.active
                   ? this.props.activeImageSource
                   : this.props.imageSource
               }

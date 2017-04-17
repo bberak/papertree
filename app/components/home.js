@@ -1,23 +1,33 @@
 import React, { Component, } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, StatusBar } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import ToolBar from './toolBar'
 
 class Home extends Component {
 
-  static propTypes = {}
-
-  static defaultProps = {}
-
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      searchTerm: "",
+      filter: {},
+      logs: [],
+      savedSearches: []
+    }
+  }
+
+  onSearch = (term) => {
+    this.setState({
+      searchTerm: term
+    })
+
+    alert(term)
   }
 
   render() {
     return (
       <View style={css.mainView}>
-        <ToolBar />
+        <StatusBar hidden={false} barStyle="light-content" />
+        <ToolBar searchTerm={this.state.searchTerm} onSearch={this.onSearch} />
       </View>
     )
   }

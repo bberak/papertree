@@ -22,15 +22,22 @@ class TextBox extends Component {
     this.refs.textContainer.transitionTo({elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
   }
 
+  onClear = () => {
+    if (this.props.onChangeText)
+      this.props.onChangeText("");
+
+    if (this.props.onClear)
+      this.props.onClear();
+
+    this.focus();
+  }
+
   render() {
     let clearButton = this.props.value ?
         <TouchableOpacity 
           style={css.padding} 
           activeOpacity={0.5} 
-          onPress={() => { 
-            this.props.onChangeText("");
-            this.focus(); 
-          }}>
+          onPress={this.onClear}>
           <Image source={require("../images/clear.png")} />
         </TouchableOpacity> :
         <View style={css.padding}></View>;

@@ -50,6 +50,7 @@ class LoginForm extends Component {
             autoCorrect={false}
             returnKeyType={"next"}
             autoCapitalize={"none"}
+            keyboardType={"email-address"}
             containerStyle={css.margin}
             onSubmitEditing={() => this.refs.password.focus()}
             onChangeText={text => this.setState({ email: text })}
