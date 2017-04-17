@@ -14,14 +14,14 @@ export default class Papertree extends Component {
 			<Router>
 				<Scene key="root">
 					<Scene
-						key="home"
-						component={Home}
+						key="login"
+						component={Login}
 						hideNavBar={true}
 						direction={"vertical"}
 					/>
 					<Scene
-						key="login"
-						component={Login}
+						key="home"
+						component={Home}
 						hideNavBar={true}
 						direction={"vertical"}
 					/>
