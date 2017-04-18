@@ -2,9 +2,9 @@ import * as Keychain from "react-native-keychain";
 import base64 from "base-64";
 import { Actions } from "react-native-router-flux";
 
-let authHeader = null;
+let _authHeader = null;
 
-let testCredentialsAndGenerateAuthHeader = async (email, password) => {
+let _testCredentialsAndGenerateAuthHeader = async (email, password) => {
   if (!email || !password)
     throw new Error("Email and password cannot be empty");
 
@@ -26,18 +26,18 @@ let testCredentialsAndGenerateAuthHeader = async (email, password) => {
   return authHeader;
 };
 
-let logoutAndClean = async () => {
-  authHeader = null;
+let _logoutAndClean = async () => {
+  _authHeader = null;
   await Keychain.resetGenericPassword();
   Actions.login();
 }
 
-let unpack = async result => {
+let _unpack = async result => {
   if (result.status === 400)
     throw new Error(`Bad Request: ${result.json().message}`);
 
   if (result.status === 401) {
-    await logoutAndClean();
+    await _logoutAndClean();
 
     throw new Error("Unauthenticated");
   }
@@ -47,24 +47,24 @@ let unpack = async result => {
   throw new Error("Server Error");
 };
 
-let GET = async url => {
+let _GET = async url => {
   let response = await fetch(url, {
     method: "GET",
     headers: {
       Accept: "application/json",
-      Authorization: authHeader
+      Authorization: _authHeader
     }
   });
 
-  return await unpack(response);
+  return await _unpack(response);
 };
 
 module.exports = Object.freeze({
   isLoggedIn: async () => {
-    if (authHeader) return true;
+    if (_authHeader) return true;
     try {
       let credentials = await Keychain.getGenericPassword();
-      authHeader = await testCredentialsAndGenerateAuthHeader(
+      _authHeader = await _testCredentialsAndGenerateAuthHeader(
         credentials.username,
         credentials.password
       );
@@ -74,11 +74,11 @@ module.exports = Object.freeze({
     }
   },
   login: async (email, password) => {
-    authHeader = await testCredentialsAndGenerateAuthHeader(email, password);
+    _authHeader = await _testCredentialsAndGenerateAuthHeader(email, password);
     await Keychain.setGenericPassword(email, password);
   },
   logout: async () => {
-    await logoutAndClean();
+    await _logoutAndClean();
   },
   search: async (searchTerm, filter, min_id, max_id) => {
     filter = filter || {};
@@ -106,6 +106,6 @@ module.exports = Object.freeze({
 
     let url = `https://papertrailapp.com/api/v1/events/search.json?${qs}`;
 
-    return await GET(url);
+    return await _GET(url);
   }
 });
