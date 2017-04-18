@@ -58,7 +58,7 @@ class Home extends Component {
       this.setState({
         refreshing: false
       });
-    }, 2000);
+    }, 4000);
   };
 
   render() {
@@ -67,8 +67,8 @@ class Home extends Component {
         refreshing={this.state.refreshing}
         tintColor={EStyleSheet.value("$indicatorColor")}
         colors={[
-          EStyleSheet.value("$indicatorColor"),
-          EStyleSheet.value("$indicatorColor2")
+          EStyleSheet.value("$secondaryColor"),
+          EStyleSheet.value("$primaryColor")
         ]}
         onRefresh={this.onRefresh}
       />

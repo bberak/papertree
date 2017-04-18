@@ -26,13 +26,18 @@ let testCredentialsAndGenerateAuthHeader = async (email, password) => {
   return authHeader;
 };
 
+let logoutAndClean = async () => {
+  authHeader = null;
+  await Keychain.resetGenericPassword();
+  Actions.login();
+}
+
 let unpack = async result => {
   if (result.status === 400)
     throw new Error(`Bad Request: ${result.json().message}`);
 
   if (result.status === 401) {
-    console.log(authHeader);
-    await module.exports.logout();
+    await logoutAndClean();
 
     throw new Error("Unauthenticated");
   }
@@ -73,9 +78,7 @@ module.exports = Object.freeze({
     await Keychain.setGenericPassword(email, password);
   },
   logout: async () => {
-    authHeader = null;
-    await Keychain.resetGenericPassword();
-    Actions.login();
+    await logoutAndClean();
   },
   search: async (searchTerm, filter, min_id, max_id) => {
     filter = filter || {};
