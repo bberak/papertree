@@ -37,12 +37,16 @@ class Home extends Component {
       refreshing: true
     });
 
-    let results = await api.search(searchTerm, this.state.filter);
+    try {
+      let results = await api.search(searchTerm, this.state.filter);
 
-    this.setState({
-      events: ds.cloneWithRows(results.events),
-      refreshing: false
-    });
+      this.setState({
+        events: ds.cloneWithRows(results.events),
+        refreshing: false
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   onRefresh = () => {

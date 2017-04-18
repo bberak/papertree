@@ -9,7 +9,7 @@ class TextBox extends Component {
     super(props)
     this.state = {}
   }
-  
+
   focus = () => {
     this.refs.input.focus();
   }
@@ -28,8 +28,6 @@ class TextBox extends Component {
 
     if (this.props.onClear)
       this.props.onClear();
-
-    this.focus();
   }
 
   render() {
@@ -46,8 +44,7 @@ class TextBox extends Component {
       <View style={[css.container, this.props.containerStyle]}>
         <Animatable.View style={css.textContainer} ref={"textContainer"}>
 
-          <View style={css.padding}>
-          </View>
+          <View style={css.padding}></View>
 
           <TextInput
             ref={"input"}

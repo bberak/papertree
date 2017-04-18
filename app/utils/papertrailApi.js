@@ -26,15 +26,15 @@ let testCredentialsAndGenerateAuthHeader = async (email, password) => {
   return authHeader;
 };
 
-let unpack = result => {
+let unpack = async result => {
   if (result.status === 400)
     throw new Error(`Bad Request: ${result.json().message}`);
 
   if (result.status === 401) {
-    console.log("Unauthenticated");
-    authHeader = null;
-    Actions.login();
-    return;
+    console.log(authHeader);
+    await module.exports.logout();
+
+    throw new Error("Unauthenticated");
   }
 
   if (result.status === 200) return result.json();
@@ -51,7 +51,7 @@ let GET = async url => {
     }
   });
 
-  return unpack(response);
+  return await unpack(response);
 };
 
 module.exports = Object.freeze({
@@ -73,7 +73,9 @@ module.exports = Object.freeze({
     await Keychain.setGenericPassword(email, password);
   },
   logout: async () => {
+    authHeader = null;
     await Keychain.resetGenericPassword();
+    Actions.login();
   },
   search: async (searchTerm, filter, min_id, max_id) => {
     filter = filter || {};
