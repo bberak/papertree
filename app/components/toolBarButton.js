@@ -6,16 +6,9 @@ import * as Animatable from "react-native-animatable";
 class ToolBarButton extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      active: false
-    };
   }
 
   onPressIn = () => {
-    this.setState({
-      active: !this.state.active
-    });
-
     this.refs.buttonContainer.transitionTo({
       elevation: 1,
       shadowRadius: 1,
@@ -31,10 +24,12 @@ class ToolBarButton extends Component {
       shadowOpacity: 0.5,
       transform: [{ scale: 1 }]
     });
+  };
 
+  onPress = () => {
     if (this.props.onPress) 
       this.props.onPress();
-  };
+  }
 
   render() {
     return (
@@ -46,11 +41,12 @@ class ToolBarButton extends Component {
             activeOpacity={1}
             onPressIn={this.onPressIn}
             onPressOut={this.onPressOut}
+            onPress={this.onPress}
           >
             <Animatable.Image
               ref={"image"}
               source={
-                this.state.active
+                this.props.active
                   ? this.props.activeImageSource
                   : this.props.imageSource
               }
