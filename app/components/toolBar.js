@@ -14,23 +14,6 @@ class ToolBar extends Component {
     };
   }
 
-  onTryLogin = async () => {
-    if (this.state.email && this.state.password) {
-      try {
-        this.setState({ connecting: true });
-        await api.login(this.state.email, this.state.password);
-        Actions.home();
-      } catch (error) {
-        this.setState({ connecting: false });
-        this.refs.textBoxes.shake(400);
-      }
-    } else this.refs.textBoxes.shake(400);
-  };
-
-  onCreateAccount = () => {
-    Browser.openURL("https://papertrailapp.com/signup?plan=free");
-  };
-
   onSubmitEditing = () => {
     if (this.props.searchTerm != this.state.searchTerm)
       this.props.onSearch(this.state.searchTerm);

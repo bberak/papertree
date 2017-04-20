@@ -63,7 +63,7 @@ class Home extends Component {
 
         <ToolBar searchTerm={this.state.searchTerm} onSearch={this.onSearch} />
 
-        <EventList onRefresh={this.onRefresh} refreshing={this.state.refreshing} events={this.state.events} />
+        <EventList onRefresh={this.onRefresh} refreshing={this.state.refreshing} events={this.state.events} searchTerm={this.state.searchTerm} />
 
       </View>
     );
