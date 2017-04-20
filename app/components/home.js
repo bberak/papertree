@@ -2,18 +2,12 @@ import React, { Component } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  StatusBar,
-  ListView,
-  RefreshControl
+  StatusBar
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
-
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1.id !== r2.id
-});
+import EventList from "./eventList"
 
 class Home extends Component {
   constructor(props) {
@@ -21,7 +15,7 @@ class Home extends Component {
     this.state = {
       searchTerm: "",
       filter: {},
-      events: ds.cloneWithRows([]),
+      events: [],
       savedSearches: [],
       refreshing: true
     };
@@ -41,7 +35,7 @@ class Home extends Component {
       let results = await api.search(searchTerm, this.state.filter);
 
       this.setState({
-        events: ds.cloneWithRows(results.events),
+        events: results.events,
         refreshing: false
       });
     } catch (error) {
@@ -62,18 +56,6 @@ class Home extends Component {
   };
 
   render() {
-    let refreshControl = (
-      <RefreshControl
-        refreshing={this.state.refreshing}
-        tintColor={EStyleSheet.value("$indicatorColor")}
-        colors={[
-          EStyleSheet.value("$secondaryColor"),
-          EStyleSheet.value("$primaryColor")
-        ]}
-        onRefresh={this.onRefresh}
-      />
-    );
-
     return (
       <View style={css.mainView}>
 
@@ -81,12 +63,8 @@ class Home extends Component {
 
         <ToolBar searchTerm={this.state.searchTerm} onSearch={this.onSearch} />
 
-        <ListView
-          refreshControl={refreshControl}
-          dataSource={this.state.events}
-          renderRow={event => <Text>{event.message}</Text>}
-          enableEmptySections={true}
-        />
+        <EventList onRefresh={this.onRefresh} refreshing={this.state.refreshing} events={this.state.events} />
+
       </View>
     );
   }
