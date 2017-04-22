@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { Text, ListView, RefreshControl } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
+import EventListSection from "./eventListSection"
+import EventListRow from "./eventListRow"
 import _ from "lodash";
+import Label from "./label"
 
 const ds = new ListView.DataSource({
   getSectionData: (blob, sectionId) => blob[sectionId],
@@ -27,15 +30,15 @@ class EventList extends Component {
       .map((group, key) => {
         return {
           id: key,
-          hostname: group[0].hostname,
-          program: group[0].program,
           display_received_at: group[0].display_received_at,
-          events: _.map(group, e => {
-            return { id: e.id, message: e.message };
+          events: _.map(group, (e, idx) => {
+            return { id: e.id, message: e.message, hostname: e.hostname, program: e.program, isFirst: idx === 0 };
           })
         };
       })
       .value();
+
+      console.log(groups);
 
     let blob = {};
     let sectionIds = [];
@@ -48,9 +51,7 @@ class EventList extends Component {
 
       blob[group.id] = {
         id: group.id,
-        display_received_at: group.display_received_at,
-        hostname: group.hostname,
-        program: group.program
+        display_received_at: group.display_received_at
       };
 
       rowIds.push([]);
@@ -85,18 +86,25 @@ class EventList extends Component {
     return (
       <ListView
         ref={"list"}
+        style={css.list}
         refreshControl={refreshControl}
         dataSource={this.buildDataSource(this.props.events)}
-        renderRow={event => <Text>{event.message}</Text>}
-        renderSectionHeader={section => (
-          <Text style={{fontWeight: "bold"}}>{section.display_received_at}</Text>
-        )}
+        renderRow={event => <EventListRow {...event} />}
+        renderSectionHeader={section => <EventListSection value={section.display_received_at} />}
         stickySectionHeadersEnabled={true}
+        horizontal={false}
+        showsHorizontalScrollIndicator={false}
+        directionalLockEnabled={true}
       />
     );
   }
 }
 
-const css = EStyleSheet.create({});
+const css = EStyleSheet.create({
+  $paddingHorizontal: "3.94%",
+  list: {
+    paddingHorizontal: "$paddingHorizontal"
+  }
+});
 
 export default EventList;

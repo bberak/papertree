@@ -15,7 +15,7 @@ class Label extends Component {
 
   render() {
     return (
-        <Text style={css.text}>{this.props.value}</Text>
+        <Text style={css.text}>— {this.props.value} —</Text>
     )
   }
 }

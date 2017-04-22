@@ -77,7 +77,7 @@ class LoginForm extends Component {
           disabled={this.state.connecting}
           containerStyle={css.margin}
         />
-        <Label value={"— or —"} />
+        <Label value={"or"} />
         <Link value={"Create Account"} onPress={this.onCreateAccount} />
 
       </Animatable.View>
