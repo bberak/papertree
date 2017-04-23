@@ -5,6 +5,8 @@ import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
 import EventList from "./eventList";
 import _ from "lodash";
+import Drawer from "react-native-drawer";
+import Settings from "./settings";
 
 class Home extends Component {
   constructor(props) {
@@ -14,7 +16,8 @@ class Home extends Component {
       filter: {},
       events: [],
       savedSearches: [],
-      refreshing: true
+      refreshing: true,
+      settingsOpen: false
     };
   }
 
@@ -94,31 +97,73 @@ class Home extends Component {
 
   render() {
     return (
-      <View style={css.mainView}>
+      <Drawer
+        ref={"drawer"}
+        content={<Settings />}
+        type={"static"}
+        openDrawerOffset={0.25}
+        elevation={5}
+        tapToClose={true}
+        panOpenMask={0.2}
+        open={this.state.settingsOpen}
+        onOpenStart={() => {
+          this.setState({
+            settingsOpen: true
+          });
+        }}
+        onCloseStart={() => {
+          this.setState({
+            settingsOpen: false
+          });
+        }}
+      >
 
-        <StatusBar hidden={false} barStyle="light-content" />
+        <View style={css.main}>
 
-        <ToolBar searchTerm={this.state.searchTerm} onSearch={this.onSearch} />
+          <StatusBar
+            hidden={this.state.settingsOpen}
+            barStyle="light-content"
+            animated={true}
+            showHideTransition={"slide"}
+          />
 
-        <EventList
-          onRefresh={this.onRefresh}
-          refreshing={this.state.refreshing}
-          events={this.state.events}
-          searchTerm={this.state.searchTerm}
-          onEndReached={this.onEndReached}
-          onEndReachedThreshold={EStyleSheet.value("50%", "height")}
-        />
+          <ToolBar
+            searchTerm={this.state.searchTerm}
+            onSearch={this.onSearch}
+            settingsActive={this.state.settingsOpen}
+            onSettingsPress={() => {
+              this.setState({
+                settingsOpen: !this.state.settingsOpen
+              });
+            }}
+          />
 
-      </View>
+          <EventList
+            onRefresh={this.onRefresh}
+            refreshing={this.state.refreshing}
+            events={this.state.events}
+            searchTerm={this.state.searchTerm}
+            onEndReached={this.onEndReached}
+            onEndReachedThreshold={EStyleSheet.value("50%", "height")}
+          />
+
+        </View>
+
+      </Drawer>
     );
   }
 }
 
 const css = EStyleSheet.create({
-  mainView: {
+  main: {
     backgroundColor: "$homeBackgroundColor",
     flexDirection: "column",
-    flex: 1
+    flex: 1,
+    shadowOffset: { width: -5, height: 0 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5
   }
 });
 

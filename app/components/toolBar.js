@@ -9,7 +9,6 @@ class ToolBar extends Component {
     super(props);
     this.state = {
       searchTerm: props.searchTerm,
-      settingsActive: false,
       filterActive: false
     };
   }
@@ -38,11 +37,11 @@ class ToolBar extends Component {
       <View style={css.container}>
 
         <ToolBarButton
-          active={this.state.settingsActive}
+          active={this.props.settingsActive}
           containerStyle={css.buttonContainerStyle}
           imageSource={require("../images/cog.png")}
           activeImageSource={require("../images/cog-active.png")}
-          onPress={() => this.setState({ settingsActive: !this.state.settingsActive})}
+          onPress={this.props.onSettingsPress}
         />
 
         <TextBox

@@ -2539,6 +2539,11 @@
       "from": "react-native-custom-tabs@latest",
       "resolved": "https://registry.npmjs.org/react-native-custom-tabs/-/react-native-custom-tabs-0.1.5.tgz"
     },
+    "react-native-drawer": {
+      "version": "2.3.0",
+      "from": "react-native-drawer@latest",
+      "resolved": "https://registry.npmjs.org/react-native-drawer/-/react-native-drawer-2.3.0.tgz"
+    },
     "react-native-experimental-navigation": {
       "version": "0.26.10",
       "from": "react-native-experimental-navigation@>=0.26.0 <0.27.0",
@@ -3067,6 +3072,11 @@
       "version": "0.6.0",
       "from": "tunnel-agent@>=0.6.0 <0.7.0",
       "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.6.0.tgz"
+    },
+    "tween-functions": {
+      "version": "1.2.0",
+      "from": "tween-functions@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/tween-functions/-/tween-functions-1.2.0.tgz"
     },
     "tweetnacl": {
       "version": "0.14.5",
