@@ -34,12 +34,6 @@ class EventListRow extends Component {
       ? _.truncate(this.props.message, { length: 300, omission: "" })
       : this.props.message;
 
-      console.log(EStyleSheet.value("27%", "height") / 10);
-
-      console.log(Math.ceil(EStyleSheet.value("27%", "height") / 10))
-
-      console.log(Math.round(EStyleSheet.value("27%", "height") / 10))
-
     return (
       <View>
         {details}
@@ -59,9 +53,10 @@ class EventListRow extends Component {
 
 const css = EStyleSheet.create({
   $fontHeight: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.7%
-  $fontHeightMessage: Math.round(EStyleSheet.value("21%", "height") / 10), //-- 2.1%,
-  $fontHeightMessageIndicator: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.7%,
   $paddingBottom: Math.round(EStyleSheet.value("6%", "height") / 10), //-- 0.6%
+  $fontHeightMessage: Math.round(EStyleSheet.value("24%", "height") / 10), //-- 2.1%,
+  $lineHeightMessage: Math.round(EStyleSheet.value("32%", "height") / 10), //-- 3%,
+  $paddingBottomMessage: Math.round(EStyleSheet.value("17%", "height") / 10), //-- 1.7%
   hostname: {
     fontSize: "$fontHeight",
     lineHeight: "$fontHeight",
@@ -80,13 +75,11 @@ const css = EStyleSheet.create({
   },
   message: {
     fontSize: "$fontHeightMessage",
-    lineHeight: "$fontHeight",
-    paddingBottom: "$paddingBottom",
+    lineHeight: "$lineHeightMessage",
+    paddingBottom: "$paddingBottomMessage",
     color: "$eventListRowMessageColor"
   },
   indicator: {
-    fontSize: "$fontHeightMessageIndicator",
-    lineHeight: "$fontHeightMessage",
     fontWeight: "bold",
     color: "$eventListRowHostnameColor"
   }

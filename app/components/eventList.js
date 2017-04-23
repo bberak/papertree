@@ -103,7 +103,7 @@ class EventList extends Component {
 const css = EStyleSheet.create({
   $paddingHorizontal: "3.94%",
   list: {
-    paddingHorizontal: "$paddingHorizontal"
+    marginHorizontal: "$paddingHorizontal"
   }
 });
 
