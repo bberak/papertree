@@ -38,8 +38,6 @@ class EventList extends Component {
       })
       .value();
 
-      console.log(groups);
-
     let blob = {};
     let sectionIds = [];
     let rowIds = [];
@@ -95,6 +93,8 @@ class EventList extends Component {
         horizontal={false}
         showsHorizontalScrollIndicator={false}
         directionalLockEnabled={true}
+        onEndReached={this.props.onEndReached}
+        onEndReachedThreshold={this.props.onEndReachedThreshold}
       />
     );
   }

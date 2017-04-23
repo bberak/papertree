@@ -1,13 +1,10 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StatusBar
-} from "react-native";
+import { View, Text, StatusBar } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
-import EventList from "./eventList"
+import EventList from "./eventList";
+import _ from "lodash";
 
 class Home extends Component {
   constructor(props) {
@@ -43,16 +40,56 @@ class Home extends Component {
     }
   };
 
-  onRefresh = () => {
+  onRefresh = async () => {
     this.setState({
       refreshing: true
     });
 
-    setTimeout(() => {
+    try {
+      let min_id = this.state.events && this.state.events.length > 0
+        ? _.maxBy(this.state.events, "id").id //-- Searching by head, therefore max id becomes the min param
+        : null;
+      let limit = 10000; //-- Try get as many events as you can - avoids polling
+      let results = await api.search(
+        this.state.searchTerm,
+        this.state.filter,
+        min_id,
+        null,
+        limit
+      );
+
+      this.setState({
+        events: (this.state.events || []).concat(results.events || []),
+        refreshing: false
+      });
+    } catch (error) {
+      console.log(error);
+
       this.setState({
         refreshing: false
       });
-    }, 4000);
+    }
+  };
+
+  onEndReached = async () => {
+    if (this.state.events && this.state.events.length > 0) {
+      try {
+        let max_id = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
+        let results = await api.search(
+          this.state.searchTerm,
+          this.state.filter,
+          null,
+          max_id
+        );
+
+        this.setState({
+          events: (this.state.events || []).concat(results.events || []),
+          refreshing: false
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   render() {
@@ -63,7 +100,14 @@ class Home extends Component {
 
         <ToolBar searchTerm={this.state.searchTerm} onSearch={this.onSearch} />
 
-        <EventList onRefresh={this.onRefresh} refreshing={this.state.refreshing} events={this.state.events} searchTerm={this.state.searchTerm} />
+        <EventList
+          onRefresh={this.onRefresh}
+          refreshing={this.state.refreshing}
+          events={this.state.events}
+          searchTerm={this.state.searchTerm}
+          onEndReached={this.onEndReached}
+          onEndReachedThreshold={EStyleSheet.value("50%", "height")}
+        />
 
       </View>
     );

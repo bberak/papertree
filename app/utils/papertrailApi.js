@@ -80,12 +80,12 @@ module.exports = Object.freeze({
   logout: async () => {
     await _logoutAndClean();
   },
-  search: async (searchTerm, filter, min_id, max_id) => {
+  search: async (searchTerm, filter, min_id, max_id, limit) => {
     filter = filter || {};
 
     let query = {
       q: searchTerm,
-      limit: 20,
+      limit: limit || 20,
       tail: true,
       group_id: filter.group_id,
       system_id: filter.system_id,
