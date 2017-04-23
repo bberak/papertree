@@ -18,14 +18,15 @@ class EventListSection extends Component {
 }
 
 const css = EStyleSheet.create({
-  $fontHeight: 14,
+  $fontHeight: Math.round(EStyleSheet.value("21%", "height") / 10), //-- 2.1%
+  $marginTop: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.1%
+  $paddingBottom: Math.round(EStyleSheet.value("15%", "height") / 10), //-- 1.5,
   text: {
-    marginTop: "2.5%",
     fontSize: "$fontHeight",
     lineHeight: "$fontHeight",
     backgroundColor: "$homeBackgroundColor",
-    paddingTop: 4,
-    paddingBottom: 10,
+    marginTop: "$marginTop",
+    paddingBottom: "$paddingBottom",
     color: "$eventListSectionHeaderColor",
     textAlign: "center"
   }

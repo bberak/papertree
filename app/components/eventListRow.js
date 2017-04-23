@@ -34,6 +34,12 @@ class EventListRow extends Component {
       ? _.truncate(this.props.message, { length: 300, omission: "" })
       : this.props.message;
 
+      console.log(EStyleSheet.value("27%", "height") / 10);
+
+      console.log(Math.ceil(EStyleSheet.value("27%", "height") / 10))
+
+      console.log(Math.round(EStyleSheet.value("27%", "height") / 10))
+
     return (
       <View>
         {details}
@@ -52,15 +58,16 @@ class EventListRow extends Component {
 }
 
 const css = EStyleSheet.create({
-  $fontHeight: 18,
-  $fontHeightMessage: 14,
-  $fontHeightMessageIndicator: 18,
+  $fontHeight: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.7%
+  $fontHeightMessage: Math.round(EStyleSheet.value("21%", "height") / 10), //-- 2.1%,
+  $fontHeightMessageIndicator: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.7%,
+  $paddingBottom: Math.round(EStyleSheet.value("6%", "height") / 10), //-- 0.6%
   hostname: {
     fontSize: "$fontHeight",
     lineHeight: "$fontHeight",
     fontWeight: "bold",
     paddingTop: 0,
-    paddingBottom: 4,
+    paddingBottom: "$paddingBottom",
     color: "$eventListRowHostnameColor"
   },
   program: {
@@ -68,18 +75,18 @@ const css = EStyleSheet.create({
     lineHeight: "$fontHeight",
     fontWeight: "bold",
     paddingTop: 0,
-    paddingBottom: 4,
+    paddingBottom: "$paddingBottom",
     color: "$eventListRowProgramColor"
   },
   message: {
     fontSize: "$fontHeightMessage",
     lineHeight: "$fontHeight",
-    paddingBottom: 6,
+    paddingBottom: "$paddingBottom",
     color: "$eventListRowMessageColor"
   },
   indicator: {
     fontSize: "$fontHeightMessageIndicator",
-    lineHeight: "$fontHeightMessageIndicator",
+    lineHeight: "$fontHeightMessage",
     fontWeight: "bold",
     color: "$eventListRowHostnameColor"
   }
