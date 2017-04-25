@@ -107,5 +107,8 @@ module.exports = Object.freeze({
     let url = `https://papertrailapp.com/api/v1/events/search.json?${qs}`;
 
     return await _GET(url);
+  },
+  listSearches: async () => {
+    return await _GET("https://papertrailapp.com/api/v1/searches.json")
   }
 });

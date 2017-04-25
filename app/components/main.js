@@ -135,7 +135,7 @@ const css = EStyleSheet.create({
     flex: 1,
     shadowOffset: { width: -5, height: 0 },
     shadowColor: "$shadowColor",
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.7,
     shadowRadius: 5,
     elevation: 5
   }

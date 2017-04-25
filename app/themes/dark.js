@@ -7,6 +7,8 @@ export default {
   buttonColor: "#4FA6DA",
   disabledButtonColor: "#9B9B9B",
   buttonFontColor: "#FFF",
+  linkFontColor: "#FFF",
+  disabledLinkFontColor: "#9B9B9B",
   labelFontColor: "#FFF",
   homeBackgroundColor: "#3D3E3F",
   toolBarButtonColor: "#FFF",
