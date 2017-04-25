@@ -20,6 +20,9 @@ class TextBox extends Component {
   
   onBlur = () => {
     this.refs.textContainer.transitionTo({elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
+
+    if (this.props.onBlur)
+      this.props.onBlur();
   }
 
   onClear = () => {

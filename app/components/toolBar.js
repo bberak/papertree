@@ -51,8 +51,9 @@ class ToolBar extends Component {
           autoCorrect={false}
           returnKeyType={"search"}
           autoCapitalize={"none"}
-          onSubmitEditing={this.onSubmitEditing}
           onChangeText={this.onChangeText}
+          onSubmitEditing={this.onSubmitEditing}
+          onBlur={this.onSubmitEditing}
           onClear={this.onClear}
         />
 
