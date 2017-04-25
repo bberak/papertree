@@ -1,54 +1,32 @@
 import React, { Component } from "react";
-import { View } from "react-native";
-import EStyleSheet from "react-native-extended-stylesheet";
-import Main from "./main";
 import Drawer from "react-native-drawer";
 import Settings from "./settings";
+import { Actions, DefaultRenderer } from "react-native-router-flux";
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      settingsOpen: false
-    };
-  }
-
-  render() {
-    return (
-      <Drawer
-        ref={"drawer"}
-        content={<Settings />}
-        type={"static"}
-        openDrawerOffset={0.25}
-        elevation={5}
-        tapToClose={true}
-        panOpenMask={0.2}
-        open={this.state.settingsOpen}
-        onOpenStart={() => {
-          this.setState({
-            settingsOpen: true
-          });
-        }}
-        onCloseStart={() => {
-          this.setState({
-            settingsOpen: false
-          });
-        }}
-      >
-        <Main
-          settingsOpen={this.state.settingsOpen}
-          onSettingsPress={() => {
-            this.setState({
-              settingsOpen: !this.state.settingsOpen
-            });
-          }}
-        />
-
-      </Drawer>
-    );
-  }
+export default class Home extends Component {
+    render() {
+        const navigationState = this.props.navigationState;
+        const children = navigationState.children;
+        return (
+            <Drawer
+                ref="drawer"
+                open={navigationState.settingsOpen}
+                onOpen={() => Actions.refresh({ key: navigationState.key, settingsOpen: true })}
+                onClose={() => Actions.refresh({ key: navigationState.key, settingsOpen: false })}
+                type="static"
+                content={<Settings />}
+                openDrawerOffset={0.25}
+                elevation={5}
+                tapToClose={true}
+                panOpenMask={0.2}
+                panCloseMask={0.2}
+            >
+                <DefaultRenderer
+                    navigationState={children[0]}
+                    drawerState={navigationState}
+                    onNavigate={this.props.onNavigate}
+                />
+            </Drawer>
+        );
+    }
 }
-
-const css = EStyleSheet.create({});
-
-export default Home;

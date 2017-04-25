@@ -5,6 +5,7 @@ import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
 import EventList from "./eventList";
 import _ from "lodash";
+import { Actions } from "react-native-router-flux";
 
 class Main extends Component {
   constructor(props) {
@@ -97,7 +98,7 @@ class Main extends Component {
       <View style={css.main}>
 
         <StatusBar
-          hidden={this.props.settingsOpen}
+          hidden={this.props.drawerState.settingsOpen}
           barStyle="light-content"
           animated={true}
           showHideTransition={"slide"}
@@ -106,8 +107,8 @@ class Main extends Component {
         <ToolBar
           searchTerm={this.state.searchTerm}
           onSearch={this.onSearch}
-          settingsActive={this.props.settingsOpen}
-          onSettingsPress={this.props.onSettingsPress}
+          settingsActive={this.props.drawerState.settingsOpen}
+          onSettingsPress={() => Actions.refresh({ key: this.props.drawerState.key, settingsOpen: !this.props.drawerState.settingsOpen })}
         />
 
         <EventList

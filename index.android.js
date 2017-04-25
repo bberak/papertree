@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { AppRegistry } from "react-native";
 import Login from "./app/components/login";
 import Home from "./app/components/home";
+import Main from "./app/components/main";
 import { Scene, Router } from "react-native-router-flux";
 import EStyleSheet from "react-native-extended-stylesheet";
 import DarkTheme from "./app/themes/dark";
@@ -20,13 +21,17 @@ export default class Papertree extends Component {
 						direction={"vertical"}
 						panHandlers={null}
 					/>
+
 					<Scene
 						key="home"
 						component={Home}
+						settingsOpen={false}
 						hideNavBar={true}
 						direction={"vertical"}
 						panHandlers={null}
-					/>
+					>
+						<Scene key="main" component={Main} panHandlers={null} />
+					</Scene>
 				</Scene>
 			</Router>
 		);
