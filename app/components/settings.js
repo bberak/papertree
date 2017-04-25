@@ -79,7 +79,7 @@ class Settings extends Component {
         </ScrollView>
 
         <View style={css.buttonContainer}>
-          <Button value={"Logout"} disabled={true} />
+          <Button value={"Logout"} />
         </View>
 
       </Background>
@@ -98,7 +98,7 @@ const css = EStyleSheet.create({
     alignItems: "center"
   },
   listContainer: {
-    marginBottom: "2%",
+    marginBottom: "5%",
   },
   buttonContainer: {
     marginHorizontal: "7%",
