@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StatusBar } from "react-native";
+import { View, Text, StatusBar, Platform } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
@@ -93,15 +93,19 @@ class Main extends Component {
   };
 
   render() {
-    return (
-      <View style={css.main}>
-
-        <StatusBar
+    const statusBar = Platform.OS === "ios" ?
+      <StatusBar
           hidden={this.props.settingsOpen}
           barStyle="light-content"
           animated={true}
           showHideTransition={"slide"}
-        />
+        /> :
+        null;
+
+    return (
+      <View style={css.main}>
+
+        {statusBar}
 
         <ToolBar
           searchTerm={this.state.searchTerm}

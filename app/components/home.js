@@ -20,7 +20,6 @@ class Home extends Component {
         content={<Settings />}
         type={"static"}
         openDrawerOffset={0.25}
-        elevation={5}
         tapToClose={true}
         panOpenMask={0.2}
         open={this.state.settingsOpen}

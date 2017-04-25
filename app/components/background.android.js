@@ -29,7 +29,7 @@ class Background extends Component {
     return (
         <View style={[css.container, this.props.containerStyle]}>
         
-        {images}
+          {images}
         
           <View style={css.body}>
             {this.props.children}
