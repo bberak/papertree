@@ -8,7 +8,7 @@ class ToolBarButton extends Component {
     super(props);
     this.state = {
       pressed: false
-    }
+    };
   }
 
   onPressIn = () => {
@@ -42,15 +42,16 @@ class ToolBarButton extends Component {
       pressed: false
     });
 
-    if (this.props.onPress) 
-      this.props.onPress();
-  }
+    if (this.props.onPress) this.props.onPress();
+  };
 
   getImageSource = () => {
-    let images = this.props.active ? [this.props.activeImageSource, this.props.imageSource] : [this.props.imageSource, this.props.activeImageSource]
+    let images = this.props.active
+      ? [this.props.activeImageSource, this.props.imageSource]
+      : [this.props.imageSource, this.props.activeImageSource];
 
     return !this.state.pressed ? images[0] : images[1];
-  }
+  };
 
   render() {
     return (
@@ -64,10 +65,7 @@ class ToolBarButton extends Component {
             onPressOut={this.onPressOut}
             onPress={this.onPress}
           >
-            <Animatable.Image
-              ref={"image"}
-              source={this.getImageSource()}
-            />
+            <Animatable.Image ref={"image"} source={this.getImageSource()} />
           </TouchableOpacity>
 
         </Animatable.View>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Image, ScrollView, RefreshControl } from "react-native";
+import { View, Text, Image, ScrollView, RefreshControl, Linking } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Background from "./background";
 import Button from "./button";
@@ -12,7 +12,8 @@ class Settings extends Component {
     super(props);
     this.state = {
       refreshing: false,
-      searches: []
+      searches: [],
+      selectedSearch: null
     };
   }
 
@@ -37,6 +38,18 @@ class Settings extends Component {
     }
   };
 
+  linkPressed = (s) => {
+    if (s.id === (this.state.selectedSearch || {}).id) {
+      this.setState({
+        selectedSearch: null
+      });
+    } else {
+      this.setState({
+        selectedSearch: s
+      });
+    }
+  }
+
   render() {
     let refreshControl = (
       <RefreshControl
@@ -53,7 +66,9 @@ class Settings extends Component {
     let searchItems = this.state.searches &&
       this.state.searches.length > 0
       ? this.state.searches.map(x => {
-          return <Link key={x.id} value={x.name} />;
+          let selected = x.id === (this.state.selectedSearch || {}).id;
+          let color = EStyleSheet.value(selected ? "$secondaryColor" : "$linkFontColor");
+          return <Link key={x.id} value={x.name} color={color} onPress={() => this.linkPressed(x)} />;
         })
       : <Link value={"* * *"} disabled={true} />;
 
@@ -73,13 +88,13 @@ class Settings extends Component {
           </View>
 
           <Label value={"Support"} />
-          <Link value={"papertree.io"} />
-          <Link value={"papertrailapp.com"} />
+          <Link value={"papertree.io"} onPress={() => Linking.openURL("https://papertree.io")} />
+          <Link value={"papertrailapp.com"} onPress={() => Linking.openURL("https://papertrailapp.com")} />
 
         </ScrollView>
 
         <View style={css.buttonContainer}>
-          <Button value={"Logout"} />
+          <Button disabled={true} value={"Logout"} onPress={api.logout} />
         </View>
 
       </Background>

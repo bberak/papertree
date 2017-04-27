@@ -10,30 +10,29 @@ class Link extends Component {
   }
 
   onPressIn = () => {
-    if (this.props.disabled)
-      return;
-
     this.refs.text.transitionTo({
       textShadowRadius: 0,
-      scale: 0.95,
-      color: EStyleSheet.value("$secondaryColor")
+      scale: 0.95
     });
   };
 
-  onPressOut = e => {
-    if (this.props.disabled)
-      return;
-
+  onPressOut = () => {
     this.refs.text.transitionTo({
       textShadowRadius: 2,
-      scale: 1,
-      color: EStyleSheet.value("$buttonFontColor")
+      scale: 1
     });
   };
 
   onPress = () => {
     if (this.props.disabled) return;
     else this.props.onPress();
+  };
+
+  getColor = () => {
+    if (this.props.disabled)
+      return this.props.disabledColor || EStyleSheet.value("$disabledLinkFontColor");
+    else 
+      return this.props.color || EStyleSheet.value("$linkFontColor");
   };
 
   render() {
@@ -49,11 +48,7 @@ class Link extends Component {
           style={[
             css.text,
             {
-              color: EStyleSheet.value(
-                this.props.disabled
-                  ? "$disabledLinkFontColor"
-                  : "$linkFontColor"
-              )
+              color: this.getColor()
             }
           ]}
           ref={"text"}
