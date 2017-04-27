@@ -12,8 +12,8 @@ class Background extends Component {
     
     let images = [],  
     index = 0,
-    imgWidth = 24,
-    imgHeight = 12,
+    imgWidth = 480,
+    imgHeight = 240,
     winWidth = Dimensions.get('window').width,
     winHeight = Dimensions.get('window').height;
 
@@ -21,7 +21,7 @@ class Background extends Component {
       let top = row * imgHeight;
       for (var col = 0; col <Math.ceil(winWidth / imgWidth); col++){
         let left = col * imgWidth;
-        images.push(<Image key={index} source={require("../images/tile.png")} style={{position: 'absolute', top: top, left: left}} />);
+        images.push(<Image key={index} source={require("../images/tile-big.png")} style={{position: 'absolute', top: top, left: left}} />);
         index++;
       }
     }
