@@ -6,10 +6,16 @@ import * as Animatable from "react-native-animatable";
 class Link extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pressed: false
+    };
   }
 
   onPressIn = () => {
+    this.setState({
+      pressed: true
+    });
+
     this.refs.text.transitionTo({
       textShadowRadius: 0,
       scale: 0.95
@@ -17,6 +23,10 @@ class Link extends Component {
   };
 
   onPressOut = () => {
+    this.setState({
+      pressed: false
+    });
+
     this.refs.text.transitionTo({
       textShadowRadius: 2,
       scale: 1
@@ -24,15 +34,26 @@ class Link extends Component {
   };
 
   onPress = () => {
+    this.setState({
+      pressed: false
+    });
+
     if (this.props.disabled) return;
     else this.props.onPress();
   };
 
   getColor = () => {
-    if (this.props.disabled)
+    if (this.state.pressed) {
+      if (this.props.disabled)
+      return this.props.disabledColorPressed || EStyleSheet.value("$disabledLinkFontColorPressed");
+    else 
+      return this.props.colorPressed || EStyleSheet.value("$linkFontColorPressed");
+    } else {
+      if (this.props.disabled)
       return this.props.disabledColor || EStyleSheet.value("$disabledLinkFontColor");
     else 
       return this.props.color || EStyleSheet.value("$linkFontColor");
+    }    
   };
 
   render() {

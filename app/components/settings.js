@@ -94,7 +94,7 @@ class Settings extends Component {
         </ScrollView>
 
         <View style={css.buttonContainer}>
-          <Button disabled={true} value={"Logout"} onPress={api.logout} />
+          <Button disabled={false} value={"Logout"} onPress={api.logout} />
         </View>
 
       </Background>
