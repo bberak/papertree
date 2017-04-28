@@ -64,11 +64,10 @@ module.exports = Object.freeze({
     if (_authHeader) return true;
     try {
       let credentials = await Keychain.getGenericPassword();
-      _authHeader = await _testCredentialsAndGenerateAuthHeader(
-        credentials.username,
-        credentials.password
-      );
-      return true;
+      if (credentials.username && credentials.password)
+        return true;
+      else
+        return false;
     } catch (error) {
       return false;
     }
