@@ -9,7 +9,8 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      settingsOpen: false
+      settingsOpen: false,
+      selectedSearch: null
     };
   }
 
@@ -17,7 +18,12 @@ class Home extends Component {
     return (
       <Drawer
         ref={"drawer"}
-        content={<Settings />}
+        content={
+          <Settings
+            selectedSearch={this.state.selectedSearch}
+            onSelectedSearchChanged={s => this.setState({ selectedSearch: s })}
+          />
+        }
         type={"static"}
         openDrawerOffset={0.25}
         tapToClose={true}
@@ -36,6 +42,7 @@ class Home extends Component {
       >
         <Main
           settingsOpen={this.state.settingsOpen}
+          selectedSearch={this.state.selectedSearch}
           onSettingsPress={() => {
             this.setState({
               settingsOpen: !this.state.settingsOpen

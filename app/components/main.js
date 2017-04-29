@@ -13,7 +13,6 @@ class Main extends Component {
       searchTerm: "",
       filter: {},
       events: [],
-      savedSearches: [],
       refreshing: true
     };
   }
@@ -21,6 +20,12 @@ class Main extends Component {
   componentDidMount = () => {
     this.onSearch(this.state.searchTerm);
   };
+
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.selectedSearch !== nextProps.selectedSearch) {
+      this.onSearch((nextProps.selectedSearch || {}).query);
+    }
+  }
 
   onSearch = async searchTerm => {
     this.setState({
@@ -50,7 +55,7 @@ class Main extends Component {
 
     try {
       let min_id = this.state.events && this.state.events.length > 0
-        ? _.maxBy(this.state.events, "id").id //-- Searching by head, therefore max id becomes the min param
+        ? _.maxBy(this.state.events, "id").id //-- Searching head, therefore max id becomes the min param
         : null;
       let limit = 10000; //-- Try get as many events as you can - avoids polling
       let results = await api.search(
@@ -104,7 +109,6 @@ class Main extends Component {
           showHideTransition={"slide"}
         /> :
         null;
-
     return (
       <View style={css.main}>
 
@@ -139,8 +143,7 @@ const css = EStyleSheet.create({
     shadowOffset: { width: -5, height: 0 },
     shadowColor: "$shadowColor",
     shadowOpacity: 0.7,
-    shadowRadius: 5,
-    elevation: 5
+    shadowRadius: 5
   }
 });
 

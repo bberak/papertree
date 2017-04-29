@@ -39,14 +39,10 @@ class Settings extends Component {
   };
 
   linkPressed = (s) => {
-    if (s.id === (this.state.selectedSearch || {}).id) {
-      this.setState({
-        selectedSearch: null
-      });
+    if (s.id === (this.props.selectedSearch || {}).id) {
+      this.props.onSelectedSearchChanged(null);
     } else {
-      this.setState({
-        selectedSearch: s
-      });
+      this.props.onSelectedSearchChanged(s);
     }
   }
 
@@ -66,7 +62,7 @@ class Settings extends Component {
     let searchItems = this.state.searches &&
       this.state.searches.length > 0
       ? this.state.searches.map(x => {
-          let selected = x.id === (this.state.selectedSearch || {}).id;
+          let selected = x.id === (this.props.selectedSearch || {}).id;
           let color = EStyleSheet.value(selected ? "$secondaryColor" : "$linkFontColor");
           return <Link key={x.id} value={x.name} color={color} onPress={() => this.linkPressed(x)} />;
         })

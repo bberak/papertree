@@ -8,9 +8,13 @@ class ToolBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchTerm: props.searchTerm,
-      filterActive: false
     };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      searchTerm: nextProps.searchTerm
+    })
   }
 
   onSubmitEditing = () => {
