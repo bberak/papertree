@@ -93,19 +93,19 @@ module.exports = Object.freeze({
   logout: async () => {
     await _logoutAndClean();
   },
-  search: async (searchTerm, filter, min_id, max_id, limit) => {
+  search: async (searchTerm, filter, minId, maxId, limit) => {
     filter = filter || {};
 
     let query = {
       q: searchTerm,
       limit: limit || 20,
       tail: true,
-      group_id: filter.group_id,
-      system_id: filter.system_id,
-      min_time: filter.min_time,
-      max_time: filter.max_time,
-      min_id: min_id,
-      max_id: max_id
+      group_id: filter.groupId,
+      system_id: filter.systemId,
+      min_time: filter.minTime,
+      max_time: filter.maxTime,
+      min_id: minId,
+      max_id: maxId
     };
 
     let qs = Object.keys(query)

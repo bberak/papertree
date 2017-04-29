@@ -20,7 +20,7 @@ class ToolBar extends Component {
 
   onSubmitEditing = () => {
     if (this.props.searchTerm != this.state.searchTerm)
-      Actions.refresh({key: "home", searchTerm: this.state.searchTerm})
+      Actions.refresh({key: "home", searchTerm: this.state.searchTerm, selectedSearchId: null})
   }
 
   onChangeText = (text) =>{
@@ -34,7 +34,7 @@ class ToolBar extends Component {
       searchTerm: ""
     })
     if (this.props.searchTerm != "")
-      Actions.refresh({key: "home", searchTerm: ""})
+      Actions.refresh({key: "home", searchTerm: "", selectedSearchId: null})
   }
 
   render() {

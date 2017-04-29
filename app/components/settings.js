@@ -1,11 +1,19 @@
 import React, { Component } from "react";
-import { View, Text, Image, ScrollView, RefreshControl, Linking } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  RefreshControl,
+  Linking
+} from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Background from "./background";
 import Button from "./button";
 import Label from "./label";
 import Link from "./link";
-import api  from '../utils/papertrailApi'
+import api from "../utils/papertrailApi";
+import { Actions } from "react-native-router-flux";
 
 class Settings extends Component {
   constructor(props) {
@@ -24,7 +32,7 @@ class Settings extends Component {
   onRefresh = async () => {
     this.setState({
       refreshing: true
-    })
+    });
     try {
       this.setState({
         searches: await api.listSearches(),
@@ -34,17 +42,27 @@ class Settings extends Component {
       console.log(error);
       this.setState({
         refreshing: false
-      })
+      });
     }
   };
 
-  linkPressed = (s) => {
-    if (s.id === (this.props.selectedSearch || {}).id) {
-      this.props.onSelectedSearchChanged(null);
+  linkPressed = s => {
+    if (s.id === this.props.selectedSearchId) {
+      Actions.refresh({
+        key: "home",
+        selectedSearchId: null,
+        searchTerm: null,
+        filter: null
+      });
     } else {
-      this.props.onSelectedSearchChanged(s);
+      Actions.refresh({
+        key: "home",
+        selectedSearchId: s.id,
+        searchTerm: s.query,
+        filter: { groupId: s.group.id }
+      });
     }
-  }
+  };
 
   render() {
     let refreshControl = (
@@ -59,12 +77,20 @@ class Settings extends Component {
       />
     );
 
-    let searchItems = this.state.searches &&
-      this.state.searches.length > 0
+    let searchItems = this.state.searches && this.state.searches.length > 0
       ? this.state.searches.map(x => {
-          let selected = x.id === (this.props.selectedSearch || {}).id;
-          let color = EStyleSheet.value(selected ? "$secondaryColor" : "$linkFontColor");
-          return <Link key={x.id} value={x.name} color={color} onPress={() => this.linkPressed(x)} />;
+          let selected = x.id === this.props.selectedSearchId;
+          let color = EStyleSheet.value(
+            selected ? "$secondaryColor" : "$linkFontColor"
+          );
+          return (
+            <Link
+              key={x.id}
+              value={x.name}
+              color={color}
+              onPress={() => this.linkPressed(x)}
+            />
+          );
         })
       : <Link value={"* * *"} disabled={true} />;
 
@@ -84,8 +110,14 @@ class Settings extends Component {
           </View>
 
           <Label value={"Support"} />
-          <Link value={"papertree.io"} onPress={() => Linking.openURL("https://papertree.io")} />
-          <Link value={"papertrailapp.com"} onPress={() => Linking.openURL("https://papertrailapp.com")} />
+          <Link
+            value={"papertree.io"}
+            onPress={() => Linking.openURL("https://papertree.io")}
+          />
+          <Link
+            value={"papertrailapp.com"}
+            onPress={() => Linking.openURL("https://papertrailapp.com")}
+          />
 
         </ScrollView>
 
@@ -109,7 +141,7 @@ const css = EStyleSheet.create({
     alignItems: "center"
   },
   listContainer: {
-    marginBottom: "5%",
+    marginBottom: "5%"
   },
   buttonContainer: {
     marginHorizontal: "7%",

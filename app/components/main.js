@@ -4,35 +4,35 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
 import EventList from "./eventList";
+import Bookmark from "./bookmark"
 import _ from "lodash";
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filter: {},
       events: [],
       refreshing: true
     };
   }
 
   componentDidMount = () => {
-    this.onSearch(this.props.searchTerm);
+    this.onSearch(this.props.searchTerm, this.props.filter);
   };
 
   componentWillReceiveProps = nextProps => {
-    if (this.props.searchTerm !== nextProps.searchTerm) {
-      this.onSearch(nextProps.searchTerm);
+    if (this.props.searchTerm !== nextProps.searchTerm || _.isEqual(this.props.filter, nextProps.filter) === false) {
+      this.onSearch(nextProps.searchTerm, nextProps.filter);
     }
   };
 
-  onSearch = async searchTerm => {
+  onSearch = async (searchTerm, filter) => {
     this.setState({
       refreshing: true
     });
 
     try {
-      let results = await api.search(searchTerm, this.state.filter);
+      let results = await api.search(searchTerm, filter);
 
       this.setState({
         events: results.events,
@@ -52,14 +52,14 @@ class Main extends Component {
     });
 
     try {
-      let min_id = this.state.events && this.state.events.length > 0
+      let minId = this.state.events && this.state.events.length > 0
         ? _.maxBy(this.state.events, "id").id //-- Searching head, therefore max id becomes the min param
         : null;
       let limit = 10000; //-- Try get as many events as you can - avoids polling
       let results = await api.search(
         this.props.searchTerm,
-        this.state.filter,
-        min_id,
+        this.props.filter,
+        minId,
         null,
         limit
       );
@@ -80,12 +80,12 @@ class Main extends Component {
   onEndReached = async () => {
     if (this.state.events && this.state.events.length > 0) {
       try {
-        let max_id = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
+        let maxId = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
         let results = await api.search(
           this.props.searchTerm,
-          this.state.filter,
+          this.props.filter,
           null,
-          max_id
+          maxId
         );
 
         this.setState({
@@ -123,8 +123,10 @@ class Main extends Component {
           events={this.state.events}
           searchTerm={this.props.searchTerm}
           onEndReached={this.onEndReached}
-          onEndReachedThreshold={EStyleSheet.value("50%", "height")}
+          onEndReachedThreshold={EStyleSheet.value("100%", "height")}
         />
+
+        <Bookmark />
 
       </View>
     );

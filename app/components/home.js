@@ -4,6 +4,11 @@ import Settings from "./settings";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
 
 export default class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
     const navigationState = this.props.navigationState;
     const children = navigationState.children;
@@ -16,7 +21,7 @@ export default class Home extends Component {
         onClose={() =>
           Actions.refresh({ key: "home", settingsOpen: false })}
         type="static"
-        content={<Settings />}
+        content={<Settings {...navigationState} />}
         openDrawerOffset={0.25}
         elevation={5}
         tapToClose={true}

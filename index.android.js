@@ -25,10 +25,13 @@ export default class Papertree extends Component {
 					<Scene
 						key="home"
 						component={Home}
-						settingsOpen={false}
 						hideNavBar={true}
 						direction={"vertical"}
 						panHandlers={null}
+						settingsOpen={false}
+						selectedSearchId={null}
+						searchTerm={""}
+						filter={null}
 					>
 						<Scene key="main" component={Main} panHandlers={null} />
 					</Scene>
