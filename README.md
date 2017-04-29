@@ -5,7 +5,7 @@
 2. Run ```npm install```
 3. Run ```react-native link```
 
-## Building the project on Android
+## Building the project for Android
 1. Install Android Studio
 2. Open the Android project (/android directory) in Android Studio
 3. If Android Studio prompts you to upgrade Gradle say yes
@@ -15,6 +15,15 @@
 6. Make sure that the SDK Platform and the Google APIs are installed for API Revisions 22 and 23
 ![SDK Manager 2](readme-images/sdkmanager_2.jpg)
 7. Build the project either using Android Studio or another IDE such as Deco
+
+## Debugging on Android device
+1. Open Android Settings > About Phone. Click 'Build Number' seven times (for real, do it)
+2. This action enables a new 'Developer Settings' menu within the Android Settings
+3. Go to Settings > Developer Settings. Enable debugging
+4. Plug device into your PC/Mac via USB
+5. Go to your PC/Mac terminal, run ```adb devices```. You should see your physical device in the list
+6. Run ```react-native run-android``` to launch your app on the phone.
+7. If you want to run a release version run ```react-native run-android --variant=release```. You will probably need to setup your app for signing: https://facebook.github.io/react-native/docs/signed-apk-android.html
 
 ## Running the project in an Android emulator
 1. Install Genymotion

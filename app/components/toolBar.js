@@ -3,19 +3,24 @@ import { View, Text, Platform } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import TextBox from "./textBox";
 import ToolBarButton from "./toolBarButton";
+import { Actions } from "react-native-router-flux"
 
 class ToolBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchTerm: props.searchTerm,
-      filterActive: false
     };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      searchTerm: nextProps.searchTerm
+    })
   }
 
   onSubmitEditing = () => {
     if (this.props.searchTerm != this.state.searchTerm)
-      this.props.onSearch(this.state.searchTerm);
+      Actions.refresh({key: "home", searchTerm: this.state.searchTerm})
   }
 
   onChangeText = (text) =>{
@@ -29,7 +34,7 @@ class ToolBar extends Component {
       searchTerm: ""
     })
     if (this.props.searchTerm != "")
-      this.props.onSearch("");
+      Actions.refresh({key: "home", searchTerm: ""})
   }
 
   render() {
@@ -37,11 +42,11 @@ class ToolBar extends Component {
       <View style={css.container}>
 
         <ToolBarButton
-          active={this.props.settingsActive}
+          active={this.props.settingsOpen}
           containerStyle={css.buttonContainerStyle}
           imageSource={require("../images/cog.png")}
           activeImageSource={require("../images/cog-active.png")}
-          onPress={this.props.onSettingsPress}
+          onPress={() => Actions.refresh({key: "home", settingsOpen: !this.props.settingsOpen})}
         />
 
         <TextBox
@@ -51,8 +56,9 @@ class ToolBar extends Component {
           autoCorrect={false}
           returnKeyType={"search"}
           autoCapitalize={"none"}
-          onSubmitEditing={this.onSubmitEditing}
           onChangeText={this.onChangeText}
+          onSubmitEditing={this.onSubmitEditing}
+          onBlur={this.onSubmitEditing}
           onClear={this.onClear}
         />
 

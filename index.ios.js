@@ -26,6 +26,7 @@ export default class Papertree extends Component {
 						key="home"
 						component={Home}
 						settingsOpen={false}
+						searchTerm={""}
 						hideNavBar={true}
 						direction={"vertical"}
 						panHandlers={null}

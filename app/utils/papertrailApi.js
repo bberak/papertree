@@ -4,12 +4,24 @@ import { Actions } from "react-native-router-flux";
 
 let _authHeader = null;
 
-let _testCredentialsAndGenerateAuthHeader = async (email, password) => {
+const _generateAuthHeader = (email, password) => {
   if (!email || !password)
     throw new Error("Email and password cannot be empty");
 
   let encodedString = base64.encode(`${email}:${password}`);
-  let authHeader = `Basic ${encodedString}`;
+  return `Basic ${encodedString}`;
+}
+
+const _getAuthHeader = async () => {
+  let credentials = await Keychain.getGenericPassword();
+  if (credentials.username && credentials.password)
+    return _generateAuthHeader(credentials.username, credentials.password);
+  else
+    return null;
+}
+
+let _testCredentialsAndGenerateAuthHeader = async (email, password) => {
+  let authHeader = _generateAuthHeader(email, password);
   let result = await fetch("https://papertrailapp.com/api/v1/searches.json", {
     method: "GET",
     headers: {
@@ -52,7 +64,7 @@ let _GET = async url => {
     method: "GET",
     headers: {
       Accept: "application/json",
-      Authorization: _authHeader
+      Authorization: await _getAuthHeader()
     }
   });
 
@@ -64,11 +76,12 @@ module.exports = Object.freeze({
     if (_authHeader) return true;
     try {
       let credentials = await Keychain.getGenericPassword();
-      _authHeader = await _testCredentialsAndGenerateAuthHeader(
-        credentials.username,
-        credentials.password
-      );
-      return true;
+      if (credentials.username && credentials.password) {
+        _authHeader = _generateAuthHeader(credentials.username, credentials.password);
+        return true;
+      }
+      else
+        return false;
     } catch (error) {
       return false;
     }
@@ -107,5 +120,8 @@ module.exports = Object.freeze({
     let url = `https://papertrailapp.com/api/v1/events/search.json?${qs}`;
 
     return await _GET(url);
+  },
+  listSearches: async () => {
+    return await _GET("https://papertrailapp.com/api/v1/searches.json")
   }
 });

@@ -1,31 +1,33 @@
 import React, { Component } from "react";
-import { View, Text, StatusBar } from "react-native";
+import { View, Text, StatusBar, Platform } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
 import EventList from "./eventList";
 import _ from "lodash";
-import { Actions } from "react-native-router-flux";
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchTerm: "",
       filter: {},
       events: [],
-      savedSearches: [],
       refreshing: true
     };
   }
 
   componentDidMount = () => {
-    this.onSearch(this.state.searchTerm);
+    this.onSearch(this.props.searchTerm);
+  };
+
+  componentWillReceiveProps = nextProps => {
+    if (this.props.searchTerm !== nextProps.searchTerm) {
+      this.onSearch(nextProps.searchTerm);
+    }
   };
 
   onSearch = async searchTerm => {
     this.setState({
-      searchTerm: searchTerm,
       refreshing: true
     });
 
@@ -38,6 +40,9 @@ class Main extends Component {
       });
     } catch (error) {
       console.log(error);
+      this.setState({
+        refreshing: false
+      });
     }
   };
 
@@ -48,11 +53,11 @@ class Main extends Component {
 
     try {
       let min_id = this.state.events && this.state.events.length > 0
-        ? _.maxBy(this.state.events, "id").id //-- Searching by head, therefore max id becomes the min param
+        ? _.maxBy(this.state.events, "id").id //-- Searching head, therefore max id becomes the min param
         : null;
       let limit = 10000; //-- Try get as many events as you can - avoids polling
       let results = await api.search(
-        this.state.searchTerm,
+        this.props.searchTerm,
         this.state.filter,
         min_id,
         null,
@@ -77,7 +82,7 @@ class Main extends Component {
       try {
         let max_id = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
         let results = await api.search(
-          this.state.searchTerm,
+          this.props.searchTerm,
           this.state.filter,
           null,
           max_id
@@ -94,28 +99,29 @@ class Main extends Component {
   };
 
   render() {
-    return (
-      <View style={css.main}>
-
-        <StatusBar
-          hidden={this.props.drawerState.settingsOpen}
+    const statusBar = Platform.OS === "ios"
+      ? <StatusBar
+          hidden={this.props.settingsOpen}
           barStyle="light-content"
           animated={true}
           showHideTransition={"slide"}
         />
+      : null;
+    return (
+      <View style={css.main}>
+
+        {statusBar}
 
         <ToolBar
-          searchTerm={this.state.searchTerm}
-          onSearch={this.onSearch}
-          settingsActive={this.props.drawerState.settingsOpen}
-          onSettingsPress={() => Actions.refresh({ key: this.props.drawerState.key, settingsOpen: !this.props.drawerState.settingsOpen })}
+          searchTerm={this.props.searchTerm}
+          settingsOpen={this.props.settingsOpen}
         />
 
         <EventList
           onRefresh={this.onRefresh}
           refreshing={this.state.refreshing}
           events={this.state.events}
-          searchTerm={this.state.searchTerm}
+          searchTerm={this.props.searchTerm}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={EStyleSheet.value("50%", "height")}
         />
@@ -132,9 +138,8 @@ const css = EStyleSheet.create({
     flex: 1,
     shadowOffset: { width: -5, height: 0 },
     shadowColor: "$shadowColor",
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5
+    shadowOpacity: 0.7,
+    shadowRadius: 5
   }
 });
 
