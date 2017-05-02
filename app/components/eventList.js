@@ -32,7 +32,7 @@ class EventList extends Component {
           id: key,
           display_received_at: group[0].display_received_at,
           events: _.map(group, (e, idx) => {
-            return { id: e.id, message: e.message, hostname: e.hostname, program: e.program, isFirst: idx === 0 };
+            return { id: `${e.id}#${idx}`, message: e.message, hostname: e.hostname, program: e.program, isFirst: idx === 0 };
           })
         };
       })
@@ -103,7 +103,12 @@ class EventList extends Component {
 const css = EStyleSheet.create({
   $paddingHorizontal: "3.94%",
   list: {
-    marginHorizontal: "$paddingHorizontal"
+    "@media ios": {
+      paddingHorizontal: "$paddingHorizontal",
+    },
+    "@media android": {
+      marginHorizontal: "$paddingHorizontal"
+    }
   }
 });
 

@@ -23,10 +23,10 @@ export default class Home extends Component {
         type="static"
         content={<Settings savedSearches={navigationState.savedSearches} selectedSearchId={navigationState.selectedSearchId} />}
         openDrawerOffset={0.25}
-        elevation={5}
         tapToClose={true}
         panOpenMask={0.2}
         panCloseMask={0.2}
+        tweenHandler={Drawer.tweenPresets.parallax}
       >
         <DefaultRenderer
           navigationState={children[0]}

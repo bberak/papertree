@@ -42,7 +42,7 @@ class EventListRow extends Component {
           onPress={this.toggleTruncate}
         >
           <Text style={css.message}>
-            {message}
+            {_.trim(message)}
             {indicator}
           </Text>
         </TouchableOpacity>
