@@ -21,7 +21,7 @@ export default class Home extends Component {
         onClose={() =>
           Actions.refresh({ key: "home", settingsOpen: false })}
         type="static"
-        content={<Settings {...navigationState} />}
+        content={<Settings savedSearches={navigationState.savedSearches} selectedSearchId={navigationState.selectedSearchId} />}
         openDrawerOffset={0.25}
         elevation={5}
         tapToClose={true}

@@ -19,9 +19,7 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false,
-      searches: [],
-      selectedSearch: null
+      refreshing: false
     };
   }
 
@@ -33,11 +31,15 @@ class Settings extends Component {
     this.setState({
       refreshing: true
     });
+
     try {
+      let results = await api.listSearches();
+
       this.setState({
-        searches: await api.listSearches(),
         refreshing: false
       });
+
+      Actions.refresh({ key: "home", savedSearches: results });
     } catch (error) {
       console.log(error);
       this.setState({
@@ -77,8 +79,9 @@ class Settings extends Component {
       />
     );
 
-    let searchItems = this.state.searches && this.state.searches.length > 0
-      ? this.state.searches.map(x => {
+    let searchItems = this.props.savedSearches &&
+      this.props.savedSearches.length > 0
+      ? this.props.savedSearches.map(x => {
           let selected = x.id === this.props.selectedSearchId;
           let color = EStyleSheet.value(
             selected ? "$secondaryColor" : "$linkFontColor"
