@@ -9,7 +9,7 @@ import {
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 import Modal from "react-native-modal";
-import SaveSearchModal from "./saveSearchModal";
+import SaveSearchActionSheet from "./saveSearchActionSheet";
 
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
@@ -21,7 +21,7 @@ class Bookmark extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false
+      sheetVisible: false
     };
   }
 
@@ -43,7 +43,7 @@ class Bookmark extends Component {
     });
 
     this.setState({
-      modalVisible: true
+      sheetVisible: true
     });
   };
 
@@ -51,9 +51,9 @@ class Bookmark extends Component {
     return (
       <View style={[css.container, this.props.containerStyle]}>
 
-        <SaveSearchModal
-          visible={this.state.modalVisible}
-          onClose={() => this.setState({ modalVisible: false })}
+        <SaveSearchActionSheet
+          visible={this.state.sheetVisible}
+          onClose={() => this.setState({ sheetVisible: false })}
           onClosed={this.onPressOut}
         />
 

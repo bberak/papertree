@@ -17,5 +17,11 @@ export default {
   eventListSectionHeaderColor: "#D3D3D3",
   eventListRowHostnameColor: "#F99D1E",
   eventListRowProgramColor: "#4FA6DA",
-  eventListRowMessageColor: "#FFF"
+  eventListRowMessageColor: "#FFF",
+  actionSheetButtonFontColor: "#007AFF",
+  actionSheetOptionBorderColor: "#DADADE",
+  actionSheetOptionFontColor: "#007AFF",
+  actionSheetTitleFontColor: "#030303",
+  actionSheetTextBoxFontColor: "#030303",
+  actionSheetTextBoxBorderColor: "#DADADE"
 }
