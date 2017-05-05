@@ -52,11 +52,11 @@ class EventListRow extends Component {
 }
 
 const css = EStyleSheet.create({
-  $fontHeight: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.7%
-  $paddingBottom: Math.round(EStyleSheet.value("6%", "height") / 10), //-- 0.6%
-  $fontHeightMessage: Math.round(EStyleSheet.value("24%", "height") / 10), //-- 2.1%,
-  $lineHeightMessage: Math.round(EStyleSheet.value("32%", "height") / 10), //-- 3%,
-  $paddingBottomMessage: Math.round(EStyleSheet.value("17%", "height") / 10), //-- 1.7%
+  $fontHeight: "2.7%",
+  $paddingBottom: "0.6%",
+  $fontHeightMessage: "2.4%",
+  $lineHeightMessage: "3.2%",
+  $paddingBottomMessage: "1.7%",
   hostname: {
     fontSize: "$fontHeight",
     lineHeight: "$fontHeight",

@@ -86,7 +86,7 @@ const css = EStyleSheet.create({
     alignSelf: "center",
     backgroundColor: "transparent"
   },
-  $fontHeight: "3.85%",
+  $fontHeight: "3.3%",
   text: {
     fontSize: "$fontHeight",
     padding: 4,

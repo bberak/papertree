@@ -79,7 +79,7 @@ const css = EStyleSheet.create({
     marginTop: 10,
     marginBottom: 10
   },
-  $inputHeight: "7.76%",
+  $inputHeight: "7%",
   buttonContainer: {
     width: "$inputHeight",
     height: "$inputHeight",

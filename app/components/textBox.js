@@ -71,8 +71,8 @@ const css = EStyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  $fontHeight: "3.85%",
-  $inputHeight: "7.76%",
+  $fontHeight: "3.3%",
+  $inputHeight: "7%",
   textContainer: {
     flexGrow: 1,
     height: "$inputHeight",
