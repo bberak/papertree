@@ -2550,9 +2550,9 @@
       "resolved": "https://registry.npmjs.org/react-native-experimental-navigation/-/react-native-experimental-navigation-0.26.10.tgz"
     },
     "react-native-extended-stylesheet": {
-      "version": "0.3.2",
-      "from": "react-native-extended-stylesheet@latest",
-      "resolved": "https://registry.npmjs.org/react-native-extended-stylesheet/-/react-native-extended-stylesheet-0.3.2.tgz"
+      "version": "0.4.1",
+      "from": "git+https://github.com/neapers/react-native-extended-stylesheet.git",
+      "resolved": "git+https://github.com/neapers/react-native-extended-stylesheet.git#2bcc956b21d9e13608d467e178b7519107b49689"
     },
     "react-native-keyboard-aware-scroll-view": {
       "version": "0.2.8",
@@ -2563,6 +2563,11 @@
       "version": "1.2.0",
       "from": "react-native-keychain@latest",
       "resolved": "https://registry.npmjs.org/react-native-keychain/-/react-native-keychain-1.2.0.tgz"
+    },
+    "react-native-modal": {
+      "version": "2.3.2",
+      "from": "react-native-modal@latest",
+      "resolved": "https://registry.npmjs.org/react-native-modal/-/react-native-modal-2.3.2.tgz"
     },
     "react-native-router-flux": {
       "version": "3.38.0",

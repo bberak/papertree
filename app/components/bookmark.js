@@ -1,60 +1,61 @@
 import React, { Component } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback
+} from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
+import Modal from "react-native-modal";
+import SaveSearchModal from "./saveSearchModal";
 
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
+const restPosition = -40;
+const pressedPosition = -55;
+const hiddenPosition = 0;
 
 class Bookmark extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pressed: false
+      modalVisible: false
     };
   }
 
   onPressIn = () => {
-    this.setState({
-      pressed: true
-    });
-
     this.refs.image.transitionTo({
-      marginTop: -55,
-      transform: [{ scale: 1 }]
+      marginTop: pressedPosition
     });
   };
 
   onPressOut = () => {
-    this.setState({
-      pressed: false
-    });
-
     this.refs.image.transitionTo({
-      marginTop: -40,
-      transform: [{ scale: 1 }]
+      marginTop: restPosition
     });
   };
 
   onPress = () => {
-    this.setState({
-      pressed: false
+    this.refs.image.transitionTo({
+      marginTop: hiddenPosition
     });
 
-    if (this.props.onPress) this.props.onPress();
-  };
-
-  getImageSource = () => {
-    let images = this.props.active
-      ? [activeImageSource, imageSource]
-      : [imageSource, activeImageSource];
-
-    return !this.state.pressed ? images[0] : images[1];
+    this.setState({
+      modalVisible: true
+    });
   };
 
   render() {
     return (
       <View style={[css.container, this.props.containerStyle]}>
+
+        <SaveSearchModal
+          visible={this.state.modalVisible}
+          onClose={() => this.setState({ modalVisible: false })}
+          onClosed={this.onPressOut}
+        />
 
         <TouchableOpacity
           style={css.imageContainer}
@@ -63,7 +64,11 @@ class Bookmark extends Component {
           onPressOut={this.onPressOut}
           onPress={this.onPress}
         >
-          <Animatable.Image ref={"image"}  style={css.image} source={this.getImageSource()} />
+          <Animatable.Image
+            ref={"image"}
+            style={css.image}
+            source={imageSource}
+          />
         </TouchableOpacity>
 
       </View>
@@ -81,7 +86,7 @@ const css = EStyleSheet.create({
     backgroundColor: "transparent",
     marginRight: "3%",
     height: 66,
-    marginTop: -40
+    marginTop: restPosition
   }
 });
 
