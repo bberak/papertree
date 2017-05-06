@@ -4,7 +4,8 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Dimensions
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
@@ -25,43 +26,56 @@ class Bookmark extends Component {
     };
   }
 
-  onPressIn = () => {
-    this.refs.image.transitionTo({
-      marginTop: pressedPosition
-    });
-  };
-
-  onPressOut = () => {
+  rest = () => {
     this.refs.image.transitionTo({
       marginTop: restPosition
     });
-  };
+  }
 
-  onPress = () => {
+  raise = () => {
+    this.refs.image.transitionTo({
+      marginTop: pressedPosition
+    });
+  }
+
+  hide = () => {
     this.refs.image.transitionTo({
       marginTop: hiddenPosition
     });
+  }
+
+  onPress = () => {
+    this.hide();
 
     this.setState({
       sheetVisible: true
     });
   };
 
+  onLayout = () => {
+    let dims = Dimensions.get("window");
+    if (dims.height > dims.width) {
+      this.rest();
+    } else {
+      this.hide();
+    }
+  }
+
   render() {
     return (
-      <View style={[css.container, this.props.containerStyle]}>
+      <View style={[css.container, this.props.containerStyle]} onLayout={this.onLayout}>
 
         <SaveSearchActionSheet
           visible={this.state.sheetVisible}
           onClose={() => this.setState({ sheetVisible: false })}
-          onClosed={this.onPressOut}
+          onClosed={this.rest}
         />
 
         <TouchableOpacity
           style={css.imageContainer}
           activeOpacity={1}
-          onPressIn={this.onPressIn}
-          onPressOut={this.onPressOut}
+          onPressIn={this.raise}
+          onPressOut={this.rest}
           onPress={this.onPress}
         >
           <Animatable.Image
