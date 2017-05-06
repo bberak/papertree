@@ -68,8 +68,8 @@ class TextBox extends Component {
 const css = EStyleSheet.create({
   container: {
     flexDirection: "row",
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: "1.5%",
+    marginBottom: "1.5%",
   },
   $fontHeight: "3.3%",
   $inputHeight: "7%",

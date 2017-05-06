@@ -26,26 +26,20 @@ class Bookmark extends Component {
     };
   }
 
-  rest = () => {
+  showBookmark = () => {
     this.refs.image.transitionTo({
       marginTop: restPosition
     });
   }
 
-  raise = () => {
-    this.refs.image.transitionTo({
-      marginTop: pressedPosition
-    });
-  }
-
-  hide = () => {
+  hideBookmark = () => {
     this.refs.image.transitionTo({
       marginTop: hiddenPosition
     });
   }
 
   onPress = () => {
-    this.hide();
+    this.hideBookmark();
 
     this.setState({
       sheetVisible: true
@@ -55,9 +49,9 @@ class Bookmark extends Component {
   onLayout = () => {
     let dims = Dimensions.get("window");
     if (dims.height > dims.width) {
-      this.rest();
+      this.showBookmark();
     } else {
-      this.hide();
+      this.hideBookmark();
     }
   }
 
@@ -68,14 +62,14 @@ class Bookmark extends Component {
         <SaveSearchActionSheet
           visible={this.state.sheetVisible}
           onClose={() => this.setState({ sheetVisible: false })}
-          onClosed={this.rest}
+          onClosed={this.showBookmark}
         />
 
         <TouchableOpacity
           style={css.imageContainer}
           activeOpacity={1}
-          onPressIn={this.raise}
-          onPressOut={this.rest}
+          onPressIn={this.hideBookmark}
+          onPressOut={this.showBookmark}
           onPress={this.onPress}
         >
           <Animatable.Image

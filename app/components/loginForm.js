@@ -90,7 +90,10 @@ const css = EStyleSheet.create({
     flex: 1
   },
   margin: {
-    marginHorizontal: "10%"
+    marginHorizontal: "10%",
+    "@media (min-width: 475)": {
+      marginHorizontal: "20%"
+    }
   }
 });
 

@@ -51,8 +51,8 @@ class Button extends Component {
 
 const css = EStyleSheet.create({
   container: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: "1.5%",
+    marginBottom: "1.5%"
   },
   $fontHeight: "3.3%",
   $inputHeight: "7%",
