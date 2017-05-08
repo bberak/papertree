@@ -46,9 +46,13 @@ class Bookmark extends Component {
     });
   };
 
-  onLayout = () => {
+  getOrientation = () => {
     let dims = Dimensions.get("window");
-    if (dims.height > dims.width) {
+    return dims.height > dims.width ? "portrait" : "landscape";
+  }
+
+  onLayout = () => {
+    if (this.getOrientation() === "portrait") {
       this.showBookmark();
     } else {
       this.hideBookmark();
@@ -60,7 +64,7 @@ class Bookmark extends Component {
       <View style={[css.container, this.props.containerStyle]} onLayout={this.onLayout}>
 
         <SaveSearchActionSheet
-          visible={this.state.sheetVisible}
+          visible={this.state.sheetVisible && this.getOrientation() === "portrait"}
           onClose={() => this.setState({ sheetVisible: false })}
           onClosed={this.showBookmark}
         />

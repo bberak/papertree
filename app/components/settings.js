@@ -148,10 +148,7 @@ const css = EStyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: "7%",
-    marginBottom: "2%",
-    "@media (min-width: 475)": {
-      marginHorizontal: "12%"
-    }
+    marginBottom: "2%"
   }
 });
 

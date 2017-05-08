@@ -43,6 +43,7 @@ class Form extends Component {
           onModalHide={this.props.onClosed}
           backdropOpacity={this.props.backdropOpacity || 0.4}
           isVisible={this.props.visible}
+          supportedOrientations={['portrait']}
         >
 
           {form}

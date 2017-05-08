@@ -39,11 +39,8 @@ class SaveSearchActionSheet extends Component {
 const css = EStyleSheet.create({
   formContainer: {
     flex: 1,
-    justifyContent: "center",
-    "@media (max-height: 650)": {
-      justifyContent: "flex-start",
-      marginTop: "20%"
-    }
+    justifyContent: "flex-start",
+    marginTop: "20%"
   }
 });
 

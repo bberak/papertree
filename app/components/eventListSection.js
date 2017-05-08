@@ -18,9 +18,9 @@ class EventListSection extends Component {
 }
 
 const css = EStyleSheet.create({
-  $fontHeight: Math.round(EStyleSheet.value("21%", "height") / 10), //-- 2.1%
-  $marginTop: Math.round(EStyleSheet.value("27%", "height") / 10), //-- 2.1%
-  $paddingBottom: Math.round(EStyleSheet.value("15%", "height") / 10), //-- 1.5,
+  $fontHeight: "2.1%",
+  $marginTop: "2.7%",
+  $paddingBottom: "1.5%",
   text: {
     fontSize: "$fontHeight",
     lineHeight: "$fontHeight",
