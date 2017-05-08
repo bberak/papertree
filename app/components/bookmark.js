@@ -94,7 +94,7 @@ class Bookmark extends Component {
           <Animatable.Image
             ref={"image"}
             style={css.image}
-            source={imageSource}
+            source={this.props.selectedSearchId ? activeImageSource : imageSource}
           />
         </TouchableOpacity>
 
