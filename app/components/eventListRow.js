@@ -57,6 +57,9 @@ const css = EStyleSheet.create({
   $fontHeightMessage: "2.4%",
   $lineHeightMessage: "3.2%",
   $paddingBottomMessage: "1.7%",
+  "@media android": {
+    $paddingBottomMessage: "1.5%"
+  },
   hostname: {
     fontSize: "$fontHeight",
     lineHeight: "$fontHeight",
