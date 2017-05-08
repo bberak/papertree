@@ -15,15 +15,21 @@ import SaveSearchActionSheet from "./saveSearchActionSheet";
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
 const restPosition = -40;
-const pressedPosition = -55;
 const hiddenPosition = 0;
 
 class Bookmark extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sheetVisible: false
+      opened: false
     };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (this.canShow(nextProps.searchTerm))
+      this.showBookmark();
+    else
+      this.hideBookmark();
   }
 
   showBookmark = () => {
@@ -42,7 +48,7 @@ class Bookmark extends Component {
     this.hideBookmark();
 
     this.setState({
-      sheetVisible: true
+      opened: true
     });
   };
 
@@ -52,21 +58,30 @@ class Bookmark extends Component {
   }
 
   onLayout = () => {
-    if (this.getOrientation() === "portrait") {
+    if (this.canShow(this.props.searchTerm)) {
       this.showBookmark();
     } else {
       this.hideBookmark();
     }
   }
 
+  canShow = (searchTerm) => {
+    return this.getOrientation() === "portrait" && searchTerm != "";
+  }
+
   render() {
+    const visible = this.state.opened === true && this.getOrientation() === "portrait" && this.props.searchTerm != "";
+
     return (
       <View style={[css.container, this.props.containerStyle]} onLayout={this.onLayout}>
 
         <SaveSearchActionSheet
-          visible={this.state.sheetVisible && this.getOrientation() === "portrait"}
-          onClose={() => this.setState({ sheetVisible: false })}
+          visible={visible}
+          onClose={() => this.setState({ opened: false })}
           onClosed={this.showBookmark}
+          savedSearches={this.props.savedSearches} 
+          searchTerm={this.props.searchTerm}
+          filter={this.props.filter}
         />
 
         <TouchableOpacity

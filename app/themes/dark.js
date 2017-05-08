@@ -19,9 +19,8 @@ export default {
   eventListRowProgramColor: "#4FA6DA",
   eventListRowMessageColor: "#FFF",
   actionSheetButtonFontColor: "#007AFF",
-  actionSheetOptionBorderColor: "#DADADE",
   actionSheetOptionFontColor: "#007AFF",
   actionSheetTitleFontColor: "#030303",
   actionSheetTextBoxFontColor: "#030303",
-  actionSheetTextBoxBorderColor: "#DADADE"
+  actionSheetBorderColor: "#DADADE"
 }

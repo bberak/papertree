@@ -2,11 +2,64 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as ActionSheet from "./actionSheet";
+import * as Animatable from "react-native-animatable";
+import _ from "lodash";
+import api from "../utils/papertrailApi";
+import { Actions } from "react-native-router-flux";
 
 class SaveSearchActionSheet extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      searchName: "",
+      label: "Save",
+      disabled: false
+    };
+  }
+
+  save = async () => {
+    let searchName = _.trim(this.state.searchName);
+
+    if (searchName) {
+      this.setState({
+        label: "Saving..",
+        disabled: true,
+      });
+      try {
+        let newSearch = await api.saveSearch(searchName, this.props.searchTerm, this.props.filter);
+
+        if (this.props.onClose)
+          this.props.onClose();
+
+        Actions.refresh({
+          key: "home",
+          selectedSearchId: newSearch.id,
+          searchTerm: newSearch.query,
+          filter: { groupId: newSearch.group.id },
+          saveSearches: (this.props.savedSearches || []).push(newSearch)
+        });
+
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          label: "Try Again",
+          disabled: false
+        });
+      }
+    } else {
+      this.refs.textBoxContainer.shake(400);
+    }
+  }
+
+  onClosed = () => {
+    this.setState({
+      searchName: "",
+      label: "Save",
+      disabled: false
+    })
+
+    if (this.props.onClosed)
+      this.props.onClosed();
   }
 
   render() {
@@ -14,22 +67,35 @@ class SaveSearchActionSheet extends Component {
       <ActionSheet.Form
         visible={this.props.visible}
         onBackdropPress={this.props.onClose}
-        onClosed={this.props.onClosed}
+        onClosed={this.onClosed}
         formContainerStyle={css.formContainer}
       >
 
         <ActionSheet.Title value={"Save the current search?"} />
 
-        <ActionSheet.TextBox
-          placeholder={"Name"}
-          autoCorrect={false}
-          returnKeyType={"done"}
-          autoCapitalize={"none"}
-          keyboardType={"default"}
-          autoFocus={true}
-        />
+        <ActionSheet.HR />
 
-        <ActionSheet.Options leftValue={"Cancel"} onLeftPress={this.props.onClose} rightValue={"Save"} onRightPress={() => alert("Saved!")} />
+        <Animatable.View ref="textBoxContainer">
+          <ActionSheet.TextBox
+            placeholder={"Name"}
+            autoCorrect={false}
+            returnKeyType={"done"}
+            autoCapitalize={"none"}
+            keyboardType={"default"}
+            autoFocus={true}
+            value={this.state.searchName}
+            onChangeText={(text) => this.setState({ searchName: text})}
+          />
+        </Animatable.View>
+
+        <ActionSheet.HR />
+
+        <ActionSheet.Options 
+          leftOptionValue={"Cancel"} 
+          onLeftOptionPress={this.props.onClose} 
+          rightOptionValue={this.state.label} 
+          onRightOptionPress={this.save} 
+          rightOptionDisabled={this.state.disabled} />
 
       </ActionSheet.Form>
     );

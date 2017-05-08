@@ -129,25 +129,27 @@ class Options extends Component {
       <View style={{ flexDirection: "row" }}>
 
         <TouchableOpacity
-          onPress={this.props.onLeftPress}
+          disabled={this.props.letftOptionDisabled}
+          onPress={this.props.onLeftOptionPress}
           activeOpacity={0.5}
           style={[css.optionButton, { flex: 1, borderRightWidth: 0.5 }]}
         >
 
-          <Text style={css.optionButtonText}>
-            {this.props.leftValue}
+          <Text style={[css.optionButtonText, { opacity: this.props.letftOptionDisabled ? 0.5 : 1 }]}>
+            {this.props.leftOptionValue}
           </Text>
 
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={this.props.onRightPress}
+          disabled={this.props.rightOptionDisabled}
+          onPress={this.props.onRightOptionPress}
           activeOpacity={0.5}
           style={[css.optionButton, { flex: 1 }]}
         >
 
-          <Text style={css.optionButtonText}>
-            {this.props.rightValue}
+          <Text style={[css.optionButtonText, { opacity: this.props.rightOptionDisabled ? 0.5 : 1 }]}>
+            {this.props.rightOptionValue}
           </Text>
 
         </TouchableOpacity>
@@ -168,6 +170,21 @@ class TextBox extends Component {
       <View style={css.textBox}>
 
         <TextInput style={css.textBoxText} {...this.props} />
+
+      </View>
+    );
+  }
+}
+
+class HR extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return (
+      <View style={css.hr}>
 
       </View>
     );
@@ -219,9 +236,8 @@ const css = EStyleSheet.create({
     letterSpacing: 0
   },
   optionButton: {
-    borderTopWidth: 0.5,
-    borderColor: "$actionSheetOptionBorderColor",
     height: "$optionButtonHeight",
+    borderColor: "$actionSheetBorderColor",
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center"
@@ -247,8 +263,6 @@ const css = EStyleSheet.create({
     color: "$actionSheetTitleFontColor"
   },
   textBox: {
-    borderTopWidth: 0.5,
-    borderColor: "$actionSheetTextBoxBorderColor",
     height: "$textBoxHeight",
     backgroundColor: "transparent",
     alignItems: "center",
@@ -262,7 +276,11 @@ const css = EStyleSheet.create({
     lineHeight: "$textBoxFontHeight",
     textAlign: "center",
     letterSpacing: 0
+  },
+  hr: {
+    height: 0.5,
+    backgroundColor: "$actionSheetBorderColor"
   }
 });
 
-export { Form, Button, Title, Option, TextBox, Options };
+export { Form, Button, Title, Option, TextBox, Options, HR };

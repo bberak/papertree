@@ -14,6 +14,7 @@ import Label from "./label";
 import Link from "./link";
 import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
+import _ from "lodash";
 
 class Settings extends Component {
   constructor(props) {
@@ -81,7 +82,7 @@ class Settings extends Component {
 
     let searchItems = this.props.savedSearches &&
       this.props.savedSearches.length > 0
-      ? this.props.savedSearches.map(x => {
+      ? _.chain(this.props.savedSearches).orderBy(["id"], ["desc"]).map(x => {
           let selected = x.id === this.props.selectedSearchId;
           let color = EStyleSheet.value(
             selected ? "$secondaryColor" : "$linkFontColor"
@@ -94,7 +95,7 @@ class Settings extends Component {
               onPress={() => this.linkPressed(x)}
             />
           );
-        })
+        }).value()
       : <Link value={"* * *"} disabled={true} />;
 
     return (
@@ -102,10 +103,7 @@ class Settings extends Component {
 
         <Image style={css.logo} source={require("../images/logo-small.png")} />
 
-        <ScrollView
-          refreshControl={refreshControl}
-          contentContainerStyle={css.scrollViewContent}
-        >
+        <ScrollView refreshControl={refreshControl} style={css.scrollView}>
 
           <Label value={"Saved Searches"} />
           <View style={css.listContainer}>
@@ -139,9 +137,8 @@ const css = EStyleSheet.create({
     marginTop: "5%",
     marginBottom: "5%"
   },
-  scrollViewContent: {
-    flex: 1,
-    alignItems: "center"
+  scrollView: {
+    flex: 1
   },
   listContainer: {
     marginBottom: "5%"

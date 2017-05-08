@@ -126,7 +126,12 @@ class Main extends Component {
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
         />
 
-        <Bookmark />
+        <Bookmark 
+          savedSearches={this.props.savedSearches} 
+          selectedSearchId={this.props.selectedSearchId} 
+          searchTerm={this.props.searchTerm}
+          filter={this.props.filter}
+        />
 
       </View>
     );

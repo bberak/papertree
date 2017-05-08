@@ -71,6 +71,19 @@ let _GET = async url => {
   return await _unpack(response);
 };
 
+let _POST = async (url, data) => {
+  let response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: await _getAuthHeader()
+    },
+    body: JSON.stringify(data)
+  });
+
+  return await _unpack(response);
+};
+
 module.exports = Object.freeze({
   isLoggedIn: async () => {
     if (_authHeader) return true;
@@ -123,5 +136,27 @@ module.exports = Object.freeze({
   },
   listSearches: async () => {
     return await _GET("https://papertrailapp.com/api/v1/searches.json")
+  },
+  saveSearch: async (name, searchTerm, filter) => {
+    filter = filter || {};
+
+    let query = {
+      "search[name]": name,
+      "search[query]": searchTerm,
+      "search[group_id]": filter.groupId,
+    };
+
+    let qs = Object.keys(query)
+      .map(x => {
+        let val = query[x];
+        if (val === undefined || val === null || val === "") return false;
+        return `${x}=${encodeURIComponent(val)}`;
+      })
+      .filter(x => x)
+      .join("&");
+
+    let url = `https://papertrailapp.com/api/v1/searches.json?${qs}`;
+
+    return await _POST(url, null);
   }
 });
