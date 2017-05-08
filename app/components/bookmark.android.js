@@ -4,172 +4,102 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Dimensions
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 import Modal from "react-native-modal";
+import SaveSearchActionSheet from "./saveSearchActionSheet";
+import _ from "lodash";
 
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
+const restPosition = 26;
+const hiddenPosition = 66;
 
 class Bookmark extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pressed: false
+      opened: false
     };
   }
 
-  onPressIn = () => {
-    this.setState({
-      pressed: true
-    });
+  componentWillReceiveProps = (nextProps) => {
+    if (this.canShow(nextProps.searchTerm))
+      this.showBookmark();
+    else
+      this.hideBookmark();
+  }
 
+  showBookmark = () => {
     this.refs.image.transitionTo({
-      top: 11
+      top: restPosition
     });
-  };
+  }
 
-  onPressOut = () => {
-    this.setState({
-      pressed: false
-    });
-
+  hideBookmark = () => {
     this.refs.image.transitionTo({
-      top: 26
+      top: hiddenPosition
     });
-  };
+  }
 
   onPress = () => {
-    this.refs.image.transitionTo({
-      top: 66
-    });
+    this.hideBookmark();
 
     this.setState({
-      pressed: false,
-      isModalVisible: true
+      opened: true
     });
-
-    if (this.props.onPress) this.props.onPress();
   };
 
-  getImageSource = () => {
-    let images = this.props.active
-      ? [activeImageSource, imageSource]
-      : [imageSource, activeImageSource];
+  getOrientation = () => {
+    let dims = Dimensions.get("window");
+    return dims.height > dims.width ? "portrait" : "landscape";
+  }
 
-    return !this.state.pressed ? images[0] : images[1];
-  };
+  onLayout = () => {
+    if (this.canShow(this.props.searchTerm) && this.state.opened === false) {
+      this.showBookmark();
+    } else {
+      this.hideBookmark();
+    }
+  }
+
+  canShow = (searchTerm) => {
+    return this.getOrientation() === "portrait" && searchTerm != "";
+  }
 
   render() {
+    const visible = this.state.opened === true && this.getOrientation() === "portrait" && this.props.searchTerm != "";
+
     return (
       <View
-        style={[css.container, this.props.containerStyle]}
+        style={css.container}
         pointerEvents={"box-none"}
+        onLayout={_.debounce(this.onLayout, 150)}
       >
 
-        <TouchableWithoutFeedback
-          onPress={() => this.setState({ isModalVisible: false })}
-          activeOpacity={0}
-        >
-          <Modal
-            onModalHide={() => {
-              this.refs.image.transitionTo({ top: 26 });
-            }}
-            backdropOpacity={0.2}
-            isVisible={this.state.isModalVisible}
-          >
-
-            <View style={{ flex: 1, justifyContent: "flex-end" }}>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: 12,
-                  shadowColor: "#000",
-                  shadowOpacity: 0.25,
-                  shadowRadius: 10,
-                  shadowOffset: { width: 0, height: 0 }
-                }}
-              >
-                <TouchableWithoutFeedback>
-                  <View>
-                    <Text style={{ backgroundColor: "transparent" }}>
-                      Hello!
-                    </Text>
-                    <Text style={{ backgroundColor: "transparent" }}>
-                      Hello!
-                    </Text>
-                    <Text style={{ backgroundColor: "transparent" }}>
-                      Hello!
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => alert("Clicked")}
-                      activeOpacity={0.5}
-                    >
-                      <Text style={{ backgroundColor: "transparent" }}>
-                        Click me!
-                      </Text>
-                    </TouchableOpacity>
-                    <Text style={{ backgroundColor: "transparent" }}>
-                      Hello!
-                    </Text>
-                    <Text style={{ backgroundColor: "transparent" }}>
-                      Hello!
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => this.setState({ isModalVisible: false })}
-              activeOpacity={0.95}
-            >
-              <View
-                style={{
-                  height: 57,
-                  borderRadius: 12,
-                  backgroundColor: "white",
-                  marginTop: 8,
-                  shadowColor: "#000",
-                  shadowOpacity: 0.25,
-                  shadowRadius: 10,
-                  shadowOffset: { width: 0, height: 0 }
-                }}
-              >
-
-                <Text
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#007AFF",
-                    fontSize: 20,
-                    lineHeight: 20,
-                    fontWeight: "500"
-                  }}
-                >
-                  Cancel
-                </Text>
-
-              </View>
-
-            </TouchableOpacity>
-
-          </Modal>
-
-        </TouchableWithoutFeedback>
+        <SaveSearchActionSheet
+          visible={visible}
+          onClose={() => this.setState({ opened: false })}
+          onClosed={this.showBookmark}
+          savedSearches={this.props.savedSearches} 
+          searchTerm={this.props.searchTerm}
+          filter={this.props.filter}
+        />
 
         <TouchableOpacity
           style={css.imageContainer}
           activeOpacity={1}
-          onPressIn={this.onPressIn}
-          onPressOut={this.onPressOut}
+          onPressIn={this.hideBookmark}
+          onPressOut={this.showBookmark}
           onPress={this.onPress}
         >
           <Animatable.Image
             ref={"image"}
             style={css.image}
-            source={this.getImageSource()}
+            source={this.props.selectedSearchId ? activeImageSource : imageSource}
           />
         </TouchableOpacity>
 

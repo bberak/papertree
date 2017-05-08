@@ -73,7 +73,7 @@ class Bookmark extends Component {
     const visible = this.state.opened === true && this.getOrientation() === "portrait" && this.props.searchTerm != "";
 
     return (
-      <View style={[css.container, this.props.containerStyle]} onLayout={this.onLayout}>
+      <View style={css.container} onLayout={this.onLayout}>
 
         <SaveSearchActionSheet
           visible={visible}
