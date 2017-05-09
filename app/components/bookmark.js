@@ -28,7 +28,7 @@ class Bookmark extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.canShow(nextProps.searchTerm))
+    if (this.canShowBookmark(nextProps.searchTerm))
       this.showBookmark();
     else
       this.hideBookmark();
@@ -60,19 +60,19 @@ class Bookmark extends Component {
   }
 
   onLayout = () => {
-    if (this.canShow(this.props.searchTerm)) {
+    if (this.canShowBookmark(this.props.searchTerm) && this.state.opened === false) {
       this.showBookmark();
     } else {
       this.hideBookmark();
     }
   }
 
-  canShow = (searchTerm) => {
+  canShowBookmark = (searchTerm) => {
     return this.getOrientation() === "portrait" && Str.isNotNullOrWhiteSpace(searchTerm);
   }
 
   render() {
-    const visible = this.state.opened === true && this.canShow(this.props.searchTerm);
+    const visible = this.state.opened === true && this.canShowBookmark(this.props.searchTerm);
 
     const actionSheet = this.props.selectedSearch ? 
       <DeleteSearchActionSheet

@@ -11,7 +11,9 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 import Modal from "react-native-modal";
 import SaveSearchActionSheet from "./saveSearchActionSheet";
+import DeleteSearchActionSheet from "./deleteSearchActionSheet";
 import _ from "lodash";
+import * as Str from "../utils/str";
 
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
@@ -27,7 +29,7 @@ class Bookmark extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.canShow(nextProps.searchTerm))
+    if (this.canShowBookmark(nextProps.searchTerm))
       this.showBookmark();
     else
       this.hideBookmark();
@@ -59,19 +61,36 @@ class Bookmark extends Component {
   }
 
   onLayout = () => {
-    if (this.canShow(this.props.searchTerm) && this.state.opened === false) {
+    if (this.canShowBookmark(this.props.searchTerm) && this.state.opened === false) {
       this.showBookmark();
     } else {
       this.hideBookmark();
     }
   }
 
-  canShow = (searchTerm) => {
-    return this.getOrientation() === "portrait" && searchTerm != "";
+  canShowBookmark = (searchTerm) => {
+    return this.getOrientation() === "portrait" && Str.isNotNullOrWhiteSpace(searchTerm);
   }
 
   render() {
-    const visible = this.state.opened === true && this.getOrientation() === "portrait" && this.props.searchTerm != "";
+    const visible = this.state.opened === true && this.canShowBookmark(this.props.searchTerm);
+
+    const actionSheet = this.props.selectedSearch ? 
+      <DeleteSearchActionSheet
+          visible={visible}
+          onClose={() => this.setState({ opened: false })}
+          onClosed={this.showBookmark}
+          savedSearches={this.props.savedSearches} 
+          selectedSearch={this.props.selectedSearch}
+        /> :
+        <SaveSearchActionSheet
+          visible={visible}
+          onClose={() => this.setState({ opened: false })}
+          onClosed={this.showBookmark}
+          savedSearches={this.props.savedSearches} 
+          searchTerm={this.props.searchTerm}
+          filter={this.props.filter}
+        />;
 
     return (
       <View
@@ -80,14 +99,7 @@ class Bookmark extends Component {
         onLayout={_.debounce(this.onLayout, 150)}
       >
 
-        <SaveSearchActionSheet
-          visible={visible}
-          onClose={() => this.setState({ opened: false })}
-          onClosed={this.showBookmark}
-          savedSearches={this.props.savedSearches} 
-          searchTerm={this.props.searchTerm}
-          filter={this.props.filter}
-        />
+        {actionSheet}
 
         <TouchableOpacity
           style={css.imageContainer}
@@ -99,7 +111,7 @@ class Bookmark extends Component {
           <Animatable.Image
             ref={"image"}
             style={css.image}
-            source={this.props.selectedSearchId ? activeImageSource : imageSource}
+            source={this.props.selectedSearch ? activeImageSource : imageSource}
           />
         </TouchableOpacity>
 
