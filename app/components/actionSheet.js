@@ -104,12 +104,13 @@ class Option extends Component {
   render() {
     return (
       <TouchableOpacity
+        disabled={this.props.disabled}
         onPress={this.props.onPress}
         activeOpacity={0.5}
         style={css.optionButton}
       >
 
-        <Text style={css.optionButtonText}>
+        <Text style={[css.optionButtonText, this.props.textStyle, { opacity: this.props.disabled ? 0.5 : 1 }]}>
           {this.props.value}
         </Text>
 
@@ -132,7 +133,7 @@ class Options extends Component {
           disabled={this.props.letftOptionDisabled}
           onPress={this.props.onLeftOptionPress}
           activeOpacity={0.5}
-          style={[css.optionButton, { flex: 1, borderRightWidth: 0.5 }]}
+          style={[css.optionButton, this.props.leftOptionTextStyle, { flex: 1, borderRightWidth: 0.5 }]}
         >
 
           <Text style={[css.optionButtonText, { opacity: this.props.letftOptionDisabled ? 0.5 : 1 }]}>
@@ -148,7 +149,7 @@ class Options extends Component {
           style={[css.optionButton, { flex: 1 }]}
         >
 
-          <Text style={[css.optionButtonText, { opacity: this.props.rightOptionDisabled ? 0.5 : 1 }]}>
+          <Text style={[css.optionButtonText, this.props.rightOptionTextStyle, { opacity: this.props.rightOptionDisabled ? 0.5 : 1 }]}>
             {this.props.rightOptionValue}
           </Text>
 
@@ -260,7 +261,8 @@ const css = EStyleSheet.create({
     lineHeight: "$titleFontLineHeight",
     fontWeight: "500",
     letterSpacing: 0,
-    color: "$actionSheetTitleFontColor"
+    color: "$actionSheetTitleFontColor",
+    textAlign: "center"
   },
   textBox: {
     height: "$textBoxHeight",

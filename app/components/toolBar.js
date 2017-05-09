@@ -19,8 +19,8 @@ class ToolBar extends Component {
   }
 
   onSubmitEditing = () => {
-    if (this.props.searchTerm != this.state.searchTerm)
-      Actions.refresh({key: "home", searchTerm: this.state.searchTerm, selectedSearchId: null})
+    if (this.props.searchTerm !== this.state.searchTerm)
+      Actions.refresh({key: "home", searchTerm: this.state.searchTerm, selectedSearch: null})
   }
 
   onChangeText = (text) =>{
@@ -33,8 +33,8 @@ class ToolBar extends Component {
     this.setState({
       searchTerm: ""
     })
-    if (this.props.searchTerm != "")
-      Actions.refresh({key: "home", searchTerm: "", selectedSearchId: null})
+    if (this.props.searchTerm)
+      Actions.refresh({key: "home", searchTerm: "", selectedSearch: null})
   }
 
   render() {

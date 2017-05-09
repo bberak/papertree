@@ -11,6 +11,8 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 import Modal from "react-native-modal";
 import SaveSearchActionSheet from "./saveSearchActionSheet";
+import DeleteSearchActionSheet from "./deleteSearchActionSheet";
+import * as Str from "../utils/str";
 
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
@@ -66,15 +68,20 @@ class Bookmark extends Component {
   }
 
   canShow = (searchTerm) => {
-    return this.getOrientation() === "portrait" && searchTerm != "";
+    return this.getOrientation() === "portrait" && Str.isNotNullOrWhiteSpace(searchTerm);
   }
 
   render() {
-    const visible = this.state.opened === true && this.getOrientation() === "portrait" && this.props.searchTerm != "";
+    const visible = this.state.opened === true && this.canShow(this.props.searchTerm);
 
-    return (
-      <View style={css.container} onLayout={this.onLayout}>
-
+    const actionSheet = this.props.selectedSearch ? 
+      <DeleteSearchActionSheet
+          visible={visible}
+          onClose={() => this.setState({ opened: false })}
+          onClosed={this.showBookmark}
+          savedSearches={this.props.savedSearches} 
+          selectedSearch={this.props.selectedSearch}
+        /> :
         <SaveSearchActionSheet
           visible={visible}
           onClose={() => this.setState({ opened: false })}
@@ -82,7 +89,12 @@ class Bookmark extends Component {
           savedSearches={this.props.savedSearches} 
           searchTerm={this.props.searchTerm}
           filter={this.props.filter}
-        />
+        />;
+
+    return (
+      <View style={css.container} onLayout={this.onLayout}>
+
+        {actionSheet}
 
         <TouchableOpacity
           style={css.imageContainer}
@@ -94,7 +106,7 @@ class Bookmark extends Component {
           <Animatable.Image
             ref={"image"}
             style={css.image}
-            source={this.props.selectedSearchId ? activeImageSource : imageSource}
+            source={this.props.selectedSearch ? activeImageSource : imageSource}
           />
         </TouchableOpacity>
 

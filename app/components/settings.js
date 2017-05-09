@@ -50,19 +50,21 @@ class Settings extends Component {
   };
 
   linkPressed = s => {
-    if (s.id === this.props.selectedSearchId) {
+    if (s.id === (this.props.selectedSearch || {}).id) {
       Actions.refresh({
         key: "home",
-        selectedSearchId: null,
+        selectedSearch: null,
         searchTerm: null,
-        filter: null
+        filter: null,
+        settingsOpen: false
       });
     } else {
       Actions.refresh({
         key: "home",
-        selectedSearchId: s.id,
+        selectedSearch: s,
         searchTerm: s.query,
-        filter: { groupId: s.group.id }
+        filter: { groupId: s.group.id, groupName: s.group.name },
+        settingsOpen: false
       });
     }
   };
@@ -83,7 +85,7 @@ class Settings extends Component {
     let searchItems = this.props.savedSearches &&
       this.props.savedSearches.length > 0
       ? _.chain(this.props.savedSearches).orderBy(["id"], ["desc"]).map(x => {
-          let selected = x.id === this.props.selectedSearchId;
+          let selected = x.id === (this.props.selectedSearch || {}).id;
           let color = EStyleSheet.value(
             selected ? "$secondaryColor" : "$linkFontColor"
           );

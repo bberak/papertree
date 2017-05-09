@@ -23,22 +23,28 @@ class SaveSearchActionSheet extends Component {
     if (searchName) {
       this.setState({
         label: "Saving..",
-        disabled: true,
+        disabled: true
       });
       try {
-        let newSearch = await api.saveSearch(searchName, this.props.searchTerm, this.props.filter);
+        let newSearch = await api.saveSearch(
+          searchName,
+          this.props.searchTerm,
+          this.props.filter
+        );
 
-        if (this.props.onClose)
-          this.props.onClose();
-
-        Actions.refresh({
-          key: "home",
-          selectedSearchId: newSearch.id,
-          searchTerm: newSearch.query,
-          filter: { groupId: newSearch.group.id },
-          saveSearches: (this.props.savedSearches || []).push(newSearch)
+        this.setState({
+          pendingAction: () => {
+            Actions.refresh({
+              key: "home",
+              selectedSearch: newSearch,
+              searchTerm: newSearch.query,
+              filter: { groupId: newSearch.group.id, groupName: newSearch.group.name },
+              saveSearches: (this.props.savedSearches || []).push(newSearch)
+            });
+          }
         });
 
+        this.props.onClose();
       } catch (error) {
         console.log(error);
         this.setState({
@@ -49,18 +55,22 @@ class SaveSearchActionSheet extends Component {
     } else {
       this.refs.textBoxContainer.shake(400);
     }
-  }
+  };
 
   onClosed = () => {
+    let action = this.state.pendingAction;
+
     this.setState({
       searchName: "",
       label: "Save",
-      disabled: false
+      disabled: false,
+      pendingAction: null
     })
 
-    if (this.props.onClosed)
-      this.props.onClosed();
-  }
+    if (action) action();
+
+    if (this.props.onClosed) this.props.onClosed();
+  };
 
   render() {
     return (
@@ -84,18 +94,21 @@ class SaveSearchActionSheet extends Component {
             keyboardType={"default"}
             autoFocus={true}
             value={this.state.searchName}
-            onChangeText={(text) => this.setState({ searchName: text})}
+            onChangeText={text => this.setState({ searchName: text })}
           />
         </Animatable.View>
 
         <ActionSheet.HR />
 
-        <ActionSheet.Options 
-          leftOptionValue={"Cancel"} 
-          onLeftOptionPress={this.props.onClose} 
-          rightOptionValue={this.state.label} 
-          onRightOptionPress={this.save} 
-          rightOptionDisabled={this.state.disabled} />
+        <ActionSheet.Options
+          leftOptionValue={"Cancel"}
+          onLeftOptionPress={this.props.onClose}
+          rightOptionValue={this.state.label}
+          onRightOptionPress={() => {
+            this.save();
+          }}
+          rightOptionDisabled={this.state.disabled}
+        />
 
       </ActionSheet.Form>
     );

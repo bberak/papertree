@@ -84,6 +84,18 @@ let _POST = async (url, data) => {
   return await _unpack(response);
 };
 
+let _DELETE = async url => {
+  let response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      Authorization: await _getAuthHeader()
+    }
+  });
+
+  return await _unpack(response);
+};
+
 module.exports = Object.freeze({
   isLoggedIn: async () => {
     if (_authHeader) return true;
@@ -158,5 +170,10 @@ module.exports = Object.freeze({
     let url = `https://papertrailapp.com/api/v1/searches.json?${qs}`;
 
     return await _POST(url, null);
+  },
+  deleteSearch: async (id) => {
+    let url = `https://papertrailapp.com/api/v1/searches/${id}.json?`;
+
+    return await _DELETE(url, null);
   }
 });

@@ -21,10 +21,20 @@ class Main extends Component {
   };
 
   componentWillReceiveProps = nextProps => {
-    if (this.props.searchTerm !== nextProps.searchTerm || _.isEqual(this.props.filter, nextProps.filter) === false) {
+    if (this.props.searchTerm !== nextProps.searchTerm || this.areFiltersTheSame(this.props.filter, nextProps.filter) === false) {
       this.onSearch(nextProps.searchTerm, nextProps.filter);
     }
   };
+
+  areFiltersTheSame = (f1, f2) => {
+    f1 = f1 || {};
+    f2 = f2 || {};
+
+    let f1_identifier = f1.groupName || f1.groupId || "All Systems";
+    let f2_idenitifer = f2.groupName || f2.groupId || "All Systems";
+
+    return f1_identifier === f2_idenitifer;
+  }
 
   onSearch = async (searchTerm, filter) => {
     this.setState({
@@ -128,7 +138,7 @@ class Main extends Component {
 
         <Bookmark 
           savedSearches={this.props.savedSearches} 
-          selectedSearchId={this.props.selectedSearchId} 
+          selectedSearch={this.props.selectedSearch} 
           searchTerm={this.props.searchTerm}
           filter={this.props.filter}
         />

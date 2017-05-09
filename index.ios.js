@@ -29,7 +29,7 @@ export default class Papertree extends Component {
 						direction={"vertical"}
 						panHandlers={null}
 						settingsOpen={false}
-						selectedSearchId={null}
+						selectedSearch={null}
 						searchTerm={""}
 						filter={null}
 						savedSearches={[]}

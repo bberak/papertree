@@ -1,6 +1,7 @@
 export default {
   primaryColor: "#03498F",
   secondaryColor: "#F99D1E",
+  warningColor: "#FF2D55",
   indicatorColor: "#FFF",
   textBoxColor: "#FFF",
   shadowColor: "#000",
