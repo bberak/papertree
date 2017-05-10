@@ -92,7 +92,7 @@ class SaveSearchActionSheet extends Component {
             returnKeyType={"done"}
             autoCapitalize={"none"}
             keyboardType={"default"}
-            autoFocus={true}
+            autoFocus={false}
             value={this.state.searchName}
             onChangeText={text => this.setState({ searchName: text })}
           />

@@ -25,6 +25,11 @@ class LoginForm extends Component {
       try {
         this.setState({ connecting: true });
         await api.login(this.state.email, this.state.password);
+        this.setState({
+          email: "",
+          password: "",
+          connecting: false
+        });
         Actions.home();
       } catch (error) {
         this.setState({ connecting: false });

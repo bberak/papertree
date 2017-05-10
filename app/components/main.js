@@ -114,64 +114,54 @@ class Main extends Component {
   render() {
     const statusBar = Platform.OS === "ios"
       ? <StatusBar
-          hidden={this.props.settingsOpen}
+          hidden={this.props.settingsOpen || this.props.filterOpen}
           barStyle="light-content"
           animated={true}
           showHideTransition={"slide"}
         />
       : null;
+
     return (
-      <View style={css.containerWithLeftShadow}>
-        <View style={css.containerWithRightShadow}>
+      <View style={css.container}>
 
-          {statusBar}
+        {statusBar}
 
-          <ToolBar
-            searchTerm={this.props.searchTerm}
-            settingsOpen={this.props.settingsOpen}
-            filterOpen={this.props.filterOpen}
-          />
+        <ToolBar
+          searchTerm={this.props.searchTerm}
+          settingsOpen={this.props.settingsOpen}
+          filterOpen={this.props.filterOpen}
+        />
 
-          <EventList
-            onRefresh={this.onRefresh}
-            refreshing={this.state.refreshing}
-            events={this.state.events}
-            searchTerm={this.props.searchTerm}
-            onEndReached={this.onEndReached}
-            onEndReachedThreshold={EStyleSheet.value("100%", "height")}
-          />
+        <EventList
+          onRefresh={this.onRefresh}
+          refreshing={this.state.refreshing}
+          events={this.state.events}
+          searchTerm={this.props.searchTerm}
+          onEndReached={this.onEndReached}
+          onEndReachedThreshold={EStyleSheet.value("100%", "height")}
+        />
 
-          <Bookmark
-            savedSearches={this.props.savedSearches}
-            selectedSearch={this.props.selectedSearch}
-            searchTerm={this.props.searchTerm}
-            filter={this.props.filter}
-          />
+        <Bookmark
+          savedSearches={this.props.savedSearches}
+          selectedSearch={this.props.selectedSearch}
+          searchTerm={this.props.searchTerm}
+          filter={this.props.filter}
+        />
 
-        </View>
       </View>
     );
   }
 }
 
 const css = EStyleSheet.create({
-  containerWithLeftShadow: {
+  container: {
     backgroundColor: "$homeBackgroundColor",
     flexDirection: "column",
     flex: 1,
-    shadowOffset: { width: -5, height: 0 },
+    shadowOffset: { width: -1, height: 0 },
     shadowColor: "$shadowColor",
-    shadowOpacity: 0.7,
-    shadowRadius: 5,
-  },
-  containerWithRightShadow: {
-    backgroundColor: "$homeBackgroundColor",
-    flexDirection: "column",
-    flex: 1,
-    shadowOffset: { width: 5, height: 0 },
-    shadowColor: "$shadowColor",
-    shadowOpacity: 0.7,
-    shadowRadius: 5,
+    shadowOpacity: 1,
+    shadowRadius: 5
   }
 });
 

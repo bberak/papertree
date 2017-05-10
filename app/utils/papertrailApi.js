@@ -41,7 +41,7 @@ let _testCredentialsAndGenerateAuthHeader = async (email, password) => {
 let _logoutAndClean = async () => {
   _authHeader = null;
   await Keychain.resetGenericPassword();
-  Actions.login();
+  Actions.pop({key: "login"});
 }
 
 let _unpack = async result => {

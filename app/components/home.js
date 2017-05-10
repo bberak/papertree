@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Drawer from "react-native-drawer";
 import Settings from "./settings";
+import Filter from "./filter";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
 
 export default class Home extends Component {
@@ -36,7 +37,7 @@ export default class Home extends Component {
           onClose={() => Actions.refresh({ key: "home", filterOpen: false })}
           type={"static"}
           content={
-            <Settings
+            <Filter
               savedSearches={navigationState.savedSearches}
               selectedSearch={navigationState.selectedSearch}
             />
