@@ -4,10 +4,7 @@ import {
   Text,
   ScrollView,
   RefreshControl,
-  Linking,
-  DatePickerIOS,
-  Switch, 
-  Picker
+  DatePickerIOS
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Button from "./button";
@@ -17,13 +14,15 @@ import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import Collapsible from "react-native-collapsible";
 import SwitchLabel from "./switchLabel";
+import Carousel from "react-native-snap-carousel";
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
-      date: new Date()
+      startDate: new Date(),
+      endDate: new Date()
     };
   }
 
@@ -52,8 +51,12 @@ class Filter extends Component {
     }
   };
 
-  onDateChange = date => {
-    this.setState({ date: date });
+  onStartDateChange = date => {
+    this.setState({ startDate: date });
+  };
+
+  onEndDateChange = date => {
+    this.setState({ endDate: date });
   };
 
   render() {
@@ -72,53 +75,119 @@ class Filter extends Component {
     return (
       <View style={css.container}>
 
-        <ScrollView
-          refreshControl={refreshControl}
-          style={css.scrollView}
-        >
+        <ScrollView refreshControl={refreshControl} style={css.scrollView}>
 
-        <Label value={"Time Filters"} />
+          <Label value={"Time Filters"} />
 
-   
           <SwitchLabel
-            label={this.state.filterByStartTime ? "Start Time: " + this.state.date.toISOString() : "Starting from.. "}
+            label={"Start Time"}
             value={this.state.filterByStartTime}
             onValueChange={v => this.setState({ filterByStartTime: v })}
           />
 
           <Collapsible collapsed={!this.state.filterByStartTime}>
             <DatePickerIOS
-              date={this.state.date}
+              date={this.state.startDate}
               mode="datetime"
-              onDateChange={this.onDateChange}
+              onDateChange={this.onStartDateChange}
               minuteInterval={5}
             />
           </Collapsible>
-    
+
+          <SwitchLabel
+            label={"End Time"}
+            value={this.state.filterByEndTime}
+            onValueChange={v => this.setState({ filterByEndTime: v })}
+          />
+
+          <Collapsible collapsed={!this.state.filterByEndTime}>
+            <DatePickerIOS
+              date={this.state.endDate}
+              mode="datetime"
+              onDateChange={this.onEndDateChange}
+              minuteInterval={5}
+            />
+          </Collapsible>
 
           <Label value={"Group Filter"} />
 
-          <Picker
-            //style={styles.picker}
-            selectedValue={this.state.selected1}
-            onValueChange={() => alert("Picked")}>
-            <Picker.Item label="System Abc" value="123" />
-            <Picker.Item label="System 123" value="abc" />
-          </Picker>
+          <Carousel
+            showsHorizontalScrollIndicator={false}
+            sliderWidth={EStyleSheet.value("75%", "width")}
+            itemWidth={EStyleSheet.value("30%", "width")}
+            inactiveSlideOpacity={0.5}
+            inactiveSlideScale={0.7}
+          >
+
+            <Text
+              style={{
+                backgroundColor: "red",
+                textAlign: "center",
+                width: EStyleSheet.value("30%", "width")
+              }}
+            >
+              System 1
+            </Text>
+            <Text
+              style={{
+                backgroundColor: "red",
+                textAlign: "center",
+                width: EStyleSheet.value("30%", "width")
+              }}
+            >
+              System 2
+            </Text>
+            <Text
+              style={{
+                backgroundColor: "red",
+                textAlign: "center",
+                width: EStyleSheet.value("30%", "width")
+              }}
+            >
+              System 3
+            </Text>
+
+          </Carousel>
 
           <Label value={"System Filter"} />
 
-          <Picker
-            //style={{marginTop: -50, padding: 0, backgroundColor: "blue", height: 1, justifyContent: "flex-start"}}
-            selectedValue={this.state.selected1}
-            onValueChange={() => alert("Picked")}>
-            <Picker.Item label="System Abc" value="123" />
-            <Picker.Item label="System 123" value="abc" />
-            <Picker.Item label="System Abc" value="123" />
-            <Picker.Item label="System 123" value="abc" />
-            <Picker.Item label="System Abc" value="123" />
-            <Picker.Item label="System 123" value="abc" />
-          </Picker>
+          <Carousel
+            showsHorizontalScrollIndicator={false}
+            sliderWidth={EStyleSheet.value("75%", "width")}
+            itemWidth={EStyleSheet.value("30%", "width")}
+            inactiveSlideOpacity={0.5}
+            inactiveSlideScale={0.7}
+          >
+
+            <Text
+              style={{
+                backgroundColor: "red",
+                textAlign: "center",
+                width: EStyleSheet.value("30%", "width")
+              }}
+            >
+              System 1
+            </Text>
+            <Text
+              style={{
+                backgroundColor: "red",
+                textAlign: "center",
+                width: EStyleSheet.value("30%", "width")
+              }}
+            >
+              System 2
+            </Text>
+            <Text
+              style={{
+                backgroundColor: "red",
+                textAlign: "center",
+                width: EStyleSheet.value("30%", "width")
+              }}
+            >
+              System 3
+            </Text>
+
+          </Carousel>
 
         </ScrollView>
 

@@ -21,6 +21,7 @@
     "react-native-modal": "^2.3.2",
     "react-native-router-flux": "^3.38.0",
     "react-native-safari-view": "^2.0.0",
+    "react-native-snap-carousel": "^2.1.2",
     "react-native-wheel-picker-android": "^0.1.10"
   },
   "devDependencies": {

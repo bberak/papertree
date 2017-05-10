@@ -16,10 +16,12 @@ class Login extends Component {
   }
   
   componentDidMount = async () => {
-    if (await api.isLoggedIn())
-      Actions.home();
-    else
+    if (await api.isLoggedIn()) {
       this.setState({loading: false});
+      Actions.home();
+    }
+
+    this.setState({loading: false}); 
   }
 
   render() {
