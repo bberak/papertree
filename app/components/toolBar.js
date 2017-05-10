@@ -63,11 +63,11 @@ class ToolBar extends Component {
         />
 
         <ToolBarButton
-          active={this.state.filterActive}
+          active={this.props.filterOpen}
           containerStyle={css.buttonContainerStyle}
           imageSource={require("../images/filter.png")}
           activeImageSource={require("../images/filter-active.png")}
-          onPress={() => this.setState({ filterActive: !this.state.filterActive})}
+          onPress={() => Actions.refresh({key: "home", filterOpen: !this.props.settingsOpen})}
         />
 
       </View>

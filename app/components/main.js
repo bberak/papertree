@@ -4,7 +4,7 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import ToolBar from "./toolBar";
 import api from "../utils/papertrailApi";
 import EventList from "./eventList";
-import Bookmark from "./bookmark"
+import Bookmark from "./bookmark";
 import _ from "lodash";
 
 class Main extends Component {
@@ -21,7 +21,10 @@ class Main extends Component {
   };
 
   componentWillReceiveProps = nextProps => {
-    if (this.props.searchTerm !== nextProps.searchTerm || this.areFiltersTheSame(this.props.filter, nextProps.filter) === false) {
+    if (
+      this.props.searchTerm !== nextProps.searchTerm ||
+      this.areFiltersTheSame(this.props.filter, nextProps.filter) === false
+    ) {
       this.onSearch(nextProps.searchTerm, nextProps.filter);
     }
   };
@@ -34,7 +37,7 @@ class Main extends Component {
     let f2_idenitifer = f2.groupName || f2.groupId || "All Systems";
 
     return f1_identifier === f2_idenitifer;
-  }
+  };
 
   onSearch = async (searchTerm, filter) => {
     this.setState({
@@ -118,45 +121,57 @@ class Main extends Component {
         />
       : null;
     return (
-      <View style={css.main}>
+      <View style={css.containerWithLeftShadow}>
+        <View style={css.containerWithRightShadow}>
 
-        {statusBar}
+          {statusBar}
 
-        <ToolBar
-          searchTerm={this.props.searchTerm}
-          settingsOpen={this.props.settingsOpen}
-        />
+          <ToolBar
+            searchTerm={this.props.searchTerm}
+            settingsOpen={this.props.settingsOpen}
+            filterOpen={this.props.filterOpen}
+          />
 
-        <EventList
-          onRefresh={this.onRefresh}
-          refreshing={this.state.refreshing}
-          events={this.state.events}
-          searchTerm={this.props.searchTerm}
-          onEndReached={this.onEndReached}
-          onEndReachedThreshold={EStyleSheet.value("100%", "height")}
-        />
+          <EventList
+            onRefresh={this.onRefresh}
+            refreshing={this.state.refreshing}
+            events={this.state.events}
+            searchTerm={this.props.searchTerm}
+            onEndReached={this.onEndReached}
+            onEndReachedThreshold={EStyleSheet.value("100%", "height")}
+          />
 
-        <Bookmark 
-          savedSearches={this.props.savedSearches} 
-          selectedSearch={this.props.selectedSearch} 
-          searchTerm={this.props.searchTerm}
-          filter={this.props.filter}
-        />
+          <Bookmark
+            savedSearches={this.props.savedSearches}
+            selectedSearch={this.props.selectedSearch}
+            searchTerm={this.props.searchTerm}
+            filter={this.props.filter}
+          />
 
+        </View>
       </View>
     );
   }
 }
 
 const css = EStyleSheet.create({
-  main: {
+  containerWithLeftShadow: {
     backgroundColor: "$homeBackgroundColor",
     flexDirection: "column",
     flex: 1,
     shadowOffset: { width: -5, height: 0 },
     shadowColor: "$shadowColor",
     shadowOpacity: 0.7,
-    shadowRadius: 5
+    shadowRadius: 5,
+  },
+  containerWithRightShadow: {
+    backgroundColor: "$homeBackgroundColor",
+    flexDirection: "column",
+    flex: 1,
+    shadowOffset: { width: 5, height: 0 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
   }
 });
 
