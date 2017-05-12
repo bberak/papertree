@@ -158,7 +158,7 @@ const css = EStyleSheet.create({
     backgroundColor: "$homeBackgroundColor",
     flexDirection: "column",
     flex: 1,
-    shadowOffset: { width: -1, height: 0 },
+    shadowOffset: { width: 0, height: 0 },
     shadowColor: "$shadowColor",
     shadowOpacity: 1,
     shadowRadius: 5

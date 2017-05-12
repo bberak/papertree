@@ -21,12 +21,20 @@ class SwitchLabel extends Component {
     return (
       <View style={css.container}>
 
-        <Text>{this.props.label}</Text>
+        <Text style={css.textStyle}>{this.props.label}</Text>
 
-        <Switch
+        <View style={css.switchContainer}>
+
+          <Switch
+            style={{ backgroundColor: "white", borderRadius: 19 }}
             onValueChange={this.props.onValueChange}
             value={this.props.value}
+            //thumbTintColor={EStyleSheet.value("$primaryColor")}
+            tintColor={EStyleSheet.value("$switchBorderColor")}
+            //onTintColor={EStyleSheet.value("$secondaryColor")}
           />
+
+        </View>
 
       </View>
     );
@@ -34,11 +42,20 @@ class SwitchLabel extends Component {
 }
 
 const css = EStyleSheet.create({
+  $fontHeight: "2.6%",
   container: {
-    backgroundColor: "transparent",
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginVertical: "0.5%"
+  },
+  switchContainer: {
+    flex: 1,
+    alignItems: "flex-end"
+  },
+  textStyle: {
+    backgroundColor: "transparent",
+    paddingLeft: "2%",
+    fontSize: "$fontHeight"
   }
 });
 

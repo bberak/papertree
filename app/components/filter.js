@@ -15,6 +15,7 @@ import _ from "lodash";
 import Collapsible from "react-native-collapsible";
 import SwitchLabel from "./switchLabel";
 import Carousel from "react-native-snap-carousel";
+import Background from "./background";
 
 class Filter extends Component {
   constructor(props) {
@@ -63,7 +64,7 @@ class Filter extends Component {
     let refreshControl = (
       <RefreshControl
         refreshing={this.state.refreshing}
-        tintColor={EStyleSheet.value("$indicatorColor")}
+        tintColor={EStyleSheet.value("$primaryColor")}
         colors={[
           EStyleSheet.value("$secondaryColor"),
           EStyleSheet.value("$primaryColor")
@@ -73,11 +74,11 @@ class Filter extends Component {
     );
 
     return (
-      <View style={css.container}>
+      <Background containerStyle={css.container}>
 
         <ScrollView refreshControl={refreshControl} style={css.scrollView}>
 
-          <Label value={"Time Filters"} />
+          <Label value={"Time Range"} textStyle={css.labelStyle} />
 
           <SwitchLabel
             label={"Start Time"}
@@ -113,10 +114,12 @@ class Filter extends Component {
 
           <Carousel
             showsHorizontalScrollIndicator={false}
-            sliderWidth={EStyleSheet.value("75%", "width")}
+            sliderWidth={EStyleSheet.value("65%", "width")}
             itemWidth={EStyleSheet.value("30%", "width")}
             inactiveSlideOpacity={0.5}
             inactiveSlideScale={0.7}
+            swipeThreshold={1}
+            animationOptions={{ duration: 100 }}
           >
 
             <Text
@@ -153,10 +156,12 @@ class Filter extends Component {
 
           <Carousel
             showsHorizontalScrollIndicator={false}
-            sliderWidth={EStyleSheet.value("75%", "width")}
+            sliderWidth={EStyleSheet.value("65%", "width")}
             itemWidth={EStyleSheet.value("30%", "width")}
             inactiveSlideOpacity={0.5}
             inactiveSlideScale={0.7}
+            swipeThreshold={1}
+            animationOptions={{ duration: 100 }}
           >
 
             <Text
@@ -193,13 +198,19 @@ class Filter extends Component {
 
         <View style={css.buttonContainer}>
           <Button
+            buttonStyle={{
+              shadowOpacity: 0.95,
+              shadowRadius: 3,
+              elevation: 4,
+              transform: [{scale: 1}]
+            }}
             disabled={false}
             value={"Filter"}
             onPress={() => alert("Filter!")}
           />
         </View>
 
-      </View>
+      </Background>
     );
   }
 }
@@ -207,7 +218,16 @@ class Filter extends Component {
 const css = EStyleSheet.create({
   container: {
     backgroundColor: "#FFF",
-    flex: 1
+    flex: 1,
+    paddingHorizontal: "5%"
+  },
+  labelStyle: {
+    marginTop: "5%",
+    color: "$primaryColor",
+    opacity: 1,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowColor: "transparent",
+    textShadowRadius: 0
   },
   logo: {
     alignSelf: "center",

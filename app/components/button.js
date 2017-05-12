@@ -16,7 +16,7 @@ class Button extends Component {
   }
   
   onPressOut = (e) => {
-    this.refs.buttonContainer.transitionTo({elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
+    this.refs.buttonContainer.transitionTo(this.props.buttonStyle || {elevation: 4, shadowRadius: 4, shadowOpacity: 0.5, transform: [{scale: 1}]})
     this.refs.text.transitionTo({textShadowRadius: 2})
   }
 
@@ -31,7 +31,7 @@ class Button extends Component {
     return (
       <View style={[css.container, this.props.containerStyle]}>
         <Animatable.View 
-          style={[css.buttonContainer, {backgroundColor: EStyleSheet.value( this.props.disabled ? "$disabledButtonColor" : "$buttonColor")}]} 
+          style={[css.buttonContainer, {backgroundColor: EStyleSheet.value( this.props.disabled ? "$disabledButtonColor" : "$buttonColor")}, this.props.buttonStyle]} 
           ref={"buttonContainer"}>
 
           <TouchableOpacity 

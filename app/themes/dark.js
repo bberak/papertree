@@ -23,5 +23,6 @@ export default {
   actionSheetOptionFontColor: "#007AFF",
   actionSheetTitleFontColor: "#030303",
   actionSheetTextBoxFontColor: "#030303",
-  actionSheetBorderColor: "#DADADE"
+  actionSheetBorderColor: "#DADADE",
+  switchBorderColor: "#F1F1F1"
 }
