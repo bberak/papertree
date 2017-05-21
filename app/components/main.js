@@ -161,7 +161,8 @@ const css = EStyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "$shadowColor",
     shadowOpacity: 1,
-    shadowRadius: 5
+    shadowRadius: 5,
+    elevation: 5
   }
 });
 

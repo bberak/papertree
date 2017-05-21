@@ -12,7 +12,7 @@ class Button extends Component {
   
   onPressIn = () => {
     this.refs.buttonContainer.transitionTo({elevation: 1, shadowRadius: 1, shadowOpacity: 0.9, transform: [{scale: 0.95}]})
-    this.refs.text.transitionTo({textShadowRadius: 0})
+    this.refs.text.transitionTo({textShadowRadius: 1})
   }
   
   onPressOut = (e) => {

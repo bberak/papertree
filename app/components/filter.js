@@ -4,7 +4,8 @@ import {
   Text,
   ScrollView,
   RefreshControl,
-  DatePickerIOS
+  DatePickerIOS,
+  TouchableOpacity
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Button from "./button";
@@ -14,14 +15,15 @@ import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import Collapsible from "react-native-collapsible";
 import SwitchLabel from "./switchLabel";
-import Carousel from "react-native-snap-carousel";
-import Background from "./background";
+import OptionCarousel from "./optionCarousel";
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
+      filterByStartTime: false,
+      filterByEndTime: false,
       startDate: new Date(),
       endDate: new Date()
     };
@@ -64,7 +66,7 @@ class Filter extends Component {
     let refreshControl = (
       <RefreshControl
         refreshing={this.state.refreshing}
-        tintColor={EStyleSheet.value("$primaryColor")}
+        tintColor={EStyleSheet.value("$filterIndicatorColor")}
         colors={[
           EStyleSheet.value("$secondaryColor"),
           EStyleSheet.value("$primaryColor")
@@ -74,152 +76,109 @@ class Filter extends Component {
     );
 
     return (
-      <Background containerStyle={css.container}>
+      <View style={css.container}>
 
         <ScrollView refreshControl={refreshControl} style={css.scrollView}>
 
-          <Label value={"Time Range"} textStyle={css.labelStyle} />
+          <View style={css.heading}>
+            <Text style={[css.headingText, { flex: 1 }]}>TIME RANGE</Text>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => {
+                this.setState({
+                  filterByStartTime: false,
+                  filterByEndTime: false,
+                  startDate: new Date(),
+                  endDate: new Date()
+                });
+              }}
+            >
+              <Text style={css.headingText}>CLEAR</Text>
+            </TouchableOpacity>
+          </View>
 
-          <SwitchLabel
-            label={"Start Time"}
-            value={this.state.filterByStartTime}
-            onValueChange={v => this.setState({ filterByStartTime: v })}
-          />
-
-          <Collapsible collapsed={!this.state.filterByStartTime}>
-            <DatePickerIOS
-              date={this.state.startDate}
-              mode="datetime"
-              onDateChange={this.onStartDateChange}
-              minuteInterval={5}
+          <View style={css.sectionContainer}>
+            <SwitchLabel
+              label={"Starts"}
+              value={this.state.filterByStartTime}
+              onValueChange={v => this.setState({ filterByStartTime: v })}
             />
-          </Collapsible>
 
-          <SwitchLabel
-            label={"End Time"}
-            value={this.state.filterByEndTime}
-            onValueChange={v => this.setState({ filterByEndTime: v })}
-          />
+            <Collapsible collapsed={!this.state.filterByStartTime}>
+              <DatePickerIOS
+                date={this.state.startDate}
+                mode="datetime"
+                onDateChange={this.onStartDateChange}
+                minuteInterval={5}
+              />
+            </Collapsible>
 
-          <Collapsible collapsed={!this.state.filterByEndTime}>
-            <DatePickerIOS
-              date={this.state.endDate}
-              mode="datetime"
-              onDateChange={this.onEndDateChange}
-              minuteInterval={5}
+            <SwitchLabel
+              label={"Ends"}
+              value={this.state.filterByEndTime}
+              onValueChange={v => this.setState({ filterByEndTime: v })}
+              borderContainerStyle={{borderTopWidth: this.state.filterByStartTime ? 0.5 : 0}}
             />
-          </Collapsible>
 
-          <Label value={"Group Filter"} />
+            <Collapsible collapsed={!this.state.filterByEndTime}>
+              <DatePickerIOS
+                date={this.state.endDate}
+                mode="datetime"
+                onDateChange={this.onEndDateChange}
+                minuteInterval={5}
+              />
+            </Collapsible>
+          </View>
 
-          <Carousel
-            showsHorizontalScrollIndicator={false}
-            sliderWidth={EStyleSheet.value("65%", "width")}
-            itemWidth={EStyleSheet.value("30%", "width")}
-            inactiveSlideOpacity={0.5}
-            inactiveSlideScale={0.7}
-            swipeThreshold={1}
-            animationOptions={{ duration: 100 }}
-          >
+          <View style={css.heading}>
+            <Text style={[css.headingText, { flex: 1 }]}>INFRASTRUCTURE</Text>
+            <Text style={css.headingText}>RESET</Text>
+          </View>
 
-            <Text
-              style={{
-                backgroundColor: "red",
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 1
-            </Text>
-            <Text
-              style={{
-                backgroundColor: "red",
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 2
-            </Text>
-            <Text
-              style={{
-                backgroundColor: "red",
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 3
-            </Text>
-
-          </Carousel>
-
-          <Label value={"System Filter"} />
-
-          <Carousel
-            showsHorizontalScrollIndicator={false}
-            sliderWidth={EStyleSheet.value("65%", "width")}
-            itemWidth={EStyleSheet.value("30%", "width")}
-            inactiveSlideOpacity={0.5}
-            inactiveSlideScale={0.7}
-            swipeThreshold={1}
-            animationOptions={{ duration: 100 }}
-          >
-
-            <Text
-              style={{
-                backgroundColor: "red",
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 1
-            </Text>
-            <Text
-              style={{
-                backgroundColor: "red",
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 2
-            </Text>
-            <Text
-              style={{
-                backgroundColor: "red",
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 3
-            </Text>
-
-          </Carousel>
+          <View style={css.sectionContainer}>
+            <OptionCarousel label={"Systems"} />
+            <OptionCarousel label={"Groups"} borderContainerStyle={{borderBottomWidth: 0}} />
+          </View>
 
         </ScrollView>
 
-        <View style={css.buttonContainer}>
-          <Button
-            buttonStyle={{
-              shadowOpacity: 0.95,
-              shadowRadius: 3,
-              elevation: 4,
-              transform: [{scale: 1}]
-            }}
-            disabled={false}
-            value={"Filter"}
-            onPress={() => alert("Filter!")}
-          />
-        </View>
+        <View style={css.buttonContainer} />
 
-      </Background>
+      </View>
     );
   }
 }
 
 const css = EStyleSheet.create({
   container: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#F9F9FA",
     flex: 1,
-    paddingHorizontal: "5%"
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 1,
+    shadowRadius: 5
+  },
+  heading: {
+    flexDirection: "row",
+    paddingHorizontal: "5%",
+    paddingTop: "5%",
+    paddingBottom: "1%"
+  },
+  headingText: {
+    fontSize: 13,
+    color: "#BBBBBB",
+    letterSpacing: 1.2,
+    fontWeight: "600"
+  },
+  sectionContainer: {
+    backgroundColor: "#FFF",
+    borderColor: "$filterItemBorderColor",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0.07,
+    shadowRadius: 4
   },
   labelStyle: {
     marginTop: "5%",

@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Switch } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import Background from "./background";
-import Collapsible from "react-native-collapsible";
 
 class SwitchLabel extends Component {
   constructor(props) {
@@ -21,18 +19,20 @@ class SwitchLabel extends Component {
     return (
       <View style={css.container}>
 
-        <Text style={css.textStyle}>{this.props.label}</Text>
+        <View style={[css.borderContainer, this.props.borderContainerStyle]}>
 
-        <View style={css.switchContainer}>
+          <Text style={css.textStyle}>{this.props.label}</Text>
 
-          <Switch
-            style={{ backgroundColor: "white", borderRadius: 19 }}
-            onValueChange={this.props.onValueChange}
-            value={this.props.value}
-            //thumbTintColor={EStyleSheet.value("$primaryColor")}
-            tintColor={EStyleSheet.value("$switchBorderColor")}
-            //onTintColor={EStyleSheet.value("$secondaryColor")}
-          />
+          <View style={css.switchContainer}>
+
+            <Switch
+              style={{ backgroundColor: "#F9F9FA", borderRadius: 19 }}
+              onValueChange={this.props.onValueChange}
+              value={this.props.value}
+              tintColor={EStyleSheet.value("$switchBorderColor")}
+            />
+
+          </View>
 
         </View>
 
@@ -46,16 +46,26 @@ const css = EStyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: "0.5%"
+    paddingLeft: "5%"
+  },
+  borderContainer: {
+    borderColor: "$filterItemBorderColor",
+    borderBottomWidth: 0.5,
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
+    paddingRight: "5%",
+    height: "8%"
   },
   switchContainer: {
     flex: 1,
-    alignItems: "flex-end"
+    alignItems: "flex-end",
+
   },
   textStyle: {
     backgroundColor: "transparent",
-    paddingLeft: "2%",
-    fontSize: "$fontHeight"
+    fontSize: "$fontHeight",
+    color: "$switchFontColor"
   }
 });
 

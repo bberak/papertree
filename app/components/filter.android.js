@@ -176,7 +176,8 @@ class Filter extends Component {
 const css = EStyleSheet.create({
   container: {
     backgroundColor: "#FFF",
-    flex: 1
+    flex: 1,
+    elevation: 5
   },
   logo: {
     alignSelf: "center",

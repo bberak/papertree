@@ -17,7 +17,7 @@ class Link extends Component {
     });
 
     this.refs.text.transitionTo({
-      textShadowRadius: 0,
+      textShadowRadius: 1,
       scale: 0.95
     });
   };

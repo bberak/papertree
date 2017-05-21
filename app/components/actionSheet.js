@@ -232,23 +232,8 @@ const css = EStyleSheet.create({
     backgroundColor: "transparent",
     color: "$actionSheetButtonFontColor",
     fontSize: "$buttonFontHeight",
-    lineHeight: "$buttonFontHeight",
     fontWeight: "600",
     letterSpacing: 0
-  },
-  optionButton: {
-    height: "$optionButtonHeight",
-    borderColor: "$actionSheetBorderColor",
-    backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  optionButtonText: {
-    backgroundColor: "transparent",
-    color: "$actionSheetOptionFontColor",
-    fontSize: "$optionButtonFontHeight",
-    letterSpacing: 0,
-    textAlignVertical: "center"
   },
   title: {
     alignItems: "center",
@@ -263,6 +248,20 @@ const css = EStyleSheet.create({
     letterSpacing: 0,
     color: "$actionSheetTitleFontColor",
     textAlign: "center"
+  },
+  optionButton: {
+    height: "$optionButtonHeight",
+    borderColor: "$actionSheetBorderColor",
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  optionButtonText: {
+    backgroundColor: "transparent",
+    color: "$actionSheetOptionFontColor",
+    fontSize: "$optionButtonFontHeight",
+    letterSpacing: 0,
+    textAlignVertical: "center"
   },
   textBox: {
     height: "$textBoxHeight",

@@ -3,6 +3,7 @@ export default {
   secondaryColor: "#F99D1E",
   warningColor: "#FF2D55",
   indicatorColor: "#FFF",
+  filterIndicatorColor: "#DDD",
   textBoxColor: "#FFF",
   shadowColor: "#000",
   buttonColor: "#4FA6DA",
@@ -24,5 +25,7 @@ export default {
   actionSheetTitleFontColor: "#030303",
   actionSheetTextBoxFontColor: "#030303",
   actionSheetBorderColor: "#DADADE",
-  switchBorderColor: "#F1F1F1"
+  switchBorderColor: "#F1F1F1",
+  switchFontColor: "#4A4A4A",
+  filterItemBorderColor: "#DADADE"
 }

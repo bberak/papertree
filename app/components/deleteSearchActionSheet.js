@@ -72,7 +72,7 @@ class DeleteSearchActionSheet extends Component {
       >
 
         <ActionSheet.Title
-          value={`Are you sure you want to delete "${this.props.selectedSearch.name}"?`}
+          value={`Delete "${this.props.selectedSearch.name}"?`}
         />
 
         <ActionSheet.HR />

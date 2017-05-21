@@ -3,6 +3,9 @@ import Drawer from "react-native-drawer";
 import Settings from "./settings";
 import Filter from "./filter";
 import { Actions, DefaultRenderer } from "react-native-router-flux";
+import EStyleSheet from "react-native-extended-stylesheet";
+
+const shadowColor = "#000";
 
 export default class Home extends Component {
   constructor(props) {
@@ -28,14 +31,14 @@ export default class Home extends Component {
         openDrawerOffset={0.25}
         tapToClose={true}
         panOpenMask={0.2}
-        panCloseMask={0.2}
+        panCloseMask={0.25}
         tweenHandler={Drawer.tweenPresets.parallax}
       >
         <Drawer
           open={navigationState.filterOpen}
           onOpen={() => Actions.refresh({ key: "home", filterOpen: true })}
           onClose={() => Actions.refresh({ key: "home", filterOpen: false })}
-          type={"static"}
+          type={"overlay"}
           content={
             <Filter
               savedSearches={navigationState.savedSearches}
@@ -45,9 +48,18 @@ export default class Home extends Component {
           openDrawerOffset={0.25}
           tapToClose={true}
           panOpenMask={0.2}
-          panCloseMask={0.2}
-          tweenHandler={Drawer.tweenPresets.parallax}
+          panCloseMask={0.25}
+          elevation={5}
           side={"right"}
+          closedDrawerOffset={-5}
+          tweenHandler={(ratio) => {
+            return {
+              mainOverlay: { 
+                opacity: ratio * 0.3, 
+                backgroundColor: shadowColor
+              }
+            }
+          }}
         >
           <DefaultRenderer
             navigationState={children[0]}

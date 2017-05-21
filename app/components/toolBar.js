@@ -4,6 +4,7 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import TextBox from "./textBox";
 import ToolBarButton from "./toolBarButton";
 import { Actions } from "react-native-router-flux"
+import FilterActionSheet from "./filterActionSheet";
 
 class ToolBar extends Component {
   constructor(props) {
@@ -67,7 +68,7 @@ class ToolBar extends Component {
           containerStyle={css.buttonContainerStyle}
           imageSource={require("../images/filter.png")}
           activeImageSource={require("../images/filter-active.png")}
-          onPress={() => Actions.refresh({key: "home", filterOpen: !this.props.settingsOpen})}
+          onPress={() => Actions.refresh({key: "home", filterOpen: !this.props.filterOpen})}
         />
 
       </View>
