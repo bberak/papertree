@@ -9,7 +9,6 @@ import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import { DatePicker } from "react-native-wheel-picker-android";
-import Carousel from "react-native-snap-carousel";
 
 class Filter extends Component {
   constructor(props) {
@@ -116,47 +115,6 @@ class Filter extends Component {
           <DatePicker initDate={new Date().toISOString()} />
 
           <Label value={"Saved Searches"} />
-
-          <Carousel
-            showsHorizontalScrollIndicator={false}
-            sliderWidth={EStyleSheet.value("75%", "width")}
-            itemWidth={EStyleSheet.value("30%", "width")}
-            inactiveSlideOpacity={0.5}
-            inactiveSlideScale={0.7}
-          >
-
-            <Text
-              style={{
-                backgroundColor: "red",
-                height: 40,
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 1
-            </Text>
-            <Text
-              style={{
-                backgroundColor: "red",
-                height: 40,
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 2
-            </Text>
-            <Text
-              style={{
-                backgroundColor: "red",
-                height: 40,
-                textAlign: "center",
-                width: EStyleSheet.value("30%", "width")
-              }}
-            >
-              System 3
-            </Text>
-
-          </Carousel>
 
         </ScrollView>
 

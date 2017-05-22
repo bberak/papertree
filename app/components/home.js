@@ -41,7 +41,7 @@ export default class Home extends Component {
           type={"overlay"}
           content={
             <Filter
-              savedSearches={navigationState.savedSearches}
+              filter={navigationState.filter}
               selectedSearch={navigationState.selectedSearch}
             />
           }

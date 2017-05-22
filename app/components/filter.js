@@ -4,18 +4,14 @@ import {
   Text,
   ScrollView,
   RefreshControl,
-  DatePickerIOS,
   TouchableOpacity
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import Button from "./button";
-import Label from "./label";
 import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
-import Collapsible from "react-native-collapsible";
-import SwitchLabel from "./switchLabel";
-import OptionCarousel from "./optionCarousel";
+import DatePickerAccordion from "./datePickerAccordion";
+import OptionAccordion from "./optionAccordion";
 
 class Filter extends Component {
   constructor(props) {
@@ -25,13 +21,17 @@ class Filter extends Component {
       filterByStartTime: false,
       filterByEndTime: false,
       startDate: new Date(),
-      endDate: new Date()
+      endDate: new Date(),
+      systemsOpen: false,
+      groupsOpen: false,
+      systems: [],
+      groups: []
     };
   }
 
   componentDidMount = () => {
     this.onRefresh();
-  };
+  }
 
   onRefresh = async () => {
     this.setState({
@@ -39,28 +39,67 @@ class Filter extends Component {
     });
 
     try {
-      let results = await api.listSearches();
+      let results = await Promise.all([api.listGroups(), api.listSystems()]);
+      let groups = results[0] || [];
+      let systems = [{name: "Any"}].concat(results[1] || []);
 
       this.setState({
-        refreshing: false
+        refreshing: false,
+        groups: groups,
+        systems: systems,
       });
-
-      Actions.refresh({ key: "home", savedSearches: results });
     } catch (error) {
       console.log(error);
       this.setState({
         refreshing: false
       });
     }
-  };
+  }
+
+  getSelectedGroup = () => {
+    let filter = this.props.filter || {};
+    let propGroup = filter.groupName ? { id: filter.groupId, name: filter.groupName } : null;
+    
+    return propGroup || _.minBy(this.state.groups || [], "id"); 
+  }
+
+  getSelectedSystem = () => {
+    let filter = this.props.filter || {};
+    let propSystem = filter.systemName ? { id: filter.systemId, name: filter.systemName } : null;
+
+    return propSystem || this.state.systems[0];
+  }
 
   onStartDateChange = date => {
     this.setState({ startDate: date });
-  };
+  }
 
   onEndDateChange = date => {
     this.setState({ endDate: date });
-  };
+  }
+
+  onGroupSelected = id => {
+    let group = (this.state.groups || []).find(x => x.id === id);
+    let newFilter = Object.assign({}, this.props.filter, { groupId: group.id, groupName: group.name});
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+  }
+
+  onSystemSelected = id => {
+    let system = (this.state.systems || []).find(x => x.id === id);
+    let newFilter = Object.assign({}, this.props.filter, { systemId: system.id, systemName: system.name});
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+  }
+
+  onClearInfrastructureFilters = () => {
+    this.setState({
+      groupsOpen: false,
+      systemsOpen: false
+    });
+
+    Actions.refresh({ key: "home", filter: null, selectedSearch: null });
+  }
 
   render() {
     let refreshControl = (
@@ -98,51 +137,60 @@ class Filter extends Component {
           </View>
 
           <View style={css.sectionContainer}>
-            <SwitchLabel
+
+            <DatePickerAccordion
               label={"Starts"}
-              value={this.state.filterByStartTime}
-              onValueChange={v => this.setState({ filterByStartTime: v })}
+              open={this.state.filterByStartTime}
+              onOpenOrClose={v => this.setState({ filterByStartTime: v })}
+              date={this.state.startDate}
+              onDateChange={this.onStartDateChange}
             />
 
-            <Collapsible collapsed={!this.state.filterByStartTime}>
-              <DatePickerIOS
-                date={this.state.startDate}
-                mode="datetime"
-                onDateChange={this.onStartDateChange}
-                minuteInterval={5}
-              />
-            </Collapsible>
-
-            <SwitchLabel
+            <DatePickerAccordion
               label={"Ends"}
-              value={this.state.filterByEndTime}
-              onValueChange={v => this.setState({ filterByEndTime: v })}
-              borderContainerStyle={{borderTopWidth: this.state.filterByStartTime ? 0.5 : 0}}
+              open={this.state.filterByEndTime}
+              onOpenOrClose={v => this.setState({ filterByEndTime: v })}
+              date={this.state.endDate}
+              onDateChange={this.onEndDateChange}
+              borderContainerStyle={{
+                borderTopWidth: this.state.filterByStartTime ? 0.5 : 0
+              }}
             />
-
-            <Collapsible collapsed={!this.state.filterByEndTime}>
-              <DatePickerIOS
-                date={this.state.endDate}
-                mode="datetime"
-                onDateChange={this.onEndDateChange}
-                minuteInterval={5}
-              />
-            </Collapsible>
           </View>
 
           <View style={css.heading}>
             <Text style={[css.headingText, { flex: 1 }]}>INFRASTRUCTURE</Text>
-            <Text style={css.headingText}>RESET</Text>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={this.onClearInfrastructureFilters}
+            >
+              <Text style={css.headingText}>RESET</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={css.sectionContainer}>
-            <OptionCarousel label={"Systems"} />
-            <OptionCarousel label={"Groups"} borderContainerStyle={{borderBottomWidth: 0}} />
+            <OptionAccordion
+              label={"Group"}
+              value={this.getSelectedGroup()}
+              values={this.state.groups}
+              open={this.state.groupsOpen}
+              onOpenOrClose={v => this.setState({ groupsOpen: v })}
+              onValueChange={this.onGroupSelected}
+            />
+            <OptionAccordion
+              label={"System"}
+              value={this.getSelectedSystem()}
+              values={this.state.systems}
+              open={this.state.systemsOpen}
+              onOpenOrClose={v => this.setState({ systemsOpen: v })}
+              borderContainerStyle={{
+                borderTopWidth: this.state.groupsOpen ? 0.5 : 0
+              }}
+              onValueChange={this.onSystemSelected}
+            />
           </View>
 
         </ScrollView>
-
-        <View style={css.buttonContainer} />
 
       </View>
     );
@@ -150,8 +198,9 @@ class Filter extends Component {
 }
 
 const css = EStyleSheet.create({
+  $headingTextHeight: "1.95%",
   container: {
-    backgroundColor: "#F9F9FA",
+    backgroundColor: "$filterBackgroundColor",
     flex: 1,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "$shadowColor",
@@ -165,13 +214,13 @@ const css = EStyleSheet.create({
     paddingBottom: "1%"
   },
   headingText: {
-    fontSize: 13,
-    color: "#BBBBBB",
+    fontSize: "$headingTextHeight",
+    color: "$filterHeadingFontColor",
     letterSpacing: 1.2,
     fontWeight: "600"
   },
   sectionContainer: {
-    backgroundColor: "#FFF",
+    backgroundColor: "$secionContainerBackgroundColor",
     borderColor: "$filterItemBorderColor",
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
@@ -179,29 +228,6 @@ const css = EStyleSheet.create({
     shadowColor: "$shadowColor",
     shadowOpacity: 0.07,
     shadowRadius: 4
-  },
-  labelStyle: {
-    marginTop: "5%",
-    color: "$primaryColor",
-    opacity: 1,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowColor: "transparent",
-    textShadowRadius: 0
-  },
-  logo: {
-    alignSelf: "center",
-    marginTop: "5%",
-    marginBottom: "5%"
-  },
-  scrollView: {
-    flex: 1
-  },
-  listContainer: {
-    marginBottom: "5%"
-  },
-  buttonContainer: {
-    marginHorizontal: "7%",
-    marginBottom: "2%"
   }
 });
 

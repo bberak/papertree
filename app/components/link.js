@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableWithoutFeedback } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 
@@ -58,9 +58,8 @@ class Link extends Component {
 
   render() {
     return (
-      <TouchableOpacity
+      <TouchableWithoutFeedback
         style={css.container}
-        activeOpacity={1}
         onPressIn={this.onPressIn}
         onPressOut={this.onPressOut}
         onPress={this.onPress}
@@ -76,7 +75,7 @@ class Link extends Component {
         >
           {this.props.value}
         </Animatable.Text>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -88,6 +87,7 @@ const css = EStyleSheet.create({
   },
   $fontHeight: "3.3%",
   text: {
+    backgroundColor: "transparent",
     fontSize: "$fontHeight",
     padding: 4,
     color: "$linkFontColor",

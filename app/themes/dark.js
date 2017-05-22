@@ -27,5 +27,12 @@ export default {
   actionSheetBorderColor: "#DADADE",
   switchBorderColor: "#F1F1F1",
   switchFontColor: "#4A4A4A",
-  filterItemBorderColor: "#DADADE"
+  filterItemBorderColor: "#DADADE",
+  filterBackgroundColor: "#F9F9FA",
+  filterHeadingFontColor: "#BBBBBB",
+  secionContainerBackgroundColor: "#FFFFFF",
+  filterValueButtonFontColor: "#CCCCCC",
+  filterValueButtonBackgroundColor: "#FFFFFF",
+  filterValueButtonFontColorPressed: "#FFFFFF",
+  filterValueButtonBackgroundColorPressed: "#CCCCCC",
 }

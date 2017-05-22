@@ -175,5 +175,11 @@ module.exports = Object.freeze({
     let url = `https://papertrailapp.com/api/v1/searches/${id}.json?`;
 
     return await _DELETE(url, null);
-  }
+  },
+  listSystems: async () => {
+    return await _GET("https://papertrailapp.com/api/v1/systems.json")
+  },
+  listGroups: async () => {
+    return await _GET("https://papertrailapp.com/api/v1/groups.json")
+  },
 });

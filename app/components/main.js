@@ -33,10 +33,12 @@ class Main extends Component {
     f1 = f1 || {};
     f2 = f2 || {};
 
-    let f1_identifier = f1.groupName || f1.groupId || "All Systems";
-    let f2_idenitifer = f2.groupName || f2.groupId || "All Systems";
-
-    return f1_identifier === f2_idenitifer;
+    return (
+      (f1.groupId === f2.groupId ||
+        (!f1.groupId && f2.groupName === "All Systems") ||
+        (f1.groupName === "All Systems" && !f2.groupId)) &&
+      f1.systemId === f2.systemId
+    );
   };
 
   onSearch = async (searchTerm, filter) => {
