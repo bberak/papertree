@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, Switch, Picker, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  Switch,
+  Picker,
+  TouchableWithoutFeedback
+} from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Collapsible from "react-native-collapsible";
 import * as Animatable from "react-native-animatable";
@@ -16,21 +22,23 @@ class OptionAccordion extends Component {
 
   onPressIn = () => {
     this.refs.valueContainer.transitionTo({
-      backgroundColor: EStyleSheet.value("$filterValueButtonBackgroundColorPressed"),
+      backgroundColor: EStyleSheet.value(
+        "$filterValueButtonBackgroundColorPressed"
+      )
     });
 
     this.refs.value.transitionTo({
-      color: EStyleSheet.value("$filterValueButtonFontColorPressed"),
+      color: EStyleSheet.value("$filterValueButtonFontColorPressed")
     });
   };
 
   onPressOut = () => {
     this.refs.valueContainer.transitionTo({
-      backgroundColor: EStyleSheet.value("$filterValueButtonBackgroundColor"),
+      backgroundColor: EStyleSheet.value("$filterValueButtonBackgroundColor")
     });
 
     this.refs.value.transitionTo({
-      color: EStyleSheet.value("$filterValueButtonFontColor"),
+      color: EStyleSheet.value("$filterValueButtonFontColor")
     });
   };
 
@@ -38,19 +46,17 @@ class OptionAccordion extends Component {
     const canOpen = this.props.values && this.props.values.length > 0;
 
     if (canOpen && this.props.onOpenOrClose)
-      this.props.onOpenOrClose(!this.props.open)
-  }
-
+      this.props.onOpenOrClose(!this.props.open);
+  };
 
   render() {
+    var items = this.props.values && this.props.values.length > 0
+      ? this.props.values.map((x, i) => {
+          return <Picker.Item key={i} label={x.name} value={x.id} />;
+        })
+      : null;
 
-    var items = this.props.values && this.props.values.length > 0 ?
-      this.props.values.map((x, i) => {
-        return <Picker.Item key={i} label={x.name} value={x.id} />
-      }) :
-      null;
-
-    var selectedValue = this.props.value || {name: "Default"};
+    var selectedValue = this.props.value || { name: "Default" };
 
     return (
       <View>
@@ -66,13 +72,12 @@ class OptionAccordion extends Component {
               onPressIn={this.onPressIn}
               onPressOut={this.onPressOut}
             >
+
               <Animatable.View
-              ref={"valueContainer"}
-              style={css.valueTextContainer}>
-                <Animatable.Text
-                  ref={"value"}
-                  style={css.valueText}
-                >
+                ref={"valueContainer"}
+                style={css.valueTextContainer}
+              >
+                <Animatable.Text ref={"value"} style={css.valueText}>
                   {selectedValue.name.toUpperCase()}
                 </Animatable.Text>
               </Animatable.View>

@@ -71,23 +71,60 @@ class Filter extends Component {
   }
 
   onStartDateChange = date => {
-    this.setState({ startDate: date });
+    let newFilter = Object.assign({}, this.props.filter, { minTime: date.getTime() });
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
   }
 
   onEndDateChange = date => {
-    this.setState({ endDate: date });
+    let newFilter = Object.assign({}, this.props.filter, { maxTime: date.getTime() });
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
   }
 
   onGroupSelected = id => {
-    let group = (this.state.groups || []).find(x => x.id === id);
+    let group = (this.state.groups || []).find(x => x.id === id) || {};
     let newFilter = Object.assign({}, this.props.filter, { groupId: group.id, groupName: group.name});
 
     Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
   }
 
   onSystemSelected = id => {
-    let system = (this.state.systems || []).find(x => x.id === id);
+    let system = (this.state.systems || []).find(x => x.id === id) || {};
     let newFilter = Object.assign({}, this.props.filter, { systemId: system.id, systemName: system.name});
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+  }
+
+  openOrCloseStartTimePicker = (v) => {
+    this.setState({ filterByStartTime: v })
+
+    if (!v) {
+      let newFilter = Object.assign({}, this.props.filter, { minTime: null });
+
+      Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+    }
+  }
+
+  openOrCloseEndTimePicker = (v) => {
+    this.setState({ filterByEndTime: v })
+
+    if (!v) {
+      let newFilter = Object.assign({}, this.props.filter, { maxTime: null });
+
+      Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+    } else {
+      
+    }
+  }
+
+  onClearTimeRangeFilers = () => {
+    this.setState({
+      filterByStartTime: false,
+      filterByEndTime: false
+    });
+
+    let newFilter = Object.assign({}, this.props.filter, { minTime: null, maxTime: null });
 
     Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
   }
@@ -98,7 +135,13 @@ class Filter extends Component {
       systemsOpen: false
     });
 
-    Actions.refresh({ key: "home", filter: null, selectedSearch: null });
+    let newFilter = Object.assign({}, this.props.filter);
+    newFilter.groupId = null;
+    newFilter.groupName = null;
+    newFilter.systemId = null;
+    newFilter.systemName = null;
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
   }
 
   render() {
@@ -123,14 +166,7 @@ class Filter extends Component {
             <Text style={[css.headingText, { flex: 1 }]}>TIME RANGE</Text>
             <TouchableOpacity
               activeOpacity={0.5}
-              onPress={() => {
-                this.setState({
-                  filterByStartTime: false,
-                  filterByEndTime: false,
-                  startDate: new Date(),
-                  endDate: new Date()
-                });
-              }}
+              onPress={this.onClearTimeRangeFilers}
             >
               <Text style={css.headingText}>CLEAR</Text>
             </TouchableOpacity>
@@ -141,19 +177,20 @@ class Filter extends Component {
             <DatePickerAccordion
               label={"Starts"}
               open={this.state.filterByStartTime}
-              onOpenOrClose={v => this.setState({ filterByStartTime: v })}
-              date={this.state.startDate}
+              onOpenOrClose={this.openOrCloseStartTimePicker}
+              date={(this.props.filter || {}).minTime ? new Date(this.props.filter.minTime) : new Date()}
               onDateChange={this.onStartDateChange}
             />
 
             <DatePickerAccordion
               label={"Ends"}
               open={this.state.filterByEndTime}
-              onOpenOrClose={v => this.setState({ filterByEndTime: v })}
-              date={this.state.endDate}
+              onOpenOrClose={this.openOrCloseEndTimePicker}
+              date={(this.props.filter || {}).maxTime ? new Date(this.props.filter.maxTime) : new Date()}
               onDateChange={this.onEndDateChange}
               borderContainerStyle={{
-                borderTopWidth: this.state.filterByStartTime ? 0.5 : 0
+                borderTopWidth: this.state.filterByStartTime ? 0.5 : 0,
+                borderBottomWidth: this.state.filterByEndTime ? 0.5 : 0
               }}
             />
           </View>
@@ -184,7 +221,8 @@ class Filter extends Component {
               open={this.state.systemsOpen}
               onOpenOrClose={v => this.setState({ systemsOpen: v })}
               borderContainerStyle={{
-                borderTopWidth: this.state.groupsOpen ? 0.5 : 0
+                borderTopWidth: this.state.groupsOpen ? 0.5 : 0,
+                borderBottomWidth: this.state.systemsOpen ? 0.5 : 0
               }}
               onValueChange={this.onSystemSelected}
             />

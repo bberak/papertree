@@ -6,6 +6,7 @@ import { Actions, DefaultRenderer } from "react-native-router-flux";
 import EStyleSheet from "react-native-extended-stylesheet";
 
 const shadowColor = "#000";
+const width = EStyleSheet.value("100%", "width");
 
 export default class Home extends Component {
   constructor(props) {
@@ -45,10 +46,10 @@ export default class Home extends Component {
               selectedSearch={navigationState.selectedSearch}
             />
           }
-          openDrawerOffset={0.25}
+          openDrawerOffset={width > 320 ? 0.25 : 0.15}
           tapToClose={true}
           panOpenMask={0.2}
-          panCloseMask={0.25}
+          panCloseMask={width > 320 ? 0.25 : 0.15}
           elevation={5}
           side={"right"}
           closedDrawerOffset={-5}

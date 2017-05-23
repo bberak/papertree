@@ -37,7 +37,9 @@ class Main extends Component {
       (f1.groupId === f2.groupId ||
         (!f1.groupId && f2.groupName === "All Systems") ||
         (f1.groupName === "All Systems" && !f2.groupId)) &&
-      f1.systemId === f2.systemId
+      f1.systemId === f2.systemId ||
+      f1.minTime === f2.minTime ||
+      f2.maxTime === f2.maxTime
     );
   };
 
