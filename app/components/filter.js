@@ -12,6 +12,7 @@ import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import DatePickerAccordion from "./datePickerAccordion";
 import OptionAccordion from "./optionAccordion";
+import * as Help from "../utils/help"
 
 class Filter extends Component {
   constructor(props) {
@@ -20,18 +21,37 @@ class Filter extends Component {
       refreshing: false,
       filterByStartTime: false,
       filterByEndTime: false,
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: null,
+      endDate: null,
       systemsOpen: false,
       groupsOpen: false,
       systems: [],
-      groups: []
+      groups: [],
+      selectedGroup: null,
+      selectedSystem: null
     };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    let incomingFilter = nextProps.filter || {};
+    let currentFilter = this.buildFilter();
+    let same = Help.areFiltersTheSame(incomingFilter, currentFilter);
+
+    if (!same && nextProps.selectedSearch != this.props.selectedSearch) {
+      this.setState({
+        filterByStartTime: incomingFilter.minTime ? true : false,
+        startDate: incomingFilter.minTime ? new Date(incomingFilter.minTime) : null,
+        filterByEndTime: incomingFilter.maxTime ? true : false,
+        endDate: incomingFilter.maxTime ? new Date(incomingFilter.maxTime) : null,
+        selectedGroup: incomingFilter.groupName ? { name: incomingFilter.groupName, id: incomingFilter.groupId } : null,
+        selectedSystem: incomingFilter.systemName ? { name: incomingFilter.systemName, id: incomingFilter.systemId } : null
+      });
+    }
   }
 
   componentDidMount = () => {
     this.onRefresh();
-  }
+  };
 
   onRefresh = async () => {
     this.setState({
@@ -41,12 +61,12 @@ class Filter extends Component {
     try {
       let results = await Promise.all([api.listGroups(), api.listSystems()]);
       let groups = results[0] || [];
-      let systems = [{name: "Any"}].concat(results[1] || []);
+      let systems = [{ name: "Any" }].concat(results[1] || []);
 
       this.setState({
         refreshing: false,
         groups: groups,
-        systems: systems,
+        systems: systems
       });
     } catch (error) {
       console.log(error);
@@ -54,94 +74,73 @@ class Filter extends Component {
         refreshing: false
       });
     }
-  }
+  };
 
   getSelectedGroup = () => {
-    let filter = this.props.filter || {};
-    let propGroup = filter.groupName ? { id: filter.groupId, name: filter.groupName } : null;
-    
-    return propGroup || _.minBy(this.state.groups || [], "id"); 
-  }
+    return this.state.selectedGroup || _.minBy(this.state.groups || [], "id");
+  };
 
   getSelectedSystem = () => {
-    let filter = this.props.filter || {};
-    let propSystem = filter.systemName ? { id: filter.systemId, name: filter.systemName } : null;
-
-    return propSystem || this.state.systems[0];
-  }
-
-  onStartDateChange = date => {
-    let newFilter = Object.assign({}, this.props.filter, { minTime: date.getTime() });
-
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
-  }
-
-  onEndDateChange = date => {
-    let newFilter = Object.assign({}, this.props.filter, { maxTime: date.getTime() });
-
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
-  }
+    return this.state.selectedSystem || this.state.systems[0];
+  };
 
   onGroupSelected = id => {
-    let group = (this.state.groups || []).find(x => x.id === id) || {};
-    let newFilter = Object.assign({}, this.props.filter, { groupId: group.id, groupName: group.name});
+    let group = (this.state.groups || []).find(x => x.id === id);
 
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
-  }
+    this.setState({
+      selectedGroup: group
+    })
+  };
 
   onSystemSelected = id => {
-    let system = (this.state.systems || []).find(x => x.id === id) || {};
-    let newFilter = Object.assign({}, this.props.filter, { systemId: system.id, systemName: system.name});
+    let system = (this.state.systems || []).find(x => x.id === id);
+    
+    this.setState({
+      selectedSystem: system
+    })
+  };
 
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
-  }
+  buildFilter = () => {
+    let filter = {};
 
-  openOrCloseStartTimePicker = (v) => {
-    this.setState({ filterByStartTime: v })
-
-    if (!v) {
-      let newFilter = Object.assign({}, this.props.filter, { minTime: null });
-
-      Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+    if (this.state.selectedGroup) {
+      filter.groupId = this.state.selectedGroup.id;
+      filter.groupName = this.state.selectedGroup.name
     }
-  }
 
-  openOrCloseEndTimePicker = (v) => {
-    this.setState({ filterByEndTime: v })
-
-    if (!v) {
-      let newFilter = Object.assign({}, this.props.filter, { maxTime: null });
-
-      Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
-    } else {
-      
+    if (this.state.selectedSystem) {
+      filter.systemId = this.state.selectedSystem.id;
+      filter.systemName = this.state.selectedSystem.name;
     }
+
+    if (this.state.filterByStartTime) {
+      filter.minTime = (this.state.startDate || new Date()).getTime();
+    }
+
+    if (this.state.filterByEndTime) {
+      filter.maxTime = (this.state.endDate || new Date()).getTime();
+    }
+
+    return filter;
   }
 
-  onClearTimeRangeFilers = () => {
+  onResetFilters = () => {
     this.setState({
       filterByStartTime: false,
-      filterByEndTime: false
-    });
-
-    let newFilter = Object.assign({}, this.props.filter, { minTime: null, maxTime: null });
-
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+      filterByEndTime: false,
+      startDate: null,
+      endDate: null,
+      systemsOpen: false,
+      groupsOpen: false,
+      selectedGroup: null,
+      selectedSystem: null
+    })
   }
 
-  onClearInfrastructureFilters = () => {
-    this.setState({
-      groupsOpen: false,
-      systemsOpen: false
-    });
+  onApplyFilters = () => {
+    let newFilter = this.buildFilter();
 
-    let newFilter = Object.assign({}, this.props.filter);
-    newFilter.groupId = null;
-    newFilter.groupName = null;
-    newFilter.systemId = null;
-    newFilter.systemName = null;
-
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null });
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null});
   }
 
   render() {
@@ -157,6 +156,10 @@ class Filter extends Component {
       />
     );
 
+    const newFilter = this.buildFilter();
+    const cannotFilter = Help.areFiltersTheSame(newFilter, this.props.filter);
+    const cannotReset = Help.areFiltersTheSame(newFilter, {});
+
     return (
       <View style={css.container}>
 
@@ -164,12 +167,6 @@ class Filter extends Component {
 
           <View style={css.heading}>
             <Text style={[css.headingText, { flex: 1 }]}>TIME RANGE</Text>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={this.onClearTimeRangeFilers}
-            >
-              <Text style={css.headingText}>CLEAR</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={css.sectionContainer}>
@@ -177,32 +174,23 @@ class Filter extends Component {
             <DatePickerAccordion
               label={"Starts"}
               open={this.state.filterByStartTime}
-              onOpenOrClose={this.openOrCloseStartTimePicker}
-              date={(this.props.filter || {}).minTime ? new Date(this.props.filter.minTime) : new Date()}
-              onDateChange={this.onStartDateChange}
+              onOpenOrClose={v => this.setState({ filterByStartTime: v })}
+              date={this.state.startDate || new Date()}
+              onDateChange={date => this.setState({ startDate: date })}
             />
 
             <DatePickerAccordion
               label={"Ends"}
               open={this.state.filterByEndTime}
-              onOpenOrClose={this.openOrCloseEndTimePicker}
-              date={(this.props.filter || {}).maxTime ? new Date(this.props.filter.maxTime) : new Date()}
-              onDateChange={this.onEndDateChange}
-              borderContainerStyle={{
-                borderTopWidth: this.state.filterByStartTime ? 0.5 : 0,
-                borderBottomWidth: this.state.filterByEndTime ? 0.5 : 0
-              }}
+              onOpenOrClose={v => this.setState({ filterByEndTime: v })}
+              date={this.state.endDate || new Date()}
+              onDateChange={date => this.setState({ endDate: date })}
+              lastItem={true}
             />
           </View>
 
           <View style={css.heading}>
             <Text style={[css.headingText, { flex: 1 }]}>INFRASTRUCTURE</Text>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={this.onClearInfrastructureFilters}
-            >
-              <Text style={css.headingText}>RESET</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={css.sectionContainer}>
@@ -220,15 +208,36 @@ class Filter extends Component {
               values={this.state.systems}
               open={this.state.systemsOpen}
               onOpenOrClose={v => this.setState({ systemsOpen: v })}
-              borderContainerStyle={{
-                borderTopWidth: this.state.groupsOpen ? 0.5 : 0,
-                borderBottomWidth: this.state.systemsOpen ? 0.5 : 0
-              }}
               onValueChange={this.onSystemSelected}
+              lastItem={true}
             />
           </View>
 
         </ScrollView>
+
+        <View style={css.buttonContainer}>
+
+          <TouchableOpacity onPress={this.onResetFilters} activeOpacity={0.5} disabled={cannotReset}>
+            <View style={css.button}>
+
+              <Text style={[css.buttonText, {color: cannotReset ? EStyleSheet.value("$disabledLinkFontColor") : EStyleSheet.value("$warningColor")}]}>
+                Reset
+              </Text>
+
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.onApplyFilters} activeOpacity={0.5} disabled={cannotFilter}>
+            <View style={css.button}>
+
+              <Text style={[css.buttonText, {color: cannotFilter ? EStyleSheet.value("$disabledLinkFontColor") : EStyleSheet.value("$actionSheetButtonFontColor")}]}>
+                Apply Filters
+              </Text>
+
+            </View>
+          </TouchableOpacity>
+
+        </View>
 
       </View>
     );
@@ -236,6 +245,8 @@ class Filter extends Component {
 }
 
 const css = EStyleSheet.create({
+  $buttonHeight: "8.54%",
+  $buttonFontHeight: "3.3%",
   $headingTextHeight: "1.95%",
   container: {
     backgroundColor: "$filterBackgroundColor",
@@ -266,6 +277,30 @@ const css = EStyleSheet.create({
     shadowColor: "$shadowColor",
     shadowOpacity: 0.07,
     shadowRadius: 4
+  },
+  buttonContainer: {
+    backgroundColor: "$secionContainerBackgroundColor",
+    borderColor: "$filterItemBorderColor",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    shadowOffset: { width: 0, height: -2 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0.07,
+    shadowRadius: 4
+  },
+  button: {
+    height: "$buttonHeight",
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "$filterItemBorderColor",
+    borderBottomWidth: 0.5
+  },
+  buttonText: {
+    backgroundColor: "transparent",
+    color: "$actionSheetButtonFontColor",
+    fontSize: "$buttonFontHeight",
+    letterSpacing: 0
   }
 });
 

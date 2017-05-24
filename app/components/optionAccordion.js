@@ -61,7 +61,7 @@ class OptionAccordion extends Component {
     return (
       <View>
 
-        <View style={[css.borderContainer, this.props.borderContainerStyle]}>
+        <View style={css.borderContainer}>
 
           <Text style={css.labelStyle}>{this.props.label}</Text>
 
@@ -88,20 +88,28 @@ class OptionAccordion extends Component {
 
         </View>
 
-        <View style={css.accordionContainer}>
+        <Collapsible collapsed={!this.props.open}>
 
-          <Collapsible collapsed={!this.props.open}>
+          <View
+            style={[
+              css.accordionContainer,
+              { borderBottomWidth: this.props.open && this.props.lastItem != true ? 0.5 : 0 }
+            ]}
+          >
+            <View style={css.accordionContainer2}>
 
-            <Picker
-              selectedValue={(this.props.value || {}).id}
-              onValueChange={this.props.onValueChange}
-            >
-              {items}
-            </Picker>
+              <Picker
+                selectedValue={(this.props.value || {}).id}
+                onValueChange={this.props.onValueChange}
+              >
+                {items}
+              </Picker>
 
-          </Collapsible>
+            </View>
 
-        </View>
+          </View>
+
+        </Collapsible>
 
       </View>
     );
@@ -141,7 +149,11 @@ const css = EStyleSheet.create({
     fontWeight: "600"
   },
   accordionContainer: {
-    marginHorizontal: "5%"
+    marginLeft: "5%",
+    borderColor: "$filterItemBorderColor"
+  },
+  accordionContainer2: {
+    marginRight: "5%"
   }
 });
 

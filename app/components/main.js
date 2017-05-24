@@ -6,6 +6,7 @@ import api from "../utils/papertrailApi";
 import EventList from "./eventList";
 import Bookmark from "./bookmark";
 import _ from "lodash";
+import * as Help from "../utils/help"
 
 class Main extends Component {
   constructor(props) {
@@ -23,27 +24,14 @@ class Main extends Component {
   componentWillReceiveProps = nextProps => {
     if (
       this.props.searchTerm !== nextProps.searchTerm ||
-      this.areFiltersTheSame(this.props.filter, nextProps.filter) === false
+      Help.areFiltersTheSame(this.props.filter, nextProps.filter) === false
     ) {
       this.onSearch(nextProps.searchTerm, nextProps.filter);
     }
   };
 
-  areFiltersTheSame = (f1, f2) => {
-    f1 = f1 || {};
-    f2 = f2 || {};
-
-    return (
-      (f1.groupId === f2.groupId ||
-        (!f1.groupId && f2.groupName === "All Systems") ||
-        (f1.groupName === "All Systems" && !f2.groupId)) &&
-      f1.systemId === f2.systemId ||
-      f1.minTime === f2.minTime ||
-      f2.maxTime === f2.maxTime
-    );
-  };
-
   onSearch = async (searchTerm, filter) => {
+    console.log("Searching")
     this.setState({
       refreshing: true
     });

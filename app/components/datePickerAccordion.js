@@ -17,7 +17,7 @@ class DatePickerAccordion extends Component {
     return (
       <View>
 
-        <View style={[css.borderContainer, this.props.borderContainerStyle]}>
+        <View style={css.borderContainer}>
 
           <Text style={css.labelStyle}>{this.props.label}</Text>
 
@@ -34,20 +34,28 @@ class DatePickerAccordion extends Component {
 
         </View>
 
-        <View style={css.accordionContainer}>
+        <Collapsible collapsed={!this.props.open}>
 
-          <Collapsible collapsed={!this.props.open}>
+          <View
+            style={[
+              css.accordionContainer,
+              { borderBottomWidth: this.props.open && this.props.lastItem != true ? 0.5 : 0 }
+            ]}
+          >
+            <View style={css.accordionContainer2}>
 
-            <DatePickerIOS
-              date={this.props.date}
-              mode="datetime"
-              onDateChange={this.props.onDateChange}
-              minuteInterval={5}
-            />
+              <DatePickerIOS
+                date={this.props.date}
+                mode="datetime"
+                onDateChange={this.props.onDateChange}
+                minuteInterval={5}
+              />
 
-          </Collapsible>
+            </View>
 
-        </View>
+          </View>
+
+        </Collapsible>
 
       </View>
     );
@@ -76,11 +84,15 @@ const css = EStyleSheet.create({
     alignItems: "flex-end"
   },
   switchStyle: {
-    backgroundColor: "$filterBackgroundColor", 
+    backgroundColor: "$filterBackgroundColor",
     borderRadius: 19
   },
   accordionContainer: {
-    marginHorizontal: "5%"
+    marginLeft: "5%",
+    borderColor: "$filterItemBorderColor"
+  },
+  accordionContainer2: {
+    marginRight: "5%"
   }
 });
 
