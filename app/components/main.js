@@ -24,14 +24,13 @@ class Main extends Component {
   componentWillReceiveProps = nextProps => {
     if (
       this.props.searchTerm !== nextProps.searchTerm ||
-      Help.areFiltersTheSame(this.props.filter, nextProps.filter) === false
+      Help.areFiltersDifferent(this.props.filter, nextProps.filter)
     ) {
       this.onSearch(nextProps.searchTerm, nextProps.filter);
     }
   };
 
   onSearch = async (searchTerm, filter) => {
-    console.log("Searching")
     this.setState({
       refreshing: true
     });
@@ -70,7 +69,7 @@ class Main extends Component {
       );
 
       this.setState({
-        events: (this.state.events || []).concat(results.events || []),
+        events: _.uniqBy((this.state.events || []).concat(results.events || []), "id"),
         refreshing: false
       });
     } catch (error) {
@@ -82,7 +81,7 @@ class Main extends Component {
     }
   };
 
-  onEndReached = async () => {
+  onEndReached = _.debounce(async () => {
     if (this.state.events && this.state.events.length > 0) {
       try {
         let maxId = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
@@ -94,14 +93,14 @@ class Main extends Component {
         );
 
         this.setState({
-          events: (this.state.events || []).concat(results.events || []),
+          events: _.uniqBy((this.state.events || []).concat(results.events || []), "id"),
           refreshing: false
         });
       } catch (error) {
         console.log(error);
       }
     }
-  };
+  }, 1000, {leading: true, trailing: false});
 
   render() {
     const statusBar = Platform.OS === "ios"
@@ -129,6 +128,7 @@ class Main extends Component {
           refreshing={this.state.refreshing}
           events={this.state.events}
           searchTerm={this.props.searchTerm}
+          filter={this.props.filter}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
         />

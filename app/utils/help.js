@@ -13,4 +13,9 @@ function areFiltersTheSame(f1, f2)
     );
 }
 
-export { areFiltersTheSame };
+function areFiltersDifferent(f1, f2)
+{
+	return !areFiltersTheSame(f1, f2)
+}
+
+export { areFiltersTheSame, areFiltersDifferent };

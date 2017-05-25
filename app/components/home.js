@@ -52,12 +52,12 @@ export default class Home extends Component {
           panCloseMask={width > 320 ? 0.25 : 0.15}
           elevation={5}
           side={"right"}
-          closedDrawerOffset={-5}
           tweenHandler={(ratio) => {
             return {
               mainOverlay: { 
-                opacity: ratio * 0.3, 
-                backgroundColor: shadowColor
+                opacity: 0.3 * ratio, 
+                backgroundColor: shadowColor,
+                shadowOpacity: 1 * ratio,
               }
             }
           }}

@@ -121,16 +121,26 @@ module.exports = Object.freeze({
   search: async (searchTerm, filter, minId, maxId, limit) => {
     filter = filter || {};
 
+    let now = (new Date()).getTime();
+
+    if (filter.minTime && filter.minTime > now) {
+      return {}; //-- Invalid query, start time cannot be in the future
+    }
+
+    if (filter.minTime && filter.maxTime && filter.minTime > filter.maxTime) {
+      return {}; //-- Invalid query, start time cannot be greater than end time
+    }
+
     let query = {
       q: searchTerm,
       limit: limit || 20,
       tail: true,
       group_id: filter.groupId,
       system_id: filter.systemId,
-      min_time: filter.minTime,
-      max_time: filter.maxTime,
       min_id: minId,
-      max_id: maxId
+      max_id: maxId,
+      min_time: filter.minTime ? filter.minTime / 1000 : null, //-- Api expects seconds, not milliseconds
+      max_time: filter.maxTime ? filter.maxTime / 1000 : null //-- Api expects seconds, not milliseconds
     };
 
     let qs = Object.keys(query)

@@ -5,6 +5,7 @@ import EventListSection from "./eventListSection"
 import EventListRow from "./eventListRow"
 import _ from "lodash";
 import Label from "./label"
+import * as Help from "../utils/help"
 
 const ds = new ListView.DataSource({
   getSectionData: (blob, sectionId) => blob[sectionId],
@@ -19,7 +20,7 @@ class EventList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.searchTerm !== nextProps.searchTerm)
+    if (this.props.searchTerm !== nextProps.searchTerm || Help.areFiltersDifferent(this.props.filter, nextProps.filter))
       this.refs.list.scrollTo({x: 0, y: 0, animated: true})
   }
 

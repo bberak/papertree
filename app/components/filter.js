@@ -114,11 +114,11 @@ class Filter extends Component {
     }
 
     if (this.state.filterByStartTime) {
-      filter.minTime = (this.state.startDate || new Date()).getTime();
+      filter.minTime = this.state.startDate ? this.state.startDate.getTime() : null;
     }
 
     if (this.state.filterByEndTime) {
-      filter.maxTime = (this.state.endDate || new Date()).getTime();
+      filter.maxTime = this.state.endDate ? this.state.endDate.getTime() : null;
     }
 
     return filter;
@@ -141,6 +141,20 @@ class Filter extends Component {
     let newFilter = this.buildFilter();
 
     Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null});
+  }
+
+  onOpenOrCloseStartTime = (v) => {
+    this.setState({ 
+      filterByStartTime: v, 
+      startDate: v && this.state.startDate == null ? new Date() : null 
+    });
+  }
+
+  onOpenOrCloseEndTime = (v) => {
+    this.setState({ 
+      filterByEndTime: v, 
+      endDate: v && this.state.endDate == null ? new Date() : null 
+    });
   }
 
   render() {
@@ -174,7 +188,7 @@ class Filter extends Component {
             <DatePickerAccordion
               label={"Starts"}
               open={this.state.filterByStartTime}
-              onOpenOrClose={v => this.setState({ filterByStartTime: v })}
+              onOpenOrClose={this.onOpenOrCloseStartTime}
               date={this.state.startDate || new Date()}
               onDateChange={date => this.setState({ startDate: date })}
             />
@@ -182,7 +196,7 @@ class Filter extends Component {
             <DatePickerAccordion
               label={"Ends"}
               open={this.state.filterByEndTime}
-              onOpenOrClose={v => this.setState({ filterByEndTime: v })}
+              onOpenOrClose={this.onOpenOrCloseEndTime}
               date={this.state.endDate || new Date()}
               onDateChange={date => this.setState({ endDate: date })}
               lastItem={true}
@@ -231,7 +245,7 @@ class Filter extends Component {
             <View style={css.button}>
 
               <Text style={[css.buttonText, {color: cannotFilter ? EStyleSheet.value("$disabledLinkFontColor") : EStyleSheet.value("$actionSheetButtonFontColor")}]}>
-                Apply Filters
+                Apply
               </Text>
 
             </View>
@@ -253,7 +267,7 @@ const css = EStyleSheet.create({
     flex: 1,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "$shadowColor",
-    shadowOpacity: 1,
+    shadowOpacity: 0,
     shadowRadius: 5
   },
   heading: {
