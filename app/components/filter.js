@@ -146,14 +146,14 @@ class Filter extends Component {
   onOpenOrCloseStartTime = (v) => {
     this.setState({ 
       filterByStartTime: v, 
-      startDate: v && this.state.startDate == null ? new Date() : null 
+      startDate: v && this.state.startDate == null ? new Date() : this.state.startDate 
     });
   }
 
   onOpenOrCloseEndTime = (v) => {
     this.setState({ 
       filterByEndTime: v, 
-      endDate: v && this.state.endDate == null ? new Date() : null 
+      endDate: v && this.state.endDate == null ? new Date() : this.state.endDate 
     });
   }
 
@@ -173,6 +173,7 @@ class Filter extends Component {
     const newFilter = this.buildFilter();
     const cannotFilter = Help.areFiltersTheSame(newFilter, this.props.filter);
     const cannotReset = Help.areFiltersTheSame(newFilter, {});
+    const timeFiltersValid = Help.areTimeFiltersValid(newFilter);
 
     return (
       <View style={css.container}>
@@ -191,6 +192,7 @@ class Filter extends Component {
               onOpenOrClose={this.onOpenOrCloseStartTime}
               date={this.state.startDate || new Date()}
               onDateChange={date => this.setState({ startDate: date })}
+              onTintColor={ timeFiltersValid ? undefined : "red"}
             />
 
             <DatePickerAccordion
@@ -199,6 +201,7 @@ class Filter extends Component {
               onOpenOrClose={this.onOpenOrCloseEndTime}
               date={this.state.endDate || new Date()}
               onDateChange={date => this.setState({ endDate: date })}
+              onTintColor={ timeFiltersValid ? undefined : "red"}
               lastItem={true}
             />
           </View>

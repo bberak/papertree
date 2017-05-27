@@ -44,7 +44,9 @@ class Main extends Component {
       });
     } catch (error) {
       console.log(error);
+
       this.setState({
+        events: [],
         refreshing: false
       });
     }
@@ -76,6 +78,7 @@ class Main extends Component {
       console.log(error);
 
       this.setState({
+        events: [],
         refreshing: false
       });
     }
@@ -98,6 +101,11 @@ class Main extends Component {
         });
       } catch (error) {
         console.log(error);
+
+        this.setState({
+          events: [],
+          refreshing: false
+        });
       }
     }
   }, 1000, {leading: true, trailing: false});

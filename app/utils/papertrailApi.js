@@ -1,6 +1,7 @@
 import * as Keychain from "react-native-keychain";
 import base64 from "base-64";
 import { Actions } from "react-native-router-flux";
+import * as Help from "./help";
 
 let _authHeader = null;
 
@@ -120,6 +121,9 @@ module.exports = Object.freeze({
   },
   search: async (searchTerm, filter, minId, maxId, limit) => {
     filter = filter || {};
+
+    if (Help.areTimeFiltersValid(filter) === false)
+      throw new Error("Invalid query, time filters are not valid");
 
     let now = (new Date()).getTime();
 

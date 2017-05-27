@@ -35,7 +35,7 @@ class DatePickerAccordion extends Component {
               value={this.props.open}
               thumbTintColor={EStyleSheet.value("$buttonColor")}
               tintColor={EStyleSheet.value("$filterItemBorderColor")}
-              onTintColor={EStyleSheet.value("$androidSwitchThumbColor")}
+              onTintColor={this.props.onTinColor || EStyleSheet.value("$androidSwitchTintColor")}
             />
 
           </View>

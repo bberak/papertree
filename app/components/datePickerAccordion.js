@@ -28,6 +28,7 @@ class DatePickerAccordion extends Component {
               onValueChange={this.props.onOpenOrClose}
               value={this.props.open}
               tintColor={EStyleSheet.value("$switchBorderColor")}
+              onTintColor={this.props.onTintColor || EStyleSheet.value("$iosSwitchTintColor")}
             />
 
           </View>
