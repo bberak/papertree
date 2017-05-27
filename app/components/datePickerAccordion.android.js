@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, Switch, DatePickerIOS } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Collapsible from "react-native-collapsible";
+import { DatePicker } from "react-native-wheel-picker-android";
 
 class DatePickerAccordion extends Component {
   constructor(props) {
@@ -17,7 +18,12 @@ class DatePickerAccordion extends Component {
     return (
       <View>
 
-        <View style={[css.borderContainer, { borderBottomWidth: this.props.lastItem ? 0 : 0.5 }]}>
+        <View
+          style={[
+            css.borderContainer,
+            { borderBottomWidth: this.props.lastItem ? 0 : 0.5 }
+          ]}
+        >
 
           <Text style={css.labelStyle}>{this.props.label}</Text>
 
@@ -27,7 +33,9 @@ class DatePickerAccordion extends Component {
               style={css.switchStyle}
               onValueChange={this.props.onOpenOrClose}
               value={this.props.open}
-              tintColor={EStyleSheet.value("$switchBorderColor")}
+              thumbTintColor={EStyleSheet.value("$buttonColor")}
+              tintColor={EStyleSheet.value("$filterItemBorderColor")}
+              onTintColor={EStyleSheet.value("$androidSwitchThumbColor")}
             />
 
           </View>
@@ -39,20 +47,24 @@ class DatePickerAccordion extends Component {
           <View
             style={[
               css.accordionContainer,
-              { 
-                borderTopWidth: this.props.open && this.props.lastItem ? 0.5 : 0,
-                borderBottomWidth: this.props.open && this.props.lastItem != true ? 0.5 : 0, 
+              {
+                borderTopWidth: this.props.open && this.props.lastItem
+                  ? 0.5
+                  : 0,
+                borderBottomWidth: this.props.open &&
+                  this.props.lastItem != true
+                  ? 0.5
+                  : 0
               }
             ]}
           >
 
             <View style={css.accordionContainer2}>
 
-              <DatePickerIOS
-                date={this.props.date}
-                mode="datetime"
-                onDateChange={this.props.onDateChange}
-                minuteInterval={5}
+              <DatePicker
+                startDate={new Date(2000, 12, 12).toISOString()}
+                initDate={(this.props.date || new Date()).toISOString()}
+                onDateSelected={this.props.onDateChange}
               />
 
             </View>
@@ -87,15 +99,15 @@ const css = EStyleSheet.create({
     alignItems: "flex-end"
   },
   switchStyle: {
-    backgroundColor: "$filterBackgroundColor",
-    borderRadius: 19
+    backgroundColor: "transparent"
   },
   accordionContainer: {
     marginLeft: "5%",
     borderColor: "$filterItemBorderColor"
   },
   accordionContainer2: {
-    marginRight: "5%"
+    marginRight: "5%",
+    paddingVertical: "5%"
   }
 });
 

@@ -5,6 +5,7 @@ import TextBox from "./textBox";
 import ToolBarButton from "./toolBarButton";
 import { Actions } from "react-native-router-flux"
 import FilterActionSheet from "./filterActionSheet";
+import * as Help from "../utils/help"
 
 class ToolBar extends Component {
   constructor(props) {
@@ -39,14 +40,19 @@ class ToolBar extends Component {
   }
 
   render() {
+
+    const settingsImage = require("../images/cog.png");
+    const filterUsed = Help.areFiltersDifferent(this.props.filter, {});
+    const filterImage = filterUsed ? require("../images/filter-active.png") : require("../images/filter.png");
+
     return (
       <View style={css.container}>
 
         <ToolBarButton
           active={this.props.settingsOpen}
           containerStyle={css.buttonContainerStyle}
-          imageSource={require("../images/cog.png")}
-          activeImageSource={require("../images/cog-active.png")}
+          imageSource={settingsImage}
+          activeImageSource={settingsImage}
           onPress={() => Actions.refresh({key: "home", settingsOpen: !this.props.settingsOpen})}
         />
 
@@ -66,8 +72,8 @@ class ToolBar extends Component {
         <ToolBarButton
           active={this.props.filterOpen}
           containerStyle={css.buttonContainerStyle}
-          imageSource={require("../images/filter.png")}
-          activeImageSource={require("../images/filter-active.png")}
+          imageSource={filterImage}
+          activeImageSource={filterImage}
           onPress={() => Actions.refresh({key: "home", filterOpen: !this.props.filterOpen})}
         />
 

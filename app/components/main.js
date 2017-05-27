@@ -121,6 +121,7 @@ class Main extends Component {
           searchTerm={this.props.searchTerm}
           settingsOpen={this.props.settingsOpen}
           filterOpen={this.props.filterOpen}
+          filter={this.props.filter}
         />
 
         <EventList

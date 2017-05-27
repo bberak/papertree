@@ -1,22 +1,52 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, RefreshControl, Linking } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity
+} from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import Background from "./background";
-import Button from "./button";
-import Label from "./label";
-import Link from "./link";
 import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
-import { DatePicker } from "react-native-wheel-picker-android";
+import DatePickerAccordion from "./datePickerAccordion";
+import OptionPicker from "./optionPicker";
+import * as Help from "../utils/help"
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
-      date: new Date()
+      filterByStartTime: false,
+      filterByEndTime: false,
+      startDate: null,
+      endDate: null,
+      systemsOpen: false,
+      groupsOpen: false,
+      systems: [],
+      groups: [],
+      selectedGroup: null,
+      selectedSystem: null
     };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    let incomingFilter = nextProps.filter || {};
+    let currentFilter = this.buildFilter();
+    let same = Help.areFiltersTheSame(incomingFilter, currentFilter);
+
+    if (!same && nextProps.selectedSearch != this.props.selectedSearch) {
+      this.setState({
+        filterByStartTime: incomingFilter.minTime ? true : false,
+        startDate: incomingFilter.minTime ? new Date(incomingFilter.minTime) : null,
+        filterByEndTime: incomingFilter.maxTime ? true : false,
+        endDate: incomingFilter.maxTime ? new Date(incomingFilter.maxTime) : null,
+        selectedGroup: incomingFilter.groupName ? { name: incomingFilter.groupName, id: incomingFilter.groupId } : null,
+        selectedSystem: incomingFilter.systemName ? { name: incomingFilter.systemName, id: incomingFilter.systemId } : null
+      });
+    }
   }
 
   componentDidMount = () => {
@@ -29,13 +59,15 @@ class Filter extends Component {
     });
 
     try {
-      let results = await api.listSearches();
+      let results = await Promise.all([api.listGroups(), api.listSystems()]);
+      let groups = results[0] || [];
+      let systems = [{ name: "Any" }].concat(results[1] || []);
 
       this.setState({
-        refreshing: false
+        refreshing: false,
+        groups: groups,
+        systems: systems
       });
-
-      Actions.refresh({ key: "home", savedSearches: results });
     } catch (error) {
       console.log(error);
       this.setState({
@@ -44,35 +76,92 @@ class Filter extends Component {
     }
   };
 
-  linkPressed = s => {
-    if (s.id === (this.props.selectedSearch || {}).id) {
-      Actions.refresh({
-        key: "home",
-        selectedSearch: null,
-        searchTerm: null,
-        filter: null,
-        settingsOpen: false
-      });
-    } else {
-      Actions.refresh({
-        key: "home",
-        selectedSearch: s,
-        searchTerm: s.query,
-        filter: { groupId: s.group.id, groupName: s.group.name },
-        settingsOpen: false
-      });
-    }
+  getSelectedGroup = () => {
+    return this.state.selectedGroup || _.minBy(this.state.groups || [], "id");
   };
 
-  onDateChange = date => {
-    this.setState({ date: date });
+  getSelectedSystem = () => {
+    return this.state.selectedSystem || this.state.systems[0];
   };
+
+  onGroupSelected = id => {
+    let group = (this.state.groups || []).find(x => x.id === id);
+
+    this.setState({
+      selectedGroup: group
+    })
+  };
+
+  onSystemSelected = id => {
+    let system = (this.state.systems || []).find(x => x.id === id);
+    
+    this.setState({
+      selectedSystem: system
+    })
+  };
+
+  buildFilter = () => {
+    let filter = {};
+
+    if (this.state.selectedGroup) {
+      filter.groupId = this.state.selectedGroup.id;
+      filter.groupName = this.state.selectedGroup.name
+    }
+
+    if (this.state.selectedSystem) {
+      filter.systemId = this.state.selectedSystem.id;
+      filter.systemName = this.state.selectedSystem.name;
+    }
+
+    if (this.state.filterByStartTime) {
+      filter.minTime = this.state.startDate ? this.state.startDate.getTime() : null;
+    }
+
+    if (this.state.filterByEndTime) {
+      filter.maxTime = this.state.endDate ? this.state.endDate.getTime() : null;
+    }
+
+    return filter;
+  }
+
+  onResetFilters = () => {
+    this.setState({
+      filterByStartTime: false,
+      filterByEndTime: false,
+      startDate: null,
+      endDate: null,
+      systemsOpen: false,
+      groupsOpen: false,
+      selectedGroup: null,
+      selectedSystem: null
+    })
+  }
+
+  onApplyFilters = () => {
+    let newFilter = this.buildFilter();
+
+    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null});
+  }
+
+  onOpenOrCloseStartTime = (v) => {
+    this.setState({ 
+      filterByStartTime: v, 
+      startDate: v && this.state.startDate == null ? new Date() : null 
+    });
+  }
+
+  onOpenOrCloseEndTime = (v) => {
+    this.setState({ 
+      filterByEndTime: v, 
+      endDate: v && this.state.endDate == null ? new Date() : null 
+    });
+  }
 
   render() {
     let refreshControl = (
       <RefreshControl
         refreshing={this.state.refreshing}
-        tintColor={EStyleSheet.value("$indicatorColor")}
+        tintColor={EStyleSheet.value("$filterIndicatorColor")}
         colors={[
           EStyleSheet.value("$secondaryColor"),
           EStyleSheet.value("$primaryColor")
@@ -81,49 +170,93 @@ class Filter extends Component {
       />
     );
 
-    let searchItems = this.props.savedSearches &&
-      this.props.savedSearches.length > 0
-      ? _.chain(this.props.savedSearches)
-          .orderBy(["id"], ["desc"])
-          .map(x => {
-            let selected = x.id === (this.props.selectedSearch || {}).id;
-            let color = EStyleSheet.value(
-              selected ? "$secondaryColor" : "$linkFontColor"
-            );
-            return (
-              <Link
-                key={x.id}
-                value={x.name}
-                color={color}
-                onPress={() => this.linkPressed(x)}
-              />
-            );
-          })
-          .value()
-      : <Link value={"* * *"} disabled={true} />;
+    const newFilter = this.buildFilter();
+    const cannotFilter = Help.areFiltersTheSame(newFilter, this.props.filter);
+    const cannotReset = Help.areFiltersTheSame(newFilter, {});
 
     return (
       <View style={css.container}>
 
-        <ScrollView
-          // refreshControl={refreshControl}
-          style={css.scrollView}
-        >
+        <ScrollView refreshControl={refreshControl} style={css.scrollView}>
 
-          <Label value={"Time Filters"} />
+          <View style={css.heading}>
+            <Text style={[css.headingText, { flex: 1 }]}>TIME RANGE</Text>
+          </View>
 
-          <DatePicker initDate={new Date().toISOString()} />
+          <View style={css.sectionContainer}>
 
-          <Label value={"Saved Searches"} />
+            <DatePickerAccordion
+              label={"Starts"}
+              open={this.state.filterByStartTime}
+              onOpenOrClose={this.onOpenOrCloseStartTime}
+              date={this.state.startDate || new Date()}
+              onDateChange={date => this.setState({ startDate: date })}
+            />
+
+            <DatePickerAccordion
+              label={"Ends"}
+              open={this.state.filterByEndTime}
+              onOpenOrClose={this.onOpenOrCloseEndTime}
+              date={this.state.endDate || new Date()}
+              onDateChange={date => this.setState({ endDate: date })}
+              lastItem={true}
+            />
+          </View>
+
+          <View style={css.heading}>
+            <Text style={[css.headingText, { flex: 1 }]}>GROUPS</Text>
+          </View>
+
+          <View style={css.sectionContainer}>
+            <OptionPicker
+              label={"Group"}
+              value={this.getSelectedGroup()}
+              values={this.state.groups}
+              open={this.state.groupsOpen}
+              onOpenOrClose={v => this.setState({ groupsOpen: v })}
+              onValueChange={this.onGroupSelected}
+            />
+          </View>
+
+          <View style={css.heading}>
+            <Text style={[css.headingText, { flex: 1 }]}>SYSTEMS</Text>
+          </View>
+
+          <View style={css.sectionContainer}>
+            <OptionPicker
+              label={"System"}
+              value={this.getSelectedSystem()}
+              values={this.state.systems}
+              open={this.state.systemsOpen}
+              onOpenOrClose={v => this.setState({ systemsOpen: v })}
+              onValueChange={this.onSystemSelected}
+            />
+          </View>
 
         </ScrollView>
 
         <View style={css.buttonContainer}>
-          <Button
-            disabled={false}
-            value={"Apply Filter"}
-            onPress={api.logout}
-          />
+
+          <TouchableOpacity onPress={this.onResetFilters} activeOpacity={0.5} disabled={cannotReset}>
+            <View style={css.button}>
+
+              <Text style={[css.buttonText, {color: cannotReset ? EStyleSheet.value("$disabledLinkFontColor") : EStyleSheet.value("$warningColor")}]}>
+                Reset
+              </Text>
+
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.onApplyFilters} activeOpacity={0.5} disabled={cannotFilter}>
+            <View style={css.button}>
+
+              <Text style={[css.buttonText, {color: cannotFilter ? EStyleSheet.value("$disabledLinkFontColor") : EStyleSheet.value("$actionSheetButtonFontColor")}]}>
+                Apply
+              </Text>
+
+            </View>
+          </TouchableOpacity>
+
         </View>
 
       </View>
@@ -132,25 +265,62 @@ class Filter extends Component {
 }
 
 const css = EStyleSheet.create({
+  $buttonHeight: "8.54%",
+  $buttonFontHeight: "3.3%",
+  $headingTextHeight: "1.95%",
   container: {
-    backgroundColor: "#FFF",
+    backgroundColor: "$filterBackgroundColor",
     flex: 1,
-    elevation: 5
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0,
+    shadowRadius: 5
   },
-  logo: {
-    alignSelf: "center",
-    marginTop: "5%",
-    marginBottom: "5%"
+  heading: {
+    flexDirection: "row",
+    paddingHorizontal: "5%",
+    paddingTop: "5%",
+    paddingBottom: "1%"
   },
-  scrollView: {
-    flex: 1
+  headingText: {
+    fontSize: "$headingTextHeight",
+    color: "$filterHeadingFontColor",
+    letterSpacing: 1.2,
+    fontWeight: "600"
   },
-  listContainer: {
-    marginBottom: "5%"
+  sectionContainer: {
+    backgroundColor: "$secionContainerBackgroundColor",
+    borderColor: "$filterItemBorderColor",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0.07,
+    shadowRadius: 4
   },
   buttonContainer: {
-    marginHorizontal: "7%",
-    marginBottom: "2%"
+    backgroundColor: "$secionContainerBackgroundColor",
+    borderColor: "$filterItemBorderColor",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    shadowOffset: { width: 0, height: -2 },
+    shadowColor: "$shadowColor",
+    shadowOpacity: 0.07,
+    shadowRadius: 4
+  },
+  button: {
+    height: "$buttonHeight",
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "$filterItemBorderColor",
+    borderBottomWidth: 0.5
+  },
+  buttonText: {
+    backgroundColor: "transparent",
+    color: "$actionSheetButtonFontColor",
+    fontSize: "$buttonFontHeight",
+    letterSpacing: 0
   }
 });
 

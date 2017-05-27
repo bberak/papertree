@@ -61,7 +61,7 @@ class OptionAccordion extends Component {
     return (
       <View>
 
-        <View style={css.borderContainer}>
+        <View style={[css.borderContainer, { borderBottomWidth: this.props.lastItem ? 0 : 0.5 }]}>
 
           <Text style={css.labelStyle}>{this.props.label}</Text>
 
@@ -93,9 +93,13 @@ class OptionAccordion extends Component {
           <View
             style={[
               css.accordionContainer,
-              { borderBottomWidth: this.props.open && this.props.lastItem != true ? 0.5 : 0 }
+              { 
+                borderTopWidth: this.props.open && this.props.lastItem ? 0.5 : 0,
+                borderBottomWidth: this.props.open && this.props.lastItem != true ? 0.5 : 0, 
+              }
             ]}
           >
+          
             <View style={css.accordionContainer2}>
 
               <Picker
@@ -121,7 +125,6 @@ const css = EStyleSheet.create({
   $valueFontHeight: "1.65%",
   borderContainer: {
     borderColor: "$filterItemBorderColor",
-    borderBottomWidth: 0.5,
     flexDirection: "row",
     flex: 1,
     alignItems: "center",

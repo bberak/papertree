@@ -35,4 +35,5 @@ export default {
   filterValueButtonBackgroundColor: "#FFFFFF",
   filterValueButtonFontColorPressed: "#FFFFFF",
   filterValueButtonBackgroundColorPressed: "#CCCCCC",
+  androidSwitchThumbColor: "#90CEF2"
 }

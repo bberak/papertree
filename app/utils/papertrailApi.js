@@ -123,13 +123,11 @@ module.exports = Object.freeze({
 
     let now = (new Date()).getTime();
 
-    if (filter.minTime && filter.minTime > now) {
-      return {}; //-- Invalid query, start time cannot be in the future
-    }
+    if (filter.minTime && filter.minTime > now)
+      throw new Error("Invalid query, start time cannot be in the future");
 
-    if (filter.minTime && filter.maxTime && filter.minTime > filter.maxTime) {
-      return {}; //-- Invalid query, start time cannot be greater than end time
-    }
+    if (filter.minTime && filter.maxTime && filter.minTime > filter.maxTime) 
+      throw new Error("Invalid query, start time cannot be greater than end time");
 
     let query = {
       q: searchTerm,
