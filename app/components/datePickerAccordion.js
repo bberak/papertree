@@ -9,10 +9,6 @@ class DatePickerAccordion extends Component {
     this.state = {};
   }
 
-  onDateChange = date => {
-    this.setState({ date: date });
-  };
-
   render() {
     return (
       <View>
@@ -28,7 +24,7 @@ class DatePickerAccordion extends Component {
               onValueChange={this.props.onOpenOrClose}
               value={this.props.open}
               tintColor={EStyleSheet.value("$switchBorderColor")}
-              onTintColor={this.props.onTintColor || EStyleSheet.value("$iosSwitchTintColor")}
+              onTintColor={this.props.onTintColor || EStyleSheet.value("$iosSwitchOnTintColor")}
             />
 
           </View>

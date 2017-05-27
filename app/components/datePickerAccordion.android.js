@@ -10,10 +10,6 @@ class DatePickerAccordion extends Component {
     this.state = {};
   }
 
-  onDateChange = date => {
-    this.setState({ date: date });
-  };
-
   render() {
     return (
       <View>
@@ -33,9 +29,9 @@ class DatePickerAccordion extends Component {
               style={css.switchStyle}
               onValueChange={this.props.onOpenOrClose}
               value={this.props.open}
-              thumbTintColor={EStyleSheet.value("$buttonColor")}
+              thumbTintColor={this.props.thumbTintColor || EStyleSheet.value("$buttonColor")}
               tintColor={EStyleSheet.value("$filterItemBorderColor")}
-              onTintColor={this.props.onTinColor || EStyleSheet.value("$androidSwitchTintColor")}
+              onTintColor={this.props.onTintColor || EStyleSheet.value("$androidSwitchOnTintColor")}
             />
 
           </View>
@@ -62,7 +58,7 @@ class DatePickerAccordion extends Component {
             <View style={css.accordionContainer2}>
 
               <DatePicker
-                startDate={new Date(2000, 12, 12).toISOString()}
+                //startDate={new Date(2000, 12, 12).toISOString()}
                 initDate={(this.props.date || new Date()).toISOString()}
                 onDateSelected={this.props.onDateChange}
               />

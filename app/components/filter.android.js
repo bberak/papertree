@@ -192,7 +192,8 @@ class Filter extends Component {
               onOpenOrClose={this.onOpenOrCloseStartTime}
               date={this.state.startDate || new Date()}
               onDateChange={date => this.setState({ startDate: date })}
-              onTintColor={ timeFiltersValid ? undefined : "red"}
+              thumbTintColor={ timeFiltersValid ? undefined : "red"}
+              onTintColor={ timeFiltersValid ? undefined : EStyleSheet.value("$filterItemBorderColor")}
             />
 
             <DatePickerAccordion
@@ -201,7 +202,8 @@ class Filter extends Component {
               onOpenOrClose={this.onOpenOrCloseEndTime}
               date={this.state.endDate || new Date()}
               onDateChange={date => this.setState({ endDate: date })}
-              onTintColor={ timeFiltersValid ? undefined : "red"}
+              thumbTintColor={ timeFiltersValid ? undefined : "red"}
+              onTintColor={ timeFiltersValid ? undefined : EStyleSheet.value("$filterItemBorderColor")}
               lastItem={true}
             />
           </View>
