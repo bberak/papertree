@@ -10,42 +10,13 @@ import {
 import EStyleSheet from "react-native-extended-stylesheet";
 import Collapsible from "react-native-collapsible";
 import * as Animatable from "react-native-animatable";
+import moment from "moment"
 
 class DatePickerAccordion extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
-  openDatePicker = async () => {
-    try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
-        // Use `new Date()` for current date.
-        // May 25 2020. Month 0 is January.
-        date: new Date()
-      });
-      if (action !== DatePickerAndroid.dismissedAction) {
-        // Selected year, month (0-11), day
-      }
-    } catch ({ code, message }) {
-      console.warn("Cannot open date picker", message);
-    }
-  };
-
-  openTimePicker = async () => {
-    try {
-      const { action, hour, minute } = await TimePickerAndroid.open({
-        hour: 14,
-        minute: 0,
-        is24Hour: false // Will display '2 PM'
-      });
-      if (action !== TimePickerAndroid.dismissedAction) {
-        // Selected hour (0-23), minute (0-59)
-      }
-    } catch ({ code, message }) {
-      console.warn("Cannot open time picker", message);
-    }
-  };
 
   onDatePressIn = () => {
     this.refs.dateContainer.transitionTo({
@@ -69,8 +40,24 @@ class DatePickerAccordion extends Component {
     });
   };
 
-  onDatePress = () => {
-    alert("Date Pressed");
+  onDatePress = async () => {
+    const date = this.props.date || new Date();
+
+    try {
+      const { action, year, month, day } = await DatePickerAndroid.open({
+        date: date
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        date.setFullYear(year);
+        date.setMonth(month);
+        date.setDate(day);
+
+        if (this.props.onDateChange)
+          this.props.onDateChange(date);
+      }
+    } catch ({ code, message }) {
+      console.log("Cannot open date picker", message);
+    }
   };
 
  onTimePressIn = () => {
@@ -95,11 +82,30 @@ class DatePickerAccordion extends Component {
     });
   };
 
-  onTimePress = () => {
-    alert("Time Pressed");
+  onTimePress = async () => {
+    const date = this.props.date || new Date();
+
+    try {
+      const { action, hour, minute } = await TimePickerAndroid.open({
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+        is24Hour: false
+      });
+      if (action !== TimePickerAndroid.dismissedAction) {
+        date.setHours(hour);
+        date.setMinutes(minute);
+
+        if (this.props.onDateChange)
+          this.props.onDateChange(date);
+      }
+    } catch ({ code, message }) {
+      console.log("Cannot open time picker", message);
+    }
   };
 
   render() {
+    const date = this.props.date || new Date();
+    const m = moment(date);
     return (
       <View>
 
@@ -160,7 +166,7 @@ class DatePickerAccordion extends Component {
                 style={css.valueTextContainer}
               >
                 <Animatable.Text ref={"date"} style={css.valueText}>
-                  {"2017-12-03".toUpperCase()}
+                  {m.format("YYYY-MMM-DD")}
                 </Animatable.Text>
               </Animatable.View>
 
@@ -179,7 +185,7 @@ class DatePickerAccordion extends Component {
                 style={css.valueTextContainer}
               >
                 <Animatable.Text ref={"time"} style={css.valueText}>
-                  {"5: 43 PM".toUpperCase()}
+                  {m.format("h:mm a")}
                 </Animatable.Text>
               </Animatable.View>
 
@@ -235,7 +241,7 @@ const css = EStyleSheet.create({
   valueText: {
     fontSize: "$valueFontHeight",
     color: "$filterValueButtonFontColor",
-    fontWeight: "500"
+    fontWeight: "400"
   }
 });
 

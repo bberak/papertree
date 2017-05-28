@@ -31,10 +31,10 @@ export default {
   filterBackgroundColor: "#F9F9FA",
   filterHeadingFontColor: "#BBBBBB",
   secionContainerBackgroundColor: "#FFFFFF",
-  filterValueButtonFontColor: "#CCCCCC",
+  filterValueButtonFontColor: "#4A4A4A",
   filterValueButtonBackgroundColor: "#FFFFFF",
   filterValueButtonFontColorPressed: "#FFFFFF",
-  filterValueButtonBackgroundColorPressed: "#CCCCCC",
+  filterValueButtonBackgroundColorPressed: "#4A4A4A",
   iosSwitchOnTintColor: "#4BD763",
   androidSwitchOnTintColor: "#90CEF2"
 }

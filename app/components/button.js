@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Platform } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import * as Animatable from 'react-native-animatable'
 
@@ -12,7 +12,7 @@ class Button extends Component {
   
   onPressIn = () => {
     this.refs.buttonContainer.transitionTo({elevation: 1, shadowRadius: 1, shadowOpacity: 0.9, transform: [{scale: 0.95}]})
-    this.refs.text.transitionTo({textShadowRadius: 1})
+    this.refs.text.transitionTo({textShadowRadius: Platform.OS === "ios" ? 1 : 2})
   }
   
   onPressOut = (e) => {

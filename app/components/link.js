@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Image, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Image, TouchableWithoutFeedback, Platform } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 
@@ -17,7 +17,7 @@ class Link extends Component {
     });
 
     this.refs.text.transitionTo({
-      textShadowRadius: 1,
+      textShadowRadius: Platform.OS === "ios" ? 1 : 2,
       scale: 0.95
     });
   };
