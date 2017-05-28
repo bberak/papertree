@@ -1,14 +1,103 @@
 import React, { Component } from "react";
-import { View, Text, Switch, DatePickerIOS } from "react-native";
+import {
+  View,
+  Text,
+  Switch,
+  DatePickerAndroid,
+  TouchableWithoutFeedback,
+  TimePickerAndroid
+} from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Collapsible from "react-native-collapsible";
-import { DatePicker } from "react-native-wheel-picker-android";
+import * as Animatable from "react-native-animatable";
 
 class DatePickerAccordion extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  openDatePicker = async () => {
+    try {
+      const { action, year, month, day } = await DatePickerAndroid.open({
+        // Use `new Date()` for current date.
+        // May 25 2020. Month 0 is January.
+        date: new Date()
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        // Selected year, month (0-11), day
+      }
+    } catch ({ code, message }) {
+      console.warn("Cannot open date picker", message);
+    }
+  };
+
+  openTimePicker = async () => {
+    try {
+      const { action, hour, minute } = await TimePickerAndroid.open({
+        hour: 14,
+        minute: 0,
+        is24Hour: false // Will display '2 PM'
+      });
+      if (action !== TimePickerAndroid.dismissedAction) {
+        // Selected hour (0-23), minute (0-59)
+      }
+    } catch ({ code, message }) {
+      console.warn("Cannot open time picker", message);
+    }
+  };
+
+  onDatePressIn = () => {
+    this.refs.dateContainer.transitionTo({
+      backgroundColor: EStyleSheet.value(
+        "$filterValueButtonBackgroundColorPressed"
+      )
+    });
+
+    this.refs.date.transitionTo({
+      color: EStyleSheet.value("$filterValueButtonFontColorPressed")
+    });
+  };
+
+  onDatePressOut = () => {
+    this.refs.dateContainer.transitionTo({
+      backgroundColor: EStyleSheet.value("$filterValueButtonBackgroundColor")
+    });
+
+    this.refs.date.transitionTo({
+      color: EStyleSheet.value("$filterValueButtonFontColor")
+    });
+  };
+
+  onDatePress = () => {
+    alert("Date Pressed");
+  };
+
+ onTimePressIn = () => {
+    this.refs.timeContainer.transitionTo({
+      backgroundColor: EStyleSheet.value(
+        "$filterValueButtonBackgroundColorPressed"
+      )
+    });
+
+    this.refs.time.transitionTo({
+      color: EStyleSheet.value("$filterValueButtonFontColorPressed")
+    });
+  };
+
+  onTimePressOut = () => {
+    this.refs.timeContainer.transitionTo({
+      backgroundColor: EStyleSheet.value("$filterValueButtonBackgroundColor")
+    });
+
+    this.refs.time.transitionTo({
+      color: EStyleSheet.value("$filterValueButtonFontColor")
+    });
+  };
+
+  onTimePress = () => {
+    alert("Time Pressed");
+  };
 
   render() {
     return (
@@ -29,9 +118,14 @@ class DatePickerAccordion extends Component {
               style={css.switchStyle}
               onValueChange={this.props.onOpenOrClose}
               value={this.props.open}
-              thumbTintColor={this.props.thumbTintColor || EStyleSheet.value("$buttonColor")}
+              thumbTintColor={
+                this.props.thumbTintColor || EStyleSheet.value("$buttonColor")
+              }
               tintColor={EStyleSheet.value("$filterItemBorderColor")}
-              onTintColor={this.props.onTintColor || EStyleSheet.value("$androidSwitchOnTintColor")}
+              onTintColor={
+                this.props.onTintColor ||
+                  EStyleSheet.value("$androidSwitchOnTintColor")
+              }
             />
 
           </View>
@@ -55,15 +149,41 @@ class DatePickerAccordion extends Component {
             ]}
           >
 
-            <View style={css.accordionContainer2}>
+            <TouchableWithoutFeedback
+              onPress={this.onDatePress}
+              onPressIn={this.onDatePressIn}
+              onPressOut={this.onDatePressOut}
+            >
 
-              <DatePicker
-                //startDate={new Date(2000, 12, 12).toISOString()}
-                initDate={(this.props.date || new Date()).toISOString()}
-                onDateSelected={this.props.onDateChange}
-              />
+              <Animatable.View
+                ref={"dateContainer"}
+                style={css.valueTextContainer}
+              >
+                <Animatable.Text ref={"date"} style={css.valueText}>
+                  {"2017-12-03".toUpperCase()}
+                </Animatable.Text>
+              </Animatable.View>
 
-            </View>
+            </TouchableWithoutFeedback>
+
+            <Text style={css.valueText}> - </Text>
+
+            <TouchableWithoutFeedback
+              onPress={this.onTimePress}
+              onPressIn={this.onTimePressIn}
+              onPressOut={this.onTimePressOut}
+            >
+
+              <Animatable.View
+                ref={"timeContainer"}
+                style={css.valueTextContainer}
+              >
+                <Animatable.Text ref={"time"} style={css.valueText}>
+                  {"5: 43 PM".toUpperCase()}
+                </Animatable.Text>
+              </Animatable.View>
+
+            </TouchableWithoutFeedback>
 
           </View>
 
@@ -75,7 +195,8 @@ class DatePickerAccordion extends Component {
 }
 
 const css = EStyleSheet.create({
-  $fontHeight: "2.6%",
+  $labelFontHeight: "2.6%",
+  $valueFontHeight: "2.3%",
   borderContainer: {
     borderColor: "$filterItemBorderColor",
     flexDirection: "row",
@@ -87,7 +208,7 @@ const css = EStyleSheet.create({
   },
   labelStyle: {
     backgroundColor: "transparent",
-    fontSize: "$fontHeight",
+    fontSize: "$labelFontHeight",
     color: "$switchFontColor"
   },
   switchContainer: {
@@ -98,12 +219,23 @@ const css = EStyleSheet.create({
     backgroundColor: "transparent"
   },
   accordionContainer: {
+    borderColor: "$filterItemBorderColor",
     marginLeft: "5%",
-    borderColor: "$filterItemBorderColor"
+    flexDirection: "row",
+    alignItems: "center",
+    paddingRight: "5%",
+    justifyContent: "flex-end",
+    height: "8%"
   },
-  accordionContainer2: {
-    marginRight: "5%",
-    paddingVertical: "5%"
+  valueTextContainer: {
+    padding: 3,
+    borderRadius: 5,
+    backgroundColor: "$filterValueButtonBackgroundColor"
+  },
+  valueText: {
+    fontSize: "$valueFontHeight",
+    color: "$filterValueButtonFontColor",
+    fontWeight: "500"
   }
 });
 

@@ -13,7 +13,12 @@ class DatePickerAccordion extends Component {
     return (
       <View>
 
-        <View style={[css.borderContainer, { borderBottomWidth: this.props.lastItem ? 0 : 0.5 }]}>
+        <View
+          style={[
+            css.borderContainer,
+            { borderBottomWidth: this.props.lastItem ? 0 : 0.5 }
+          ]}
+        >
 
           <Text style={css.labelStyle}>{this.props.label}</Text>
 
@@ -24,7 +29,10 @@ class DatePickerAccordion extends Component {
               onValueChange={this.props.onOpenOrClose}
               value={this.props.open}
               tintColor={EStyleSheet.value("$switchBorderColor")}
-              onTintColor={this.props.onTintColor || EStyleSheet.value("$iosSwitchOnTintColor")}
+              onTintColor={
+                this.props.onTintColor ||
+                  EStyleSheet.value("$iosSwitchOnTintColor")
+              }
             />
 
           </View>
@@ -36,23 +44,24 @@ class DatePickerAccordion extends Component {
           <View
             style={[
               css.accordionContainer,
-              { 
-                borderTopWidth: this.props.open && this.props.lastItem ? 0.5 : 0,
-                borderBottomWidth: this.props.open && this.props.lastItem != true ? 0.5 : 0, 
+              {
+                borderTopWidth: this.props.open && this.props.lastItem
+                  ? 0.5
+                  : 0,
+                borderBottomWidth: this.props.open &&
+                  this.props.lastItem != true
+                  ? 0.5
+                  : 0
               }
             ]}
           >
 
-            <View style={css.accordionContainer2}>
-
-              <DatePickerIOS
-                date={this.props.date}
-                mode="datetime"
-                onDateChange={this.props.onDateChange}
-                minuteInterval={5}
-              />
-
-            </View>
+            <DatePickerIOS
+              date={this.props.date}
+              mode="datetime"
+              onDateChange={this.props.onDateChange}
+              minuteInterval={5}
+            />
 
           </View>
 
@@ -89,10 +98,8 @@ const css = EStyleSheet.create({
   },
   accordionContainer: {
     marginLeft: "5%",
+    paddingRight: "5%",
     borderColor: "$filterItemBorderColor"
-  },
-  accordionContainer2: {
-    marginRight: "5%"
   }
 });
 

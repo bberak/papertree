@@ -2589,11 +2589,6 @@
       "from": "react-native-tabs@>=1.0.9 <2.0.0",
       "resolved": "https://registry.npmjs.org/react-native-tabs/-/react-native-tabs-1.0.9.tgz"
     },
-    "react-native-wheel-picker-android": {
-      "version": "0.1.10",
-      "from": "react-native-wheel-picker-android@latest",
-      "resolved": "https://registry.npmjs.org/react-native-wheel-picker-android/-/react-native-wheel-picker-android-0.1.10.tgz"
-    },
     "react-proxy": {
       "version": "1.1.8",
       "from": "react-proxy@>=1.1.7 <2.0.0",
