@@ -84,7 +84,7 @@ class Main extends Component {
     }
   };
 
-  onEndReached = _.debounce(async () => {
+  onEndReached = async () => {
     if (this.state.events && this.state.events.length > 0) {
       try {
         let maxId = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
@@ -108,7 +108,7 @@ class Main extends Component {
         });
       }
     }
-  }, 1000, {leading: true, trailing: false});
+  }
 
   render() {
     const statusBar = Platform.OS === "ios"
@@ -138,7 +138,7 @@ class Main extends Component {
           events={this.state.events}
           searchTerm={this.props.searchTerm}
           filter={this.props.filter}
-          onEndReached={this.onEndReached}
+          onEndReached={_.debounce(this.onEndReached, 1000, {leading: true, trailing: false})}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
         />
 
