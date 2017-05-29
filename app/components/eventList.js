@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Text, ListView, RefreshControl } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import EventListSection from "./eventListSection"
-import EventListRow from "./eventListRow"
+import EventListSection from "./eventListSection";
+import EventListRow from "./eventListRow";
 import _ from "lodash";
-import Label from "./label"
-import * as Help from "../utils/help"
+import Label from "./label";
+import * as Help from "../utils/help";
 
 const ds = new ListView.DataSource({
   getSectionData: (blob, sectionId) => blob[sectionId],
@@ -20,8 +20,11 @@ class EventList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.searchTerm !== nextProps.searchTerm || Help.areFiltersDifferent(this.props.filter, nextProps.filter))
-      this.refs.list.scrollTo({x: 0, y: 0, animated: true})
+    if (
+      this.props.searchTerm !== nextProps.searchTerm ||
+      Help.areFiltersDifferent(this.props.filter, nextProps.filter)
+    )
+      this.refs.list.scrollTo({ x: 0, y: 0, animated: true });
   }
 
   buildDataSource(data) {
@@ -32,9 +35,18 @@ class EventList extends Component {
         return {
           id: key,
           display_received_at: group[0].display_received_at,
-          events: _.map(group, (e, idx) => {
-            return { id: `${e.id}#${idx}`, message: e.message, hostname: e.hostname, program: e.program, isFirst: idx === 0 };
-          })
+          events: _.chain(group)
+            .map((e, idx) => {
+              return {
+                id: e.id,
+                message: e.message,
+                hostname: e.hostname,
+                program: e.program,
+                isFirst: idx === 0
+              };
+            })
+            .orderBy(["id"])
+            .value()
         };
       })
       .value();
@@ -67,7 +79,7 @@ class EventList extends Component {
     }
 
     return ds.cloneWithRowsAndSections(blob, sectionIds, rowIds);
-  };
+  }
 
   render() {
     let refreshControl = (
@@ -89,7 +101,9 @@ class EventList extends Component {
         refreshControl={refreshControl}
         dataSource={this.buildDataSource(this.props.events)}
         renderRow={event => <EventListRow {...event} />}
-        renderSectionHeader={section => <EventListSection value={section.display_received_at} />}
+        renderSectionHeader={section => (
+          <EventListSection value={section.display_received_at} />
+        )}
         stickySectionHeadersEnabled={true}
         horizontal={false}
         showsHorizontalScrollIndicator={false}
@@ -106,7 +120,7 @@ const css = EStyleSheet.create({
   $marginHorizontal: "3.94%",
   list: {
     "@media ios": {
-      paddingHorizontal: "$paddingHorizontal",
+      paddingHorizontal: "$paddingHorizontal"
     },
     "@media android": {
       marginHorizontal: "$marginHorizontal"

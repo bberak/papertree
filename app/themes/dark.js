@@ -14,7 +14,7 @@ export default {
   disabledLinkFontColor: "#9B9B9B",
   disabledLinkFontColorPressed: "#9B9B9B",
   labelFontColor: "#FFF",
-  homeBackgroundColor: "#3D3E3F",
+  homeBackgroundColor: "#333",
   toolBarButtonColor: "#FFF",
   eventListSectionHeaderColor: "#D3D3D3",
   eventListRowHostnameColor: "#F99D1E",
