@@ -1,32 +1,19 @@
 import React, { Component, } from 'react'
 import { View, ActivityIndicator, Image, StatusBar } from 'react-native'
-import api  from '../utils/papertrailApi'
-import { Actions } from 'react-native-router-flux'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import Background from './background'
 import LoginForm from './loginForm'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { connect } from "react-redux";
 
 class Login extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      loading: true
-    }
-  }
-  
-  componentDidMount = async () => {
-    if (await api.isLoggedIn()) {
-      this.setState({loading: false});
-      Actions.home();
-    }
-
-    this.setState({loading: false}); 
   }
 
   render() {
     
-    let form = this.state.loading ? 
+    let form = this.props.loading ? 
         <View style={css.activityIndicatorContainer}>
           <ActivityIndicator color={EStyleSheet.value("$indicatorColor")} />
         </View> :
@@ -79,4 +66,4 @@ const css = EStyleSheet.create({
   }
 })
 
-export default Login
+export default connect(s => s)(Login)

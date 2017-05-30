@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
-import api from "../utils/papertrailApi";
-import { Actions } from "react-native-router-flux";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
 import TextBox from "./textBox";
 import Button from "./button";
 import Label from "./label";
 import Link from "./link";
-import Browser from "../utils/browser";
+import { connect } from "react-redux";
 
 class LoginForm extends Component {
   constructor(props) {
@@ -16,37 +14,31 @@ class LoginForm extends Component {
     this.state = {
       email: "",
       password: "",
-      connecting: false
     };
   }
 
-  onTryLogin = async () => {
-    if (this.state.email && this.state.password) {
-      try {
-        this.setState({ connecting: true });
-        await api.login(this.state.email, this.state.password);
-        this.setState({
-          email: "",
-          password: "",
-          connecting: false
-        });
-        Actions.home();
-      } catch (error) {
-        this.setState({ connecting: false });
-        this.refs.textBoxes.shake(400);
-      }
-    } else this.refs.textBoxes.shake(400);
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.loggedIn) {
+      this.setState({
+        email: "",
+        password: ""
+      })
+    } 
+  }
+
+  onLogin = async () => {
+    this.props.dispatch({ type: "LOGIN", email: this.state.email, password: this.state.password });
   };
 
   onCreateAccount = () => {
-    Browser.openURL("https://papertrailapp.com/signup?plan=free");
+    this.props.dispatch({ type: "CREATE_ACCOUNT" });
   };
 
   render() {
     return (
       <Animatable.View animation={"fadeIn"} ref={"form"} style={css.form}>
 
-        <Animatable.View ref={"textBoxes"}>
+        <Animatable.View ref={"textBoxes"} animation={this.props.loginFailed ? "shake" : null} duration={400}>
 
           <TextBox
             ref={"email"}
@@ -70,16 +62,16 @@ class LoginForm extends Component {
             returnKeyType={"done"}
             autoCapitalize={"none"}
             containerStyle={css.margin}
-            onSubmitEditing={this.onTryLogin}
+            onSubmitEditing={this.onLogin}
             onChangeText={text => this.setState({ password: text })}
           />
 
         </Animatable.View>
 
         <Button
-          value={this.state.connecting ? "Connecting.." : "Login"}
-          onPress={this.onTryLogin}
-          disabled={this.state.connecting}
+          value={this.props.attemptingLogin ? "Connecting.." : "Login"}
+          onPress={this.onLogin}
+          disabled={this.props.attemptingLogin}
           containerStyle={css.margin}
         />
         <Label value={"or"} />
@@ -99,4 +91,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default LoginForm;
+export default connect(s => s)(LoginForm);

@@ -6,6 +6,7 @@ import * as Animatable from "react-native-animatable";
 import _ from "lodash";
 import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
+import { connect } from "react-redux";
 
 class SaveSearchActionSheet extends Component {
   constructor(props) {
@@ -26,6 +27,8 @@ class SaveSearchActionSheet extends Component {
         disabled: true
       });
       try {
+
+        /*
         let newSearch = await api.saveSearch(
           searchName,
           this.props.searchTerm,
@@ -43,8 +46,12 @@ class SaveSearchActionSheet extends Component {
             });
           }
         });
+        */
 
-        this.props.onClose();
+        //this.props.onClose();
+
+        this.props.dispatch({ type: "SAVE_SEARCH", searchName: searchName, searchTerm: this.props.searchTerm, filter: this.props.filter })
+
       } catch (error) {
         console.log(error);
         this.setState({
@@ -57,6 +64,7 @@ class SaveSearchActionSheet extends Component {
     }
   };
 
+/*
   onClosed = () => {
     let action = this.state.pendingAction;
 
@@ -72,12 +80,14 @@ class SaveSearchActionSheet extends Component {
     if (this.props.onClosed) this.props.onClosed();
   };
 
+  */
+
   render() {
     return (
       <ActionSheet.Form
         visible={this.props.visible}
-        onBackdropPress={this.props.onClose}
-        onClosed={this.onClosed}
+        onBackdropPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
+        onClosed={this.props.onClosed}
         formContainerStyle={css.formContainer}
       >
 
@@ -102,7 +112,7 @@ class SaveSearchActionSheet extends Component {
 
         <ActionSheet.Options
           leftOptionValue={"Cancel"}
-          onLeftOptionPress={this.props.onClose}
+          onLeftOptionPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
           rightOptionValue={this.state.label}
           onRightOptionPress={() => {
             this.save();
@@ -123,4 +133,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default SaveSearchActionSheet;
+export default connect(s => s)(SaveSearchActionSheet);

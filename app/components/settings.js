@@ -15,6 +15,7 @@ import Link from "./link";
 import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
+import { connect } from "react-redux";
 
 class Settings extends Component {
   constructor(props) {
@@ -125,7 +126,7 @@ class Settings extends Component {
         </ScrollView>
 
         <View style={css.buttonContainer}>
-          <Button disabled={false} value={"Logout"} onPress={api.logout} />
+          <Button disabled={false} value={"Logout"} onPress={() => this.props.dispatch({ type: "LOGOUT" })} />
         </View>
 
       </Background>
@@ -151,4 +152,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default Settings;
+export default connect(s => s)(Settings);

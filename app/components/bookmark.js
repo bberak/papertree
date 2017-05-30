@@ -13,6 +13,7 @@ import Modal from "react-native-modal";
 import SaveSearchActionSheet from "./saveSearchActionSheet";
 import DeleteSearchActionSheet from "./deleteSearchActionSheet";
 import * as Str from "../utils/str";
+import { connect } from "react-redux";
 
 const imageSource = require("../images/bookmark.png");
 const activeImageSource = require("../images/bookmark-active.png");
@@ -28,7 +29,7 @@ class Bookmark extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.canShowBookmark(nextProps.searchTerm))
+    if (this.canShowBookmark(nextProps.searchTerm) && nextProps.saveSearchActionSheetVisible === false)
       this.showBookmark();
     else
       this.hideBookmark();
@@ -49,9 +50,7 @@ class Bookmark extends Component {
   onPress = () => {
     this.hideBookmark();
 
-    this.setState({
-      opened: true
-    });
+    this.props.dispatch({ type: "OPEN_SAVE_SEARCH_ACTIONSHEET"});
   };
 
   getOrientation = () => {
@@ -60,7 +59,7 @@ class Bookmark extends Component {
   }
 
   onLayout = () => {
-    if (this.canShowBookmark(this.props.searchTerm) && this.state.opened === false) {
+    if (this.canShowBookmark(this.props.searchTerm) && this.props.saveSearchActionSheetVisible === false) {
       this.showBookmark();
     } else {
       this.hideBookmark();
@@ -72,7 +71,7 @@ class Bookmark extends Component {
   }
 
   render() {
-    const visible = this.state.opened === true && this.canShowBookmark(this.props.searchTerm);
+    const visible = this.props.saveSearchActionSheetVisible === true && this.canShowBookmark(this.props.searchTerm);
 
     const actionSheet = this.props.selectedSearch ? 
       <DeleteSearchActionSheet
@@ -84,7 +83,6 @@ class Bookmark extends Component {
         /> :
         <SaveSearchActionSheet
           visible={visible}
-          onClose={() => this.setState({ opened: false })}
           onClosed={this.showBookmark}
           savedSearches={this.props.savedSearches} 
           searchTerm={this.props.searchTerm}
@@ -129,4 +127,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default Bookmark;
+export default connect(s => s)(Bookmark);
