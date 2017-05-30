@@ -6,7 +6,7 @@ import api from "../utils/papertrailApi";
 import EventList from "./eventList";
 import Bookmark from "./bookmark";
 import _ from "lodash";
-import * as Help from "../utils/help"
+import * as Help from "../utils/help";
 
 class Main extends Component {
   constructor(props) {
@@ -24,31 +24,62 @@ class Main extends Component {
   componentWillReceiveProps = nextProps => {
     if (
       this.props.searchTerm !== nextProps.searchTerm ||
-      Help.areFiltersDifferent(this.props.filter, nextProps.filter)
+      Help.areFiltersDifferent(this.props.filter, nextProps.filter) ||
+      this.props.selectedEvent !== nextProps.selectedEvent
     ) {
-      this.onSearch(nextProps.searchTerm, nextProps.filter);
+      this.onSearch(
+        nextProps.searchTerm,
+        nextProps.filter,
+        nextProps.selectedEvent
+      );
     }
   };
 
-  onSearch = async (searchTerm, filter) => {
+  onSearch = async (searchTerm, filter, selectedEvent) => {
     this.setState({
       refreshing: true
     });
 
-    try {
-      let results = await api.search(searchTerm, filter);
+    if (selectedEvent) {
+      //-- Display the sibling, then find the youngest and
+      //-- retrieve older events.
 
       this.setState({
-        events: results.events,
-        refreshing: false
+        events: selectedEvent.siblings
       });
-    } catch (error) {
-      console.log(error);
 
-      this.setState({
-        events: [],
-        refreshing: false
-      });
+      try {
+        let maxId = _.maxBy(selectedEvent.siblings, "id").id;
+        let results = await api.search(null, null, null, maxId, 20);
+
+        this.setState({
+          events: _.uniqBy(selectedEvent.siblings.concat(results.events), "id"),
+          refreshing: false
+        });
+      } catch (error) {
+        console.log(error);
+
+        this.setState({
+          events: [],
+          refreshing: false
+        });
+      }
+    } else {
+      try {
+        let results = await api.search(searchTerm, filter);
+
+        this.setState({
+          events: results.events,
+          refreshing: false
+        });
+      } catch (error) {
+        console.log(error);
+
+        this.setState({
+          events: [],
+          refreshing: false
+        });
+      }
     }
   };
 
@@ -71,7 +102,10 @@ class Main extends Component {
       );
 
       this.setState({
-        events: _.uniqBy((this.state.events || []).concat(results.events || []), "id"),
+        events: _.uniqBy(
+          (this.state.events || []).concat(results.events || []),
+          "id"
+        ),
         refreshing: false
       });
     } catch (error) {
@@ -96,7 +130,10 @@ class Main extends Component {
         );
 
         this.setState({
-          events: _.uniqBy((this.state.events || []).concat(results.events || []), "id"),
+          events: _.uniqBy(
+            (this.state.events || []).concat(results.events || []),
+            "id"
+          ),
           refreshing: false
         });
       } catch (error) {
@@ -108,7 +145,7 @@ class Main extends Component {
         });
       }
     }
-  }
+  };
 
   render() {
     const statusBar = Platform.OS === "ios"
@@ -138,7 +175,10 @@ class Main extends Component {
           events={this.state.events}
           searchTerm={this.props.searchTerm}
           filter={this.props.filter}
-          onEndReached={_.debounce(this.onEndReached, 1000, {leading: true, trailing: false})}
+          onEndReached={_.debounce(this.onEndReached, 1000, {
+            leading: true,
+            trailing: false
+          })}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
           selectedEvent={this.props.selectedEvent}
         />

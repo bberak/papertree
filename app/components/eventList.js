@@ -22,7 +22,8 @@ class EventList extends Component {
   componentWillReceiveProps(nextProps) {
     if (
       this.props.searchTerm !== nextProps.searchTerm ||
-      Help.areFiltersDifferent(this.props.filter, nextProps.filter)
+      Help.areFiltersDifferent(this.props.filter, nextProps.filter) ||
+      this.props.selectedEvent !== nextProps.selectedEvent
     )
       this.refs.list.scrollTo({ x: 0, y: 0, animated: true });
   }
@@ -36,6 +37,7 @@ class EventList extends Component {
           id: key,
           display_received_at: group[0].display_received_at,
           events: _.chain(group)
+            .orderBy(["id"])
             .map((e, idx) => {
               return {
                 id: e.id,
@@ -43,11 +45,10 @@ class EventList extends Component {
                 hostname: e.hostname,
                 program: e.program,
                 isFirst: idx === 0,
-                eventData: e,
+                eventData: Object.assign({}, e, { siblings: group }),
                 selected: e.id === (this.props.selectedEvent || {}).id
               };
             })
-            .orderBy(["id"])
             .value()
         };
       })
