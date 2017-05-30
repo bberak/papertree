@@ -33,6 +33,7 @@ export default class Papertree extends Component {
 						searchTerm={""}
 						filter={null}
 						savedSearches={[]}
+						selectedEvent={null}
 					>
 						<Scene key="main" component={Main} panHandlers={null} />
 					</Scene>

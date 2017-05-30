@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import _ from "lodash";
 import * as Animatable from "react-native-animatable";
+import { Actions } from "react-native-router-flux";
 
 class EventListRow extends Component {
   constructor(props) {
@@ -14,6 +15,10 @@ class EventListRow extends Component {
 
   toggleTruncate = () => {
     this.setState({ truncate: !this.state.truncate})
+  }
+
+  select = () => {
+    Actions.refresh({ key: "home", selectedEvent: this.props.selected ? null : this.props.eventData })
   }
 
   render() {
@@ -40,8 +45,9 @@ class EventListRow extends Component {
         <TouchableOpacity
           activeOpacity={1}
           onPress={this.toggleTruncate}
+          onLongPress={this.select}
         >
-          <Text style={css.message}>
+          <Text style={[css.message, this.props.selected ? css.messageSelected : null]}>
             {_.trim(message)}
             {indicator}
           </Text>
@@ -81,6 +87,9 @@ const css = EStyleSheet.create({
     lineHeight: "$lineHeightMessage",
     paddingBottom: "$paddingBottomMessage",
     color: "$eventListRowMessageColor"
+  },
+  messageSelected: {
+    color: "$secondaryColor"
   },
   indicator: {
     fontWeight: "bold",

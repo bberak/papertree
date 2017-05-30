@@ -140,6 +140,7 @@ class Main extends Component {
           filter={this.props.filter}
           onEndReached={_.debounce(this.onEndReached, 1000, {leading: true, trailing: false})}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
+          selectedEvent={this.props.selectedEvent}
         />
 
         <Bookmark

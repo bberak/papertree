@@ -42,7 +42,9 @@ class EventList extends Component {
                 message: e.message,
                 hostname: e.hostname,
                 program: e.program,
-                isFirst: idx === 0
+                isFirst: idx === 0,
+                eventData: e,
+                selected: e.id === (this.props.selectedEvent || {}).id
               };
             })
             .orderBy(["id"])
