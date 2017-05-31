@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as Animatable from "react-native-animatable";
@@ -24,12 +23,11 @@ class Bookmark extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      opened: false
     };
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.canShowBookmark(nextProps.searchTerm) && nextProps.saveSearchActionSheetVisible === false)
+    if (nextProps.bookmarkVisible)
       this.showBookmark();
     else
       this.hideBookmark();
@@ -48,41 +46,20 @@ class Bookmark extends Component {
   }
 
   onPress = () => {
-    this.hideBookmark();
-
     this.props.dispatch({ type: "OPEN_SAVE_SEARCH_ACTIONSHEET"});
   };
 
-  getOrientation = () => {
-    let dims = Dimensions.get("window");
-    return dims.height > dims.width ? "portrait" : "landscape";
-  }
-
-  onLayout = () => {
-    if (this.canShowBookmark(this.props.searchTerm) && this.props.saveSearchActionSheetVisible === false) {
-      this.showBookmark();
-    } else {
-      this.hideBookmark();
-    }
-  }
-
-  canShowBookmark = (searchTerm) => {
-    return this.getOrientation() === "portrait" && Str.isNotNullOrWhiteSpace(searchTerm);
-  }
-
   render() {
-    const visible = this.props.saveSearchActionSheetVisible === true && this.canShowBookmark(this.props.searchTerm);
-
     const actionSheet = this.props.selectedSearch ? 
       <DeleteSearchActionSheet
-          visible={visible}
+          visible={false}
           onClose={() => this.setState({ opened: false })}
           onClosed={this.showBookmark}
           savedSearches={this.props.savedSearches} 
           selectedSearch={this.props.selectedSearch}
         /> :
         <SaveSearchActionSheet
-          visible={visible}
+          visible={this.props.saveSearchActionSheetVisible}
           onClosed={this.showBookmark}
           savedSearches={this.props.savedSearches} 
           searchTerm={this.props.searchTerm}
@@ -90,7 +67,7 @@ class Bookmark extends Component {
         />;
 
     return (
-      <View style={css.container} onLayout={this.onLayout}>
+      <View style={css.container} onLayout={() => this.props.dispatch({ type: "ON_LAYOUT"})}>
 
         {actionSheet}
 

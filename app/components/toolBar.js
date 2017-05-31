@@ -6,6 +6,7 @@ import ToolBarButton from "./toolBarButton";
 import { Actions } from "react-native-router-flux"
 import FilterActionSheet from "./filterActionSheet";
 import * as Help from "../utils/help"
+import { connect } from "react-redux";
 
 class ToolBar extends Component {
   constructor(props) {
@@ -14,29 +15,16 @@ class ToolBar extends Component {
     };
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    this.setState({
-      searchTerm: nextProps.searchTerm
-    })
-  }
-
   onSubmitEditing = () => {
-    if (this.props.searchTerm !== this.state.searchTerm)
-      Actions.refresh({key: "home", searchTerm: this.state.searchTerm, selectedSearch: null})
+    console.log("Need to search")
   }
 
-  onChangeText = (text) =>{
-    this.setState({
-      searchTerm: text
-    })
+  onChangeText = (text) => {
+    this.props.dispatch({ type: "SEARCH_TERM_CHANGED", searchTerm: text })
   }
 
   onClear = () => {
-    this.setState({
-      searchTerm: ""
-    })
-    if (this.props.searchTerm)
-      Actions.refresh({key: "home", searchTerm: "", selectedSearch: null})
+    this.props.dispatch({ type: "SEARCH_TERM_CHANGED", searchTerm: "" })
   }
 
   render() {
@@ -59,7 +47,7 @@ class ToolBar extends Component {
         <TextBox
           containerStyle={css.textBoxContainerStyle}
           placeholder={"Search"}
-          value={this.state.searchTerm}
+          value={this.props.searchTerm}
           autoCorrect={false}
           returnKeyType={"search"}
           autoCapitalize={"none"}
@@ -96,4 +84,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default ToolBar;
+export default connect(s => s)(ToolBar);

@@ -3,84 +3,18 @@ import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as ActionSheet from "./actionSheet";
 import * as Animatable from "react-native-animatable";
-import _ from "lodash";
-import api from "../utils/papertrailApi";
-import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 
 class SaveSearchActionSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchName: "",
-      label: "Save",
-      disabled: false
     };
   }
 
   save = async () => {
-    let searchName = _.trim(this.state.searchName);
-
-    if (searchName) {
-      this.setState({
-        label: "Saving..",
-        disabled: true
-      });
-      try {
-
-        /*
-        let newSearch = await api.saveSearch(
-          searchName,
-          this.props.searchTerm,
-          this.props.filter
-        );
-
-        this.setState({
-          pendingAction: () => {
-            Actions.refresh({
-              key: "home",
-              selectedSearch: newSearch,
-              searchTerm: newSearch.query,
-              filter: { groupId: newSearch.group.id, groupName: newSearch.group.name },
-              saveSearches: (this.props.savedSearches || []).push(newSearch)
-            });
-          }
-        });
-        */
-
-        //this.props.onClose();
-
-        this.props.dispatch({ type: "SAVE_SEARCH", searchName: searchName, searchTerm: this.props.searchTerm, filter: this.props.filter })
-
-      } catch (error) {
-        console.log(error);
-        this.setState({
-          label: "Try Again",
-          disabled: false
-        });
-      }
-    } else {
-      this.refs.textBoxContainer.shake(400);
-    }
+    this.props.dispatch({ type: "SAVE_SEARCH", searchName: this.props.searchName, searchTerm: this.props.searchTerm, filter: this.props.filter })
   };
-
-/*
-  onClosed = () => {
-    let action = this.state.pendingAction;
-
-    this.setState({
-      searchName: "",
-      label: "Save",
-      disabled: false,
-      pendingAction: null
-    })
-
-    if (action) action();
-
-    if (this.props.onClosed) this.props.onClosed();
-  };
-
-  */
 
   render() {
     return (
@@ -95,7 +29,7 @@ class SaveSearchActionSheet extends Component {
 
         <ActionSheet.HR />
 
-        <Animatable.View ref="textBoxContainer">
+        <Animatable.View ref="textBoxContainer" animation={this.props.saveSearchFailed ? "shake" : null} duration={400}>
           <ActionSheet.TextBox
             placeholder={"Name"}
             autoCorrect={false}
@@ -103,8 +37,8 @@ class SaveSearchActionSheet extends Component {
             autoCapitalize={"none"}
             keyboardType={"default"}
             autoFocus={false}
-            value={this.state.searchName}
-            onChangeText={text => this.setState({ searchName: text })}
+            value={this.props.searchName}
+            onChangeText={text => this.props.dispatch({ type: "SAVE_SEARCH_NAME_CHANGED", searchName: text})}
           />
         </Animatable.View>
 
@@ -113,11 +47,11 @@ class SaveSearchActionSheet extends Component {
         <ActionSheet.Options
           leftOptionValue={"Cancel"}
           onLeftOptionPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
-          rightOptionValue={this.state.label}
+          rightOptionValue={this.props.saveSearchFailed ? "Try Again" : this.props.savingSearch ? "Saving.." : "Save"}
           onRightOptionPress={() => {
             this.save();
           }}
-          rightOptionDisabled={this.state.disabled}
+          rightOptionDisabled={this.props.savingSearch}
         />
 
       </ActionSheet.Form>

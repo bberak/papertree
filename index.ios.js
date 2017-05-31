@@ -6,34 +6,13 @@ import Main from "./app/components/main";
 import { Scene, Router, Actions } from "react-native-router-flux";
 import EStyleSheet from "react-native-extended-stylesheet";
 import DarkTheme from "./app/themes/dark";
-
-EStyleSheet.build(DarkTheme);
-
 import { createStore, applyMiddleware } from "redux";
 import createSageMiddleware from "redux-saga";
 import businessLogic from "./app/sagas/businessLogic";
+import reducer from "./app/reducers/coreReducer"
 import { connect, Provider } from "react-redux";
 
-const initState = {
-	loading: true,
-	attemptingLogin: false,
-	loginFailed: false,
-	loggedIn: false,
-	saveSearchActionSheetVisible: false
-};
-
-const reducer = (state = initState, action = {}) => {
-	switch (action.type) {
-		case "LOADED": return { ...state, loading: false };
-		case "ATTEMPTING_LOGIN": return { ...state, attemptingLogin: true, loginFailed: false }
-		case "LOGIN_FAILED": return { ...state, attemptingLogin: false, loginFailed: true }
-		case "LOGIN_SUCCEEDED": return { ...state, attemptingLogin: false, loginFailed: false, loggedIn: true }
-		case "LOGGED_OUT": return { ...state, loggedIn: false }
-		case "OPEN_SAVE_SEARCH_ACTIONSHEET": return { ...state, saveSearchActionSheetVisible: true }
-		case "CLOSE_SAVE_SEARCH_ACTIONSHEET": return { ...state, saveSearchActionSheetVisible: false }
-		default: return state;
-	}
-};
+EStyleSheet.build(DarkTheme);
 
 const sagaMiddleware = createSageMiddleware();
 const store = createStore(reducer, applyMiddleware(sagaMiddleware));
