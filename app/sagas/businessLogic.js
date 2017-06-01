@@ -21,20 +21,23 @@ function* load() {
 	let loggedIn = yield call(Api.isLoggedIn);
 
 	if (loggedIn) {
-		//yield put({ type: "LOGIN_SUCCEEDED" });
+		yield put({ type: "LOGIN_SUCCEEDED" });
 
-		//yield put({type: "HOME" });
-
-		yield call(Navigation.home);
-	}
-
-	yield put({ type: "LOADED" });
+		yield put({type: "SHOW_HOME_SCREEN" });
+	} else
+		yield put({type: "SHOW_LOGIN_SCREEN" });
 }
 
-function* home() {
+function* showHomeScreen() {
 	yield call(Navigation.home);
 
-	//yield put({ type: "SEARCH_SUBMITTED", searchTerm: ""})
+	yield put({ type: "SEARCH_SUBMITTED", override: true })
+}
+
+function* showLoginScreen() {
+	yield put({ type: "LOADED" });
+
+	yield call(Navigation.login);
 }
 
 function* login({ email, password } = {}) {
@@ -45,7 +48,7 @@ function* login({ email, password } = {}) {
 
 		yield put({ type: "LOGIN_SUCCEEDED" });
 
-		yield put({type: "HOME" });
+		yield put({type: "SHOW_HOME_SCREEN" });
 	} catch (err) {
 		console.log(err);
 
@@ -123,12 +126,10 @@ function* clear() {
 	yield put({ type: "SEARCH_SUBMITTED" });
 }
 
-function* search() {
+function* search({ override }) {
 	const { searchTerm, lastSearch, filter } = yield select();
 
-	console.log("search")
-
-	if (_.trim(searchTerm) !== _.trim(lastSearch)) {
+	if (_.trim(searchTerm) !== _.trim(lastSearch) || override === true) {
 		yield put({ type: "SEARCHING", lastSearch: searchTerm });
 
 		try {
@@ -203,7 +204,8 @@ export default function* businessLogic() {
 	yield all([
 		load(),
 		takeLatest("LOGIN", login),
-		takeLatest("HOME", home),
+		takeLatest("SHOW_HOME_SCREEN", showHomeScreen),
+		takeLatest("SHOW_LOGIN_SCREEN", showLoginScreen),
 		takeLatest("CREATE_ACCOUNT", createAccount),
 		takeLatest("LOGOUT", logout),
 		takeLatest("SAVE_SEARCH", saveSearch),

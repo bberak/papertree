@@ -73,7 +73,7 @@ class Settings extends Component {
   render() {
     let refreshControl = (
       <RefreshControl
-        refreshing={this.state.refreshing}
+        refreshing={this.props.refreshingSavedSearches}
         tintColor={EStyleSheet.value("$indicatorColor")}
         colors={[
           EStyleSheet.value("$secondaryColor"),
@@ -106,9 +106,10 @@ class Settings extends Component {
 
         <Image style={css.logo} source={require("../images/logo-small.png")} />
 
+        <Label value={"Saved Searches"} />
+
         <ScrollView refreshControl={refreshControl} style={css.scrollView}>
 
-          <Label value={"Saved Searches"} />
           <View style={css.listContainer}>
             {searchItems}
           </View>
@@ -126,7 +127,7 @@ class Settings extends Component {
         </ScrollView>
 
         <View style={css.buttonContainer}>
-          <Button disabled={false} value={"Logout"} onPress={() => this.props.dispatch({ type: "LOGOUT" })} />
+          <Button value={"Logout"} onPress={() => this.props.dispatch({ type: "LOGOUT" })} />
         </View>
 
       </Background>

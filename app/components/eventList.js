@@ -24,8 +24,9 @@ class EventList extends Component {
       this.props.searchTerm !== nextProps.searchTerm ||
       Help.areFiltersDifferent(this.props.filter, nextProps.filter) ||
       this.props.selectedEvent !== nextProps.selectedEvent
-    )
+    ) {
       this.refs.list.scrollTo({ x: 0, y: 0, animated: true });
+    }
   }
 
   buildDataSource(data) {
@@ -85,23 +86,22 @@ class EventList extends Component {
   }
 
   render() {
-    let refreshControl = (
-      <RefreshControl
-        refreshing={this.props.refreshing}
-        tintColor={EStyleSheet.value("$indicatorColor")}
-        colors={[
-          EStyleSheet.value("$secondaryColor"),
-          EStyleSheet.value("$primaryColor")
-        ]}
-        onRefresh={this.props.onRefresh}
-      />
-    );
 
     return (
       <ListView
         ref={"list"}
         style={css.list}
-        refreshControl={refreshControl}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            tintColor={EStyleSheet.value("$indicatorColor")}
+            colors={[
+              EStyleSheet.value("$secondaryColor"),
+              EStyleSheet.value("$primaryColor")
+            ]}
+            onRefresh={this.props.onRefresh}
+          />
+        }
         dataSource={this.buildDataSource(this.props.events)}
         renderRow={event => <EventListRow {...event} />}
         renderSectionHeader={section => (

@@ -27,7 +27,9 @@ class Login extends Component {
         <KeyboardAwareScrollView 
           ref={"scroll"}
           style={css.scrollContainer} 
-          contentContainerStyle={css.scrollContentContainer}>
+          contentContainerStyle={css.scrollContentContainer}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          scrollEnabled={false}>
           
           <View style={css.logoContainer}>
             <Image source={require("../images/logo.png")} />

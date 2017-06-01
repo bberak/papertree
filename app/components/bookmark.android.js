@@ -105,7 +105,7 @@ const css = EStyleSheet.create({
     backgroundColor: "transparent",
     marginRight: "3%",
     height: 66,
-    top: 26
+    top: hiddenPosition
   }
 });
 

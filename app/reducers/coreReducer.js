@@ -22,6 +22,9 @@ const initState = {
 	refreshing: false,
 	events: [],
 
+	refreshingSavedSearches: false,
+	savedSearches: []
+
 	//filter: null,
 	//savedSearches: [],
 	//selectedSearch: null,
@@ -46,7 +49,8 @@ export default (state = initState, action = {}) => {
 				...state,
 				attemptingLogin: false,
 				loginFailed: false,
-				loggedIn: true
+				loggedIn: true,
+				loading: false
 			};
 		case "LOGGED_OUT":
 			return { ...state, loggedIn: false };
@@ -97,6 +101,14 @@ export default (state = initState, action = {}) => {
 			return { ...state, refreshing: false, events: action.events}
 		case "REFRESHING":
 			return { ...state, refreshing: true }
+
+		//-- SAVED SEARCHES --//
+		case "REFRESHING_SAVED_SEARCHES":
+			return { ...state, refreshingSavedSearches: true }
+		case "REFRESHING_SAVED_SEARCHES_SUCCEEDED":
+			return { ...state, refreshingSavedSearches: false, savedSearches: action.savedSearches }
+		case "REFRESHING_SAVED_SEARCHES_FAILED":
+			return { ...state, refreshingSavedSearches: false, savedSearches: [] }
 
 		default:
 			return state;
