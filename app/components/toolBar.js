@@ -41,8 +41,8 @@ class ToolBar extends Component {
           autoCapitalize={"none"}
           onChangeText={text => this.props.dispatch({ type: "SEARCH_TERM_CHANGED", searchTerm: text })}
           onClear={() => this.props.dispatch({ type: "SEARCH_TERM_CLEARED" })}
-          onSubmitEditing={() => this.props.dispatch({ type: "SEARCH_SUBMITTED", searchTerm: this.props.searchTerm })}
-          onBlur={() => this.props.dispatch({ type: "SEARCH_SUBMITTED", searchTerm: this.props.searchTerm })}
+          onSubmitEditing={() => this.props.dispatch({ type: "SEARCH_SUBMITTED" })}
+          onBlur={() => this.props.dispatch({ type: "SEARCH_SUBMITTED" })}
         />
 
         <ToolBarButton

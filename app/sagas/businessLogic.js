@@ -20,9 +20,21 @@ function* load() {
 
 	let loggedIn = yield call(Api.isLoggedIn);
 
-	if (loggedIn) yield call(Navigation.home);
+	if (loggedIn) {
+		//yield put({ type: "LOGIN_SUCCEEDED" });
+
+		//yield put({type: "HOME" });
+
+		yield call(Navigation.home);
+	}
 
 	yield put({ type: "LOADED" });
+}
+
+function* home() {
+	yield call(Navigation.home);
+
+	//yield put({ type: "SEARCH_SUBMITTED", searchTerm: ""})
 }
 
 function* login({ email, password } = {}) {
@@ -31,9 +43,9 @@ function* login({ email, password } = {}) {
 	try {
 		yield call(Api.login, email, password);
 
-		yield call(Navigation.home);
-
 		yield put({ type: "LOGIN_SUCCEEDED" });
+
+		yield put({type: "HOME" });
 	} catch (err) {
 		console.log(err);
 
@@ -105,8 +117,16 @@ function* openActionSheet() {
 	else yield put({ type: "OPEN_SAVE_SEARCH_ACTIONSHEET" });
 }
 
-function* search({ searchTerm }) {
-	const { lastSearch, filter } = yield select();
+function* clear() {
+	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" })
+
+	yield put({ type: "SEARCH_SUBMITTED" });
+}
+
+function* search() {
+	const { searchTerm, lastSearch, filter } = yield select();
+
+	console.log("search")
 
 	if (_.trim(searchTerm) !== _.trim(lastSearch)) {
 		yield put({ type: "SEARCHING", lastSearch: searchTerm });
@@ -129,7 +149,7 @@ function* search({ searchTerm }) {
 function* endReached({ lastSearch, filter, events }) {
 	if (events && events.length > 0) {
 		try {
-			let maxId = _.minBy(events, "id").id; //-- Seaching tail, therefore min id becomes the max param
+			let maxId = _.minBy(events, "id").id; //-- Searching tail, therefore min id becomes the max param
 			let results = yield call(
 				Api.search,
 				lastSearch,
@@ -183,6 +203,7 @@ export default function* businessLogic() {
 	yield all([
 		load(),
 		takeLatest("LOGIN", login),
+		takeLatest("HOME", home),
 		takeLatest("CREATE_ACCOUNT", createAccount),
 		takeLatest("LOGOUT", logout),
 		takeLatest("SAVE_SEARCH", saveSearch),
@@ -196,13 +217,15 @@ export default function* businessLogic() {
 				"ORIENTATION_CHANGED",
 				"SEARCH_SUBMITTED",
 				"SEARCH_TERM_CLEARED",
-				"SEARCHING"
+				"SEARCHING",
+				"SEARCH_SUCCEEDED"
 			],
 			showOrHideBookmark
 		),
 		takeLatest("OPEN_ACTIONSHEET", openActionSheet),
-		throttle(1000, ["SEARCH_TERM_CLEARED", "SEARCH_SUBMITTED"], search),
-		throttle(1000, "END_REACHED", endReached),
+		takeLatest("SEARCH_TERM_CLEARED", clear),
+		throttle(1000, "SEARCH_SUBMITTED", search),
+		takeLatest("END_REACHED", endReached),
 		takeLatest("REFRESH", refresh)
 	]);
 }

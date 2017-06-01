@@ -61,7 +61,7 @@ class Bookmark extends Component {
           onCancel={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
           onBackdropPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
           onChangeName={text => this.props.dispatch({ type: "SAVE_SEARCH_NAME_CHANGED", searchName: text})}
-          onSave={() => this.props.dispatch({ type: "SAVE_SEARCH", searchName: this.props.searchName, searchTerm: this.props.searchTerm, filter: this.props.filter })}
+          onSave={() => this.props.dispatch({ type: "SAVE_SEARCH", searchName: this.props.searchName, searchTerm: this.props.lastSearch, filter: this.props.filter })}
         />;
 
     return (
