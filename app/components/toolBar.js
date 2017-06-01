@@ -15,18 +15,6 @@ class ToolBar extends Component {
     };
   }
 
-  onSubmitEditing = () => {
-    console.log("Need to search")
-  }
-
-  onChangeText = (text) => {
-    this.props.dispatch({ type: "SEARCH_TERM_CHANGED", searchTerm: text })
-  }
-
-  onClear = () => {
-    this.props.dispatch({ type: "SEARCH_TERM_CHANGED", searchTerm: "" })
-  }
-
   render() {
 
     const settingsImage = require("../images/cog.png");
@@ -51,10 +39,10 @@ class ToolBar extends Component {
           autoCorrect={false}
           returnKeyType={"search"}
           autoCapitalize={"none"}
-          onChangeText={this.onChangeText}
-          onSubmitEditing={this.onSubmitEditing}
-          onBlur={this.onSubmitEditing}
-          onClear={this.onClear}
+          onChangeText={text => this.props.dispatch({ type: "SEARCH_TERM_CHANGED", searchTerm: text })}
+          onClear={() => this.props.dispatch({ type: "SEARCH_TERM_CLEARED" })}
+          onSubmitEditing={() => this.props.dispatch({ type: "SEARCH_SUBMITTED", searchTerm: this.props.searchTerm })}
+          onBlur={() => this.props.dispatch({ type: "SEARCH_SUBMITTED", searchTerm: this.props.searchTerm })}
         />
 
         <ToolBarButton

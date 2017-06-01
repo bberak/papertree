@@ -3,7 +3,6 @@ import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as ActionSheet from "./actionSheet";
 import * as Animatable from "react-native-animatable";
-import { connect } from "react-redux";
 
 class SaveSearchActionSheet extends Component {
   constructor(props) {
@@ -12,16 +11,11 @@ class SaveSearchActionSheet extends Component {
     };
   }
 
-  save = async () => {
-    this.props.dispatch({ type: "SAVE_SEARCH", searchName: this.props.searchName, searchTerm: this.props.searchTerm, filter: this.props.filter })
-  };
-
   render() {
     return (
       <ActionSheet.Form
         visible={this.props.visible}
-        onBackdropPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
-        onClosed={this.props.onClosed}
+        onBackdropPress={this.props.onBackdropPress}
         formContainerStyle={css.formContainer}
       >
 
@@ -29,7 +23,7 @@ class SaveSearchActionSheet extends Component {
 
         <ActionSheet.HR />
 
-        <Animatable.View ref="textBoxContainer" animation={this.props.saveSearchFailed ? "shake" : null} duration={400}>
+        <Animatable.View ref="textBoxContainer" animation={this.props.saveFailed ? "shake" : null} duration={400}>
           <ActionSheet.TextBox
             placeholder={"Name"}
             autoCorrect={false}
@@ -37,8 +31,8 @@ class SaveSearchActionSheet extends Component {
             autoCapitalize={"none"}
             keyboardType={"default"}
             autoFocus={false}
-            value={this.props.searchName}
-            onChangeText={text => this.props.dispatch({ type: "SAVE_SEARCH_NAME_CHANGED", searchName: text})}
+            value={this.props.name}
+            onChangeText={this.props.onChangeName}
           />
         </Animatable.View>
 
@@ -46,12 +40,10 @@ class SaveSearchActionSheet extends Component {
 
         <ActionSheet.Options
           leftOptionValue={"Cancel"}
-          onLeftOptionPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
-          rightOptionValue={this.props.saveSearchFailed ? "Try Again" : this.props.savingSearch ? "Saving.." : "Save"}
-          onRightOptionPress={() => {
-            this.save();
-          }}
-          rightOptionDisabled={this.props.savingSearch}
+          onLeftOptionPress={this.props.onCancel}
+          rightOptionValue={this.props.saveFailed ? "Try Again" : this.props.saving ? "Saving.." : "Save"}
+          onRightOptionPress={this.props.onSave}
+          rightOptionDisabled={this.props.saving}
         />
 
       </ActionSheet.Form>
@@ -67,4 +59,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default connect(s => s)(SaveSearchActionSheet);
+export default SaveSearchActionSheet;

@@ -18,16 +18,24 @@ const initState = {
 	orientation: null,
 
 	searchTerm: null,
-	filter: null
+	lastSearch: null,
+	refreshing: false,
+	events: [],
+
+	//filter: null,
+	//savedSearches: [],
+	//selectedSearch: null,
+	//events: [],
+	//selectedEvent: null
 };
 
 export default (state = initState, action = {}) => {
 	switch (action.type) {
-
+		
 		//-- LOADING --//
 		case "LOADED":
-			return { ...state, loading: false };
 
+			return { ...state, loading: false };
 		//-- AUTHENTICATION --//
 		case "ATTEMPTING_LOGIN":
 			return { ...state, attemptingLogin: true, loginFailed: false };
@@ -45,9 +53,13 @@ export default (state = initState, action = {}) => {
 
 		//-- SAVE SEARCH ACTION SHEET --//
 		case "OPEN_SAVE_SEARCH_ACTIONSHEET":
-			return { ...state, saveSearchActionSheetVisible: true };
+			return {
+				...state,
+				saveSearchActionSheetVisible: true,
+				saveSearchFailed: false
+			};
 		case "CLOSE_SAVE_SEARCH_ACTIONSHEET":
-			return { ...state, saveSearchActionSheetVisible: false};
+			return { ...state, saveSearchActionSheetVisible: false };
 		
 		//-- SAVING SEARCH --//
 		case "SAVE_SEARCH_NAME_CHANGED":
@@ -63,20 +75,28 @@ export default (state = initState, action = {}) => {
 				saveSearchFailed: false,
 				searchName: null
 			};
-
+		
 		//-- ORIENTATION CHANGE --//
 		case "ORIENTATION_CHANGED":
-			return { ...state, orientation: action.orientation };
-
-		//-- SEARCH TERM CHANGE --//
-		case "SEARCH_TERM_CHANGED":
-			return { ...state, searchTerm: action.searchTerm };
-
-		//-- OPEN, CLOSE, BOOKMAR --//
+			return { ...state, orientation: action.orientation };		
+		
+		//-- OPEN, CLOSE, BOOKMARK --//
 		case "SHOW_BOOKMARK":
 			return { ...state, bookmarkVisible: true };
 		case "HIDE_BOOKMARK":
 			return { ...state, bookmarkVisible: false };
+
+		//-- SEARCH --//
+		case "SEARCH_TERM_CHANGED":
+			return { ...state, searchTerm: action.searchTerm };
+		case "SEARCHING":
+			return { ...state, refreshing: true, lastSearch: action.lastSearch, events: [] }
+		case "SEARCH_FAILED":
+			return { ...state, refreshing: false, events: [] }
+		case "SEARCH_SUCCEEDED":
+			return { ...state, refreshing: false, events: action.events}
+		case "REFRESHING":
+			return { ...state, refreshing: true }
 
 		default:
 			return state;

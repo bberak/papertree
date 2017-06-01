@@ -9,7 +9,7 @@ import DarkTheme from "./app/themes/dark";
 import { createStore, applyMiddleware } from "redux";
 import createSageMiddleware from "redux-saga";
 import businessLogic from "./app/sagas/businessLogic";
-import reducer from "./app/reducers/coreReducer"
+import reducer from "./app/reducers/coreReducer";
 import { connect, Provider } from "react-redux";
 
 EStyleSheet.build(DarkTheme);
@@ -38,13 +38,7 @@ export default class Papertree extends Component {
 							component={Home}
 							hideNavBar={true}
 							direction={"vertical"}
-							//panHandlers={null}
-							//settingsOpen={false}
-							//selectedSearch={null}
-							//searchTerm={""}
-							//filter={null}
-							//savedSearches={[]}
-							//selectedEvent={null}
+							panHandlers={null}
 						>
 							<Scene
 								key="main"

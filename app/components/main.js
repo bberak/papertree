@@ -7,21 +7,22 @@ import EventList from "./eventList";
 import Bookmark from "./bookmark";
 import _ from "lodash";
 import * as Help from "../utils/help";
+import { connect } from "react-redux";
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [],
-      refreshing: true
     };
   }
 
   componentDidMount = () => {
+    return;
     this.onSearch(this.props.searchTerm, this.props.filter);
   };
 
   componentWillReceiveProps = nextProps => {
+    return;
     if (
       this.props.searchTerm !== nextProps.searchTerm ||
       Help.areFiltersDifferent(this.props.filter, nextProps.filter) ||
@@ -36,6 +37,7 @@ class Main extends Component {
   };
 
   onSearch = async (searchTerm, filter, selectedEvent) => {
+    return;
     this.setState({
       refreshing: true
     });
@@ -84,6 +86,7 @@ class Main extends Component {
   };
 
   onRefresh = async () => {
+    return;
     this.setState({
       refreshing: true
     });
@@ -119,6 +122,7 @@ class Main extends Component {
   };
 
   onEndReached = async () => {
+    return;
     if (this.state.events && this.state.events.length > 0) {
       try {
         let maxId = _.minBy(this.state.events, "id").id; //-- Seaching tail, therefore min id becomes the max param
@@ -170,15 +174,12 @@ class Main extends Component {
         />
 
         <EventList
-          onRefresh={this.onRefresh}
-          refreshing={this.state.refreshing}
-          events={this.state.events}
-          searchTerm={this.props.searchTerm}
+          refreshing={this.props.refreshing}
+          events={this.props.events}
+          searchTerm={this.props.lastSearch}
           filter={this.props.filter}
-          onEndReached={_.debounce(this.onEndReached, 1000, {
-            leading: true,
-            trailing: false
-          })}
+          onRefresh={() => this.props.dispatch({ type: "REFRESH", lastSearch: this.props.lastSearch, filter: this.props.filter, events: this.props.events})}
+          onEndReached={() => this.props.dispatch({ type: "END_REACHED", lastSearch: this.props.lastSearch, filter: this.props.filter, events: this.props.events})}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
           selectedEvent={this.props.selectedEvent}
         />
@@ -208,4 +209,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default Main;
+export default connect(s => s)(Main);

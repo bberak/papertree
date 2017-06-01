@@ -11,7 +11,6 @@ import * as Animatable from "react-native-animatable";
 import Modal from "react-native-modal";
 import SaveSearchActionSheet from "./saveSearchActionSheet";
 import DeleteSearchActionSheet from "./deleteSearchActionSheet";
-import * as Str from "../utils/str";
 import { connect } from "react-redux";
 
 const imageSource = require("../images/bookmark.png");
@@ -45,10 +44,6 @@ class Bookmark extends Component {
     });
   }
 
-  onPress = () => {
-    this.props.dispatch({ type: "OPEN_SAVE_SEARCH_ACTIONSHEET"});
-  };
-
   render() {
     const actionSheet = this.props.selectedSearch ? 
       <DeleteSearchActionSheet
@@ -60,10 +55,13 @@ class Bookmark extends Component {
         /> :
         <SaveSearchActionSheet
           visible={this.props.saveSearchActionSheetVisible}
-          onClosed={this.showBookmark}
-          savedSearches={this.props.savedSearches} 
-          searchTerm={this.props.searchTerm}
-          filter={this.props.filter}
+          saving={this.props.savingSearch}
+          saveFailed={this.props.saveSearchFailed}
+          name={this.props.searchName}  
+          onCancel={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
+          onBackdropPress={() => this.props.dispatch({ type: "CLOSE_SAVE_SEARCH_ACTIONSHEET"})}
+          onChangeName={text => this.props.dispatch({ type: "SAVE_SEARCH_NAME_CHANGED", searchName: text})}
+          onSave={() => this.props.dispatch({ type: "SAVE_SEARCH", searchName: this.props.searchName, searchTerm: this.props.searchTerm, filter: this.props.filter })}
         />;
 
     return (
@@ -76,7 +74,7 @@ class Bookmark extends Component {
           activeOpacity={1}
           onPressIn={this.hideBookmark}
           onPressOut={this.showBookmark}
-          onPress={this.onPress}
+          onPress={() => this.props.dispatch({ type: "OPEN_ACTIONSHEET"})}
         >
           <Animatable.Image
             ref={"image"}
