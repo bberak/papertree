@@ -14,6 +14,7 @@ import { Actions as Navigation } from "react-native-router-flux";
 import _ from "lodash";
 import { Dimensions } from "react-native";
 import * as Str from "../utils/str";
+import * as Help from "../utils/help"; 
 
 function* load() {
 	yield call(Navigation.login);
@@ -23,15 +24,17 @@ function* load() {
 	if (loggedIn) {
 		yield put({ type: "LOGIN_SUCCEEDED" });
 
-		yield put({type: "SHOW_HOME_SCREEN" });
-	} else
-		yield put({type: "SHOW_LOGIN_SCREEN" });
+		yield put({ type: "SHOW_HOME_SCREEN" });
+	} else yield put({ type: "SHOW_LOGIN_SCREEN" });
 }
 
 function* showHomeScreen() {
 	yield call(Navigation.home);
 
-	yield put({ type: "SEARCH_SUBMITTED", override: true })
+	yield all([
+		put({ type: "SEARCH_SUBMITTED", override: true }),
+		put({ type: "REFRESH_SAVED_SEARCHES" })
+	]);
 }
 
 function* showLoginScreen() {
@@ -48,7 +51,7 @@ function* login({ email, password } = {}) {
 
 		yield put({ type: "LOGIN_SUCCEEDED" });
 
-		yield put({type: "SHOW_HOME_SCREEN" });
+		yield put({ type: "SHOW_HOME_SCREEN" });
 	} catch (err) {
 		console.log(err);
 
@@ -76,13 +79,38 @@ function* saveSearch({ searchName, searchTerm, filter }) {
 	yield put({ type: "SAVING_SEARCH" });
 
 	try {
-		yield call(Api.saveSearch, _.trim(searchName), searchTerm, filter);
+		let result = yield call(
+			Api.saveSearch,
+			_.trim(searchName),
+			searchTerm,
+			filter
+		);
 
-		yield put({ type: "SAVE_SEARCH_SUCCEEDED" });
+		yield put({ type: "SAVE_SEARCH_SUCCEEDED", newSearch: result });
 	} catch (err) {
 		console.log(err);
 
 		yield put({ type: "SAVE_SEARCH_FAILED" });
+	}
+}
+
+function* deleteSearch(){
+	const selectedSearch = yield select(s => s.selectedSearch)
+
+	if (selectedSearch) {
+		yield put({ type: "DELETING_SEARCH" });
+
+		try {
+			yield call(Api.deleteSearch, selectedSearch.id);
+
+			yield put({ type: "DELETE_SEARCH_SUCCEEDED", deletedSearch: selectedSearch })
+
+			yield put({ type: "SEARCH_SUBMITTED"})
+		} catch (err) {
+			console.log(err);
+
+			yield put({ type: "DELETE_SEARCH_FAILED" });
+		}
 	}
 }
 
@@ -121,7 +149,7 @@ function* openActionSheet() {
 }
 
 function* clear() {
-	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" })
+	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" });
 
 	yield put({ type: "SEARCH_SUBMITTED" });
 }
@@ -130,7 +158,10 @@ function* search({ override }) {
 	const { searchTerm, lastSearch, filter } = yield select();
 
 	if (_.trim(searchTerm) !== _.trim(lastSearch) || override === true) {
-		yield put({ type: "SEARCHING", lastSearch: searchTerm });
+		yield put({
+			type: "SEARCHING",
+			lastSearch: searchTerm
+		});
 
 		try {
 			let results = yield call(Api.search, _.trim(searchTerm), filter);
@@ -197,6 +228,51 @@ function* refresh({ lastSearch, filter, events }) {
 	}
 }
 
+function* refreshSavedSearches() {
+	yield put({ type: "REFRESHING_SAVED_SEARCHES" });
+
+	try {
+		let results = yield call(Api.listSearches);
+
+		yield put({
+			type: "REFRESHING_SAVED_SEARCHES_SUCCEEDED",
+			savedSearches: results
+		});
+	} catch (error) {
+		console.log(error);
+
+		yield put({ type: "REFRESHING_SAVED_SEARCHES_FAILED" });
+	}
+}
+
+function* selectSearch({ selectedSearch }) {
+	let current = yield select(s => s.selectedSearch);
+
+	current = current || {};
+	selectedSearch = selectedSearch || {};
+
+	if (current.id === selectedSearch.id) {
+		yield put({ type: "SELECTED_SEARCH_CLEARED" });
+		yield put({ type: "SEARCH_SUBMITTED"});
+	} else {
+		yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
+		yield put({ type: "SEARCH_SUBMITTED"});
+	}
+}
+
+function* checkIfSearchShouldBeCleared() {
+	const { selectedSearch, lastSearch, filter} = yield select();
+
+	if (selectedSearch) {
+		let selectedSearchFilter = { groupId: selectedSearch.group.id, groupName: selectedSearch.groupName };
+		let outOfSync = _.trim(selectedSearch.query) !== _.trim(lastSearch) || Help.areFiltersDifferent(filter, selectedSearchFilter)
+
+		if (outOfSync) {
+			yield put({ type: "SELECTED_SEARCH_OUT_OF_SYNC" });
+		}
+	}
+}
+
 export default function* businessLogic() {
 	//-- Have to pause an arbitrary amount due do poor design in react-native-router-flux
 	yield delay(1000);
@@ -220,7 +296,9 @@ export default function* businessLogic() {
 				"SEARCH_SUBMITTED",
 				"SEARCH_TERM_CLEARED",
 				"SEARCHING",
-				"SEARCH_SUCCEEDED"
+				"SEARCH_SUCCEEDED",
+				"SAVE_SEARCH_SUCCEEDED",
+				"DELETE_SEARCH_SUCCEEDED"
 			],
 			showOrHideBookmark
 		),
@@ -228,6 +306,18 @@ export default function* businessLogic() {
 		takeLatest("SEARCH_TERM_CLEARED", clear),
 		throttle(1000, "SEARCH_SUBMITTED", search),
 		takeLatest("END_REACHED", endReached),
-		takeLatest("REFRESH", refresh)
+		takeLatest("REFRESH", refresh),
+		takeLatest("REFRESH_SAVED_SEARCHES", refreshSavedSearches),
+		takeLatest(
+			[
+				"SEARCH_TERM_CLEARED", 
+				"FILTER_CHANGED", 
+				"SEARCHING"
+			],
+			checkIfSearchShouldBeCleared
+		),
+
+		takeLatest("SELECT_SEARCH", selectSearch),
+		takeLatest("DELETE_SEARCH", deleteSearch)
 	]);
 }

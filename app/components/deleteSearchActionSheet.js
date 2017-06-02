@@ -11,80 +11,31 @@ class DeleteSearchActionSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      label: "Delete",
-      disabled: false,
-      pendingAction: null
     };
   }
-
-  delete = async () => {
-    this.setState({
-      label: "Deleting..",
-      disabled: true
-    });
-    try {
-      await api.deleteSearch(this.props.selectedSearch.id);
-
-      this.setState({
-        pendingAction: () => {
-          Actions.refresh({
-            key: "home",
-            selectedSearch: null,
-            searchTerm: null,
-            filter: null,
-            savedSearches: (this.props.savedSearches || [])
-              .filter(x => x.id !== this.props.selectedSearch.id)
-          });
-        }
-      });
-
-      this.props.onClose();
-    } catch (error) {
-      console.log(error);
-      this.setState({
-        label: "Try Again",
-        disabled: false
-      });
-    }
-  };
-
-  onClosed = () => {
-    let action = this.state.pendingAction;
-
-    this.setState({
-      label: "Delete",
-      disabled: false,
-      pendingAction: null
-    })
-
-    if (action) action();
-
-    if (this.props.onClosed) this.props.onClosed();
-  };
 
   render() {
     return (
       <ActionSheet.Form
         visible={this.props.visible}
-        onBackdropPress={this.props.onClose}
-        onClosed={this.onClosed}
+        onBackdropPress={this.props.onCancel}
         formContainerStyle={css.formContainer}
       >
 
         <ActionSheet.Title
-          value={`Delete "${this.props.selectedSearch.name}"?`}
+          value={`Delete "${(this.props.selectedSearch || {}).name}"?`}
         />
 
         <ActionSheet.HR />
 
         <ActionSheet.Option
-          value={this.state.label}
-          disabled={this.state.disabled}
+          value={this.props.deleting ? "Deleting.." : this.props.deleteFailed ? "Try Again" : "Delete"}
+          disabled={this.props.deleting}
           textStyle={css.deleteOptionTextStyle}
-          onPress={this.delete}
+          onPress={this.props.onDelete}
         />
 
-        <ActionSheet.Button value={"Cancel"} onPress={this.props.onClose} />
+        <ActionSheet.Button value={"Cancel"} onPress={this.props.onCancel} />
 
       </ActionSheet.Form>
     );

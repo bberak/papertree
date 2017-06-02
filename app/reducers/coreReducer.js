@@ -34,10 +34,8 @@ const initState = {
 
 export default (state = initState, action = {}) => {
 	switch (action.type) {
-		
 		//-- LOADING --//
 		case "LOADED":
-
 			return { ...state, loading: false };
 		//-- AUTHENTICATION --//
 		case "ATTEMPTING_LOGIN":
@@ -54,7 +52,6 @@ export default (state = initState, action = {}) => {
 			};
 		case "LOGGED_OUT":
 			return { ...state, loggedIn: false };
-
 		//-- SAVE SEARCH ACTION SHEET --//
 		case "OPEN_SAVE_SEARCH_ACTIONSHEET":
 			return {
@@ -63,8 +60,24 @@ export default (state = initState, action = {}) => {
 				saveSearchFailed: false
 			};
 		case "CLOSE_SAVE_SEARCH_ACTIONSHEET":
-			return { ...state, saveSearchActionSheetVisible: false };
-		
+			return {
+				...state,
+				saveSearchActionSheetVisible: false,
+				saveSearchFailed: false
+			};
+		//-- DELETE SEARCH ACTION SHEET --//
+		case "OPEN_DELETE_SEARCH_ACTIONSHEET":
+			return {
+				...state,
+				deleteSearchActionSheetVisible: true,
+				deleteSearchFailed: false
+			};
+		case "CLOSE_DELETE_SEARCH_ACTIONSHEET":
+			return {
+				...state,
+				deleteSearchActionSheetVisible: false,
+				deleteSearchFailed: false
+			};
 		//-- SAVING SEARCH --//
 		case "SAVE_SEARCH_NAME_CHANGED":
 			return { ...state, searchName: action.searchName };
@@ -77,38 +90,96 @@ export default (state = initState, action = {}) => {
 				...state,
 				savingSearch: false,
 				saveSearchFailed: false,
-				searchName: null
+				searchName: null,
+				saveSearchActionSheetVisible: false,
+				selectedSearch: action.newSearch,
+				savedSearches: [action.newSearch].concat(
+					state.savedSearches || []
+				)
 			};
-		
+		//-- DELETE SEARCH --//
+		case "DELETING_SEARCH":
+			return {
+				...state,
+				deletingSearch: true,
+				deleteSearchFailed: false
+			};
+		case "DELETE_SEARCH_FAILED":
+			return {
+				...state,
+				deletingSearch: false,
+				deleteSearchFailed: true
+			};
+		case "DELETE_SEARCH_SUCCEEDED":
+			return {
+				...state,
+				deletingSearch: false,
+				deleteSearchFailed: false,
+				deleteSearchActionSheetVisible: false,
+				selectedSearch: null,
+				searchTerm: null,
+				filter: null,
+				savedSearches: (state.savedSearches || [])
+					.filter(x => x.id !== action.deletedSearch.id)
+			};
 		//-- ORIENTATION CHANGE --//
 		case "ORIENTATION_CHANGED":
-			return { ...state, orientation: action.orientation };		
-		
+			return { ...state, orientation: action.orientation };
 		//-- OPEN, CLOSE, BOOKMARK --//
 		case "SHOW_BOOKMARK":
 			return { ...state, bookmarkVisible: true };
 		case "HIDE_BOOKMARK":
 			return { ...state, bookmarkVisible: false };
-
 		//-- SEARCH --//
 		case "SEARCH_TERM_CHANGED":
 			return { ...state, searchTerm: action.searchTerm };
 		case "SEARCHING":
-			return { ...state, refreshing: true, lastSearch: action.lastSearch, events: [] }
+			return {
+				...state,
+				refreshing: true,
+				lastSearch: action.lastSearch,
+				events: []
+			};
 		case "SEARCH_FAILED":
-			return { ...state, refreshing: false, events: [] }
+			return { ...state, refreshing: false, events: [] };
 		case "SEARCH_SUCCEEDED":
-			return { ...state, refreshing: false, events: action.events}
+			return { ...state, refreshing: false, events: action.events };
 		case "REFRESHING":
-			return { ...state, refreshing: true }
-
+			return { ...state, refreshing: true };
 		//-- SAVED SEARCHES --//
 		case "REFRESHING_SAVED_SEARCHES":
-			return { ...state, refreshingSavedSearches: true }
+			return { ...state, refreshingSavedSearches: true };
 		case "REFRESHING_SAVED_SEARCHES_SUCCEEDED":
-			return { ...state, refreshingSavedSearches: false, savedSearches: action.savedSearches }
+			return {
+				...state,
+				refreshingSavedSearches: false,
+				savedSearches: action.savedSearches
+			};
 		case "REFRESHING_SAVED_SEARCHES_FAILED":
-			return { ...state, refreshingSavedSearches: false, savedSearches: [] }
+			return {
+				...state,
+				refreshingSavedSearches: false,
+				savedSearches: []
+			};
+		case "SEARCH_SELECTED":
+			return {
+				...state,
+				selectedSearch: action.selectedSearch,
+				searchTerm: action.selectedSearch.query,
+				filter: {
+					groupId: action.selectedSearch.group.id,
+					groupName: action.selectedSearch.group.name
+				}
+			};
+		case "SELECTED_SEARCH_CLEARED":
+			return {
+				...state,
+				selectedSearch: null,
+				searchTerm: null,
+				filter: null
+			};
+		case "SELECTED_SEARCH_OUT_OF_SYNC":
+			return { ...state, selectedSearch: null };
 
 		default:
 			return state;

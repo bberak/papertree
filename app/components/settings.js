@@ -21,54 +21,8 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false
     };
   }
-
-  componentDidMount = () => {
-    this.onRefresh();
-  };
-
-  onRefresh = async () => {
-    this.setState({
-      refreshing: true
-    });
-
-    try {
-      let results = await api.listSearches();
-
-      this.setState({
-        refreshing: false
-      });
-
-      Actions.refresh({ key: "home", savedSearches: results });
-    } catch (error) {
-      console.log(error);
-      this.setState({
-        refreshing: false
-      });
-    }
-  };
-
-  linkPressed = s => {
-    if (s.id === (this.props.selectedSearch || {}).id) {
-      Actions.refresh({
-        key: "home",
-        selectedSearch: null,
-        searchTerm: null,
-        filter: null,
-        settingsOpen: false
-      });
-    } else {
-      Actions.refresh({
-        key: "home",
-        selectedSearch: s,
-        searchTerm: s.query,
-        filter: { groupId: s.group.id, groupName: s.group.name },
-        settingsOpen: false
-      });
-    }
-  };
 
   render() {
     let refreshControl = (
@@ -79,7 +33,7 @@ class Settings extends Component {
           EStyleSheet.value("$secondaryColor"),
           EStyleSheet.value("$primaryColor")
         ]}
-        onRefresh={this.onRefresh}
+        onRefresh={() => this.props.dispatch({ type: "REFRESH_SAVED_SEARCHES" })}
       />
     );
 
@@ -95,7 +49,7 @@ class Settings extends Component {
               key={x.id}
               value={x.name}
               color={color}
-              onPress={() => this.linkPressed(x)}
+              onPress={() => this.props.dispatch({ type: "SELECT_SEARCH", selectedSearch: x })}
             />
           );
         }).value()

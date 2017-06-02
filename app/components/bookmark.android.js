@@ -47,11 +47,13 @@ componentWillReceiveProps = (nextProps) => {
   render() {
     const actionSheet = this.props.selectedSearch ? 
       <DeleteSearchActionSheet
-          visible={false}
-          onClose={() => this.setState({ opened: false })}
-          onClosed={this.showBookmark}
-          savedSearches={this.props.savedSearches} 
+          visible={this.props.deleteSearchActionSheetVisible}
+          deleting={this.props.deletingSearch}
+          deleteFailed={this.props.deleteSearchFailed}
           selectedSearch={this.props.selectedSearch}
+          onCancel={() => this.props.dispatch({ type: "CLOSE_DELETE_SEARCH_ACTIONSHEET"})}
+          onBackdropPress={() => this.props.dispatch({ type: "CLOSE_DELETE_SEARCH_ACTIONSHEET"})}
+          onDelete={() => this.props.dispatch({ type: "DELETE_SEARCH" })}
         /> :
         <SaveSearchActionSheet
           visible={this.props.saveSearchActionSheetVisible}
