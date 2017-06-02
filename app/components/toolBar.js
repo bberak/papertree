@@ -29,7 +29,7 @@ class ToolBar extends Component {
           containerStyle={css.buttonContainerStyle}
           imageSource={settingsImage}
           activeImageSource={settingsImage}
-          onPress={() => Actions.refresh({key: "home", settingsOpen: !this.props.settingsOpen})}
+          onPress={() => this.props.dispatch({ type: "OPEN_SETTINGS"})}
         />
 
         <TextBox
@@ -50,7 +50,7 @@ class ToolBar extends Component {
           containerStyle={css.buttonContainerStyle}
           imageSource={filterImage}
           activeImageSource={filterImage}
-          onPress={() => Actions.refresh({key: "home", filterOpen: !this.props.filterOpen})}
+          onPress={() => this.props.dispatch({ type: "OPEN_FILTER"})}
         />
 
       </View>

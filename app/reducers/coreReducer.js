@@ -19,17 +19,16 @@ const initState = {
 
 	searchTerm: null,
 	lastSearch: null,
+	filter: null,
 	refreshing: false,
 	events: [],
 
 	refreshingSavedSearches: false,
-	savedSearches: []
+	savedSearches: [],
+	selectedSearch: null,
 
-	//filter: null,
-	//savedSearches: [],
-	//selectedSearch: null,
-	//events: [],
-	//selectedEvent: null
+	settingsOpen: false,
+	filterOpen: false
 };
 
 export default (state = initState, action = {}) => {
@@ -65,19 +64,6 @@ export default (state = initState, action = {}) => {
 				saveSearchActionSheetVisible: false,
 				saveSearchFailed: false
 			};
-		//-- DELETE SEARCH ACTION SHEET --//
-		case "OPEN_DELETE_SEARCH_ACTIONSHEET":
-			return {
-				...state,
-				deleteSearchActionSheetVisible: true,
-				deleteSearchFailed: false
-			};
-		case "CLOSE_DELETE_SEARCH_ACTIONSHEET":
-			return {
-				...state,
-				deleteSearchActionSheetVisible: false,
-				deleteSearchFailed: false
-			};
 		//-- SAVING SEARCH --//
 		case "SAVE_SEARCH_NAME_CHANGED":
 			return { ...state, searchName: action.searchName };
@@ -97,31 +83,7 @@ export default (state = initState, action = {}) => {
 					state.savedSearches || []
 				)
 			};
-		//-- DELETE SEARCH --//
-		case "DELETING_SEARCH":
-			return {
-				...state,
-				deletingSearch: true,
-				deleteSearchFailed: false
-			};
-		case "DELETE_SEARCH_FAILED":
-			return {
-				...state,
-				deletingSearch: false,
-				deleteSearchFailed: true
-			};
-		case "DELETE_SEARCH_SUCCEEDED":
-			return {
-				...state,
-				deletingSearch: false,
-				deleteSearchFailed: false,
-				deleteSearchActionSheetVisible: false,
-				selectedSearch: null,
-				searchTerm: null,
-				filter: null,
-				savedSearches: (state.savedSearches || [])
-					.filter(x => x.id !== action.deletedSearch.id)
-			};
+		
 		//-- ORIENTATION CHANGE --//
 		case "ORIENTATION_CHANGED":
 			return { ...state, orientation: action.orientation };
@@ -166,6 +128,7 @@ export default (state = initState, action = {}) => {
 				...state,
 				selectedSearch: action.selectedSearch,
 				searchTerm: action.selectedSearch.query,
+				settingsOpen: false,
 				filter: {
 					groupId: action.selectedSearch.group.id,
 					groupName: action.selectedSearch.group.name
@@ -180,6 +143,54 @@ export default (state = initState, action = {}) => {
 			};
 		case "SELECTED_SEARCH_OUT_OF_SYNC":
 			return { ...state, selectedSearch: null };
+		//-- DELETE SEARCH ACTION SHEET --//
+		case "OPEN_DELETE_SEARCH_ACTIONSHEET":
+			return {
+				...state,
+				deleteSearchActionSheetVisible: true,
+				deleteSearchFailed: false
+			};
+		case "CLOSE_DELETE_SEARCH_ACTIONSHEET":
+			return {
+				...state,
+				deleteSearchActionSheetVisible: false,
+				deleteSearchFailed: false
+			};
+		//-- DELETE SEARCH --//
+		case "DELETING_SEARCH":
+			return {
+				...state,
+				deletingSearch: true,
+				deleteSearchFailed: false
+			};
+		case "DELETE_SEARCH_FAILED":
+			return {
+				...state,
+				deletingSearch: false,
+				deleteSearchFailed: true
+			};
+		case "DELETE_SEARCH_SUCCEEDED":
+			return {
+				...state,
+				deletingSearch: false,
+				deleteSearchFailed: false,
+				deleteSearchActionSheetVisible: false,
+				selectedSearch: null,
+				searchTerm: null,
+				filter: null,
+				savedSearches: (state.savedSearches || [])
+					.filter(x => x.id !== action.deletedSearch.id)
+			};
+
+		case "OPEN_SETTINGS":
+			return { ...state, settingsOpen: true, filterOpen: false };
+		case "CLOSE_SETTINGS":
+			return { ...state, settingsOpen: false };
+		case "OPEN_FILTER":
+			return { ...state, settingsOpen: false, filterOpen: true };
+		case "CLOSE_FILTER":
+			return { ...state, filterOpen: false };
+
 
 		default:
 			return state;

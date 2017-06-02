@@ -12,8 +12,6 @@ import Background from "./background";
 import Button from "./button";
 import Label from "./label";
 import Link from "./link";
-import api from "../utils/papertrailApi";
-import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import { connect } from "react-redux";
 

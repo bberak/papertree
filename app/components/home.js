@@ -2,33 +2,26 @@ import React, { Component } from "react";
 import Drawer from "react-native-drawer";
 import Settings from "./settings";
 import Filter from "./filter";
-import { Actions, DefaultRenderer } from "react-native-router-flux";
+import { DefaultRenderer } from "react-native-router-flux";
 import EStyleSheet from "react-native-extended-stylesheet";
+import { connect } from "react-redux";
 
 const shadowColor = "#000";
 const width = EStyleSheet.value("100%", "width");
 
-export default class Home extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   render() {
-    const navigationState = this.props.navigationState;
-    const children = navigationState.children;
     return (
       <Drawer
-        open={navigationState.settingsOpen}
-        onOpen={() => Actions.refresh({ key: "home", settingsOpen: true })}
-        onClose={() => Actions.refresh({ key: "home", settingsOpen: false })}
+        open={this.props.settingsOpen}
+        onClose={() => this.props.dispatch({ type: "CLOSE_SETTINGS" })}
         type={"static"}
-        content={
-          <Settings
-            savedSearches={navigationState.savedSearches}
-            selectedSearch={navigationState.selectedSearch}
-          />
-        }
+        content={<Settings/>}
         openDrawerOffset={0.25}
         tapToClose={true}
         panOpenMask={0.2}
@@ -36,35 +29,28 @@ export default class Home extends Component {
         tweenHandler={Drawer.tweenPresets.parallax}
       >
         <Drawer
-          open={navigationState.filterOpen}
-          onOpen={() => Actions.refresh({ key: "home", filterOpen: true })}
-          onClose={() => Actions.refresh({ key: "home", filterOpen: false })}
+          open={this.props.filterOpen}
+          onClose={() => this.props.dispatch({ type: "CLOSE_FILTER" })}
           type={"overlay"}
-          content={
-            <Filter
-              filter={navigationState.filter}
-              selectedSearch={navigationState.selectedSearch}
-            />
-          }
+          content={<Filter/>}
           openDrawerOffset={width > 320 ? 0.25 : 0.15}
           tapToClose={true}
           panOpenMask={0.2}
           panCloseMask={width > 320 ? 0.25 : 0.15}
           elevation={5}
           side={"right"}
-          tweenHandler={(ratio) => {
+          tweenHandler={ratio => {
             return {
-              mainOverlay: { 
-                opacity: 0.3 * ratio, 
+              mainOverlay: {
+                opacity: 0.3 * ratio,
                 backgroundColor: shadowColor,
-                shadowOpacity: 1 * ratio,
+                shadowOpacity: 1 * ratio
               }
-            }
+            };
           }}
         >
           <DefaultRenderer
-            navigationState={children[0]}
-            {...navigationState}
+            navigationState={this.props.navigationState.children[0]}
             onNavigate={this.props.onNavigate}
           />
         </Drawer>
@@ -72,3 +58,5 @@ export default class Home extends Component {
     );
   }
 }
+
+export default connect(s => s)(Home);
