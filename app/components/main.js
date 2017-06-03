@@ -41,6 +41,8 @@ class Main extends Component {
           onRefresh={() => this.props.dispatch({ type: "REFRESH" })}
           onEndReached={() => this.props.dispatch({ type: "END_REACHED" })}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
+          selectedEvent={this.props.selectedEvent}
+          onEventSelected={id => this.props.dispatch( { type: "SELECT_EVENT", id: id })}
         />
 
         <Bookmark />

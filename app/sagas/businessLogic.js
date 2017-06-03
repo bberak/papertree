@@ -33,7 +33,7 @@ function* showHomeScreen() {
 	yield call(Navigation.home);
 
 	yield all([
-		put({ type: "SEARCH_SUBMITTED", initialSearch: true }),
+		put({ type: "SEARCH_SUBMITTED", searchAnyway: true }),
 		put({ type: "REFRESH_SAVED_SEARCHES" }),
 		put({ type: "REFRESH_SYSTEMS_AND_GROUPS" })
 	]);
@@ -157,13 +157,13 @@ function* clear() {
 	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" });
 }
 
-function* search({ initialSearch }) {
+function* search({ searchAnyway }) {
 	const { searchTerm, lastSearch, filter, lastFilter } = yield select();
 
 	if (
 		_.trim(searchTerm) !== _.trim(lastSearch) ||
 		Help.areFiltersDifferent(filter, lastFilter) ||
-		initialSearch === true
+		searchAnyway === true
 	) {
 		yield put({
 			type: "SEARCHING"
@@ -269,7 +269,8 @@ function* selectSearch({ selectedSearch }) {
 
 	if (current.id === selectedSearch.id)
 		yield put({ type: "SELECTED_SEARCH_CLEARED" });
-	else yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
+	else 
+		yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
 }
 
 function* checkIfSelectedSearchShouldBeCleared() {
@@ -311,6 +312,48 @@ function* refreshSystemsAndGroups() {
 	}
 }
 
+function* selectEvent({ id }) {
+	let  { selectedEvent, events } = yield select();
+
+	selectedEvent = selectedEvent || {};
+	events = events || [];
+
+	const nextSelectedEvent = events.find(x => x.id === id) || {};
+
+	if (nextSelectedEvent.id === selectedEvent.id)
+		yield put({ type: "SELECTED_EVENT_CLEARED", searchAnyway: true });
+	else
+		yield put({ type: "EVENT_SELECTED", selectedEvent: nextSelectedEvent });
+}
+
+function* eventSearch() {
+	let  { selectedEvent, events } = yield select();
+
+	if (selectedEvent) {
+      try {
+      	const siblings = (events || []).filter(x => 
+			x.display_received_at === selectedEvent.display_received_at && 
+			x.hostname === selectedEvent.hostname && 
+			x.program === selectedEvent.program) || [selectedEvent];
+
+		let maxId = _.maxBy(siblings, "id").id;
+
+		yield put({ type: "SEARCHING_EVENTS", siblings: siblings })
+        
+        let results = yield call(Api.search, null, null, null, maxId, 20);
+
+        yield put({
+			type: "EVENT_SEARCH_SUCCEEDED",
+			events: _.uniqBy(siblings.concat(results.events), "id")
+		});
+      } catch (error) {
+        console.log(error);
+
+        yield put({ type: "EVENT_SEARCH_FAILED" })
+      }
+    }
+}
+
 export default function* businessLogic() {
 	//-- Have to pause an arbitrary amount due do poor design in react-native-router-flux
 	yield delay(1000);
@@ -347,7 +390,8 @@ export default function* businessLogic() {
 				"APPLY_FILTER",
 				"SEARCH_SELECTED",
 				"SELECTED_SEARCH_CLEARED",
-				"DELETE_SEARCH_SUCCEEDED"
+				"DELETE_SEARCH_SUCCEEDED",
+				"SELECTED_EVENT_CLEARED"
 			],
 			search
 		),
@@ -357,6 +401,8 @@ export default function* businessLogic() {
 		takeLatest("SEARCHING", checkIfSelectedSearchShouldBeCleared),
 		takeLatest("SELECT_SEARCH", selectSearch),
 		takeLatest("DELETE_SEARCH", deleteSearch),
-		takeLatest("REFRESH_SYSTEMS_AND_GROUPS", refreshSystemsAndGroups)
+		takeLatest("REFRESH_SYSTEMS_AND_GROUPS", refreshSystemsAndGroups),
+		takeLatest("SELECT_EVENT", selectEvent),
+		takeLatest("EVENT_SELECTED", eventSearch)
 	]);
 }

@@ -46,8 +46,8 @@ class EventList extends Component {
                 hostname: e.hostname,
                 program: e.program,
                 isFirst: idx === 0,
-                eventData: Object.assign({}, e, { siblings: group }),
-                selected: e.id === (this.props.selectedEvent || {}).id
+                selected: e.id === (this.props.selectedEvent || {}).id,
+                onLongPress: this.props.onEventSelected
               };
             })
             .value()

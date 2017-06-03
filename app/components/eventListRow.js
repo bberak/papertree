@@ -17,8 +17,8 @@ class EventListRow extends Component {
     this.setState({ truncate: !this.state.truncate})
   }
 
-  select = () => {
-    Actions.refresh({ key: "home", selectedEvent: this.props.selected ? null : this.props.eventData })
+  onLongPress = () => {
+    this.props.onLongPress(this.props.id);
   }
 
   render() {
@@ -45,7 +45,7 @@ class EventListRow extends Component {
         <TouchableOpacity
           activeOpacity={1}
           onPress={this.toggleTruncate}
-          onLongPress={this.select}
+          onLongPress={this.onLongPress}
         >
           <Text style={[css.message, this.props.selected ? css.messageSelected : null]}>
             {_.trim(message)}

@@ -24,6 +24,7 @@ const initState = {
 	lastFilter: null,
 	refreshing: false,
 	events: [],
+	selectedEvent: null,
 
 	refreshingSavedSearches: false,
 	savedSearches: [],
@@ -103,10 +104,12 @@ export default (state = initState, action = {}) => {
 		case "HIDE_BOOKMARK":
 			return { ...state, bookmarkVisible: false };
 		//-- SEARCH --//
+		case "APPLY_FILTER":
+			return { ...state, filter: action.filter, selectedEvent: null };
 		case "SEARCH_TERM_CHANGED":
 			return { ...state, searchTerm: action.searchTerm };
-		case "APPLY_FILTER":
-			return { ...state, filter: action.filter }
+		case "SEARCH_SUBMITTED": 
+			return { ...state, selectedEvent: null }
 		case "SEARCHING":
 			return {
 				...state,
@@ -116,7 +119,13 @@ export default (state = initState, action = {}) => {
 		case "SEARCH_FAILED":
 			return { ...state, refreshing: false, events: [] };
 		case "SEARCH_SUCCEEDED":
-			return { ...state, refreshing: false, events: action.events, lastSearch: action.lastSearch, lastFilter: action.lastFilter };
+			return {
+				...state,
+				refreshing: false,
+				events: action.events,
+				lastSearch: action.lastSearch,
+				lastFilter: action.lastFilter
+			};
 		case "REFRESHING":
 			return { ...state, refreshing: true };
 		//-- SAVED SEARCHES --//
@@ -138,6 +147,7 @@ export default (state = initState, action = {}) => {
 			return {
 				...state,
 				selectedSearch: action.selectedSearch,
+				selectedEvent: null,
 				searchTerm: action.selectedSearch.query,
 				settingsOpen: false,
 				filter: {
@@ -218,6 +228,25 @@ export default (state = initState, action = {}) => {
 				groups: [],
 				systems: []
 			};
+		//-- EVENT SELECTION --//
+		case "SELECTED_EVENT_CLEARED":
+			return { ...state, selectedEvent: null };
+		case "EVENT_SELECTED":
+			return { ...state, selectedEvent: action.selectedEvent };
+		case "SEARCHING_EVENTS":
+			return {
+				...state,
+				refreshing: true,
+				searchTerm: null,
+				lastSearch: null,
+				filter: null,
+				lastFilter: null,
+				events: action.siblings
+			};
+		case "EVENT_SEARCH_SUCCEEDED": 
+			return { ...state, refreshing: false, events: action.events }
+		case "EVENT_SEARCH_FAILED":
+			return { ...state, refreshing: false }
 
 		default:
 			return state;
