@@ -31,12 +31,7 @@ class Main extends Component {
 
         {statusBar}
 
-        <ToolBar
-          searchTerm={this.props.searchTerm}
-          settingsOpen={this.props.settingsOpen}
-          filterOpen={this.props.filterOpen}
-          filter={this.props.filter}
-        />
+        <ToolBar />
 
         <EventList
           refreshing={this.props.refreshing}
@@ -46,15 +41,9 @@ class Main extends Component {
           onRefresh={() => this.props.dispatch({ type: "REFRESH" })}
           onEndReached={() => this.props.dispatch({ type: "END_REACHED" })}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
-          selectedEvent={this.props.selectedEvent}
         />
 
-        <Bookmark
-          savedSearches={this.props.savedSearches}
-          selectedSearch={this.props.selectedSearch}
-          searchTerm={this.props.searchTerm}
-          filter={this.props.filter}
-        />
+        <Bookmark />
 
       </View>
     );

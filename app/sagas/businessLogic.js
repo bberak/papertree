@@ -176,7 +176,7 @@ function* search({ initialSearch }) {
 				type: "SEARCH_SUCCEEDED",
 				events: results.events || [],
 				lastSearch: searchTerm,
-				filter: filter
+				lastFilter: filter
 			});
 		} catch (error) {
 			console.log(error);
