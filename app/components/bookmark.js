@@ -26,9 +26,9 @@ class Bookmark extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (nextProps.bookmarkVisible)
+    if (this.props.bookmarkVisible === false && nextProps.bookmarkVisible === true)
       this.showBookmark();
-    else
+    else if (this.props.bookmarkVisible === true && nextProps.bookmarkVisible === false)
       this.hideBookmark();
   }
 
@@ -67,7 +67,7 @@ class Bookmark extends Component {
         />;
 
     return (
-      <View style={css.container} onLayout={() => this.props.dispatch({ type: "ON_LAYOUT"})}>
+      <View style={css.container}>
 
         {actionSheet}
 

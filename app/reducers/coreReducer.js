@@ -15,6 +15,7 @@ const initState = {
 	deleteSearchFailed: false,
 
 	bookmarkVisible: false,
+	keyboardVisible: false,
 	orientation: null,
 
 	searchTerm: null,
@@ -84,6 +85,11 @@ export default (state = initState, action = {}) => {
 				)
 			};
 		
+		//-- KEYBOARD --//
+		case "KEYBOARD_SHOWN":
+			return { ...state, keyboardVisible: true };
+		case "KEYBOARD_HIDDEN":
+			return { ...state, keyboardVisible: false };
 		//-- ORIENTATION CHANGE --//
 		case "ORIENTATION_CHANGED":
 			return { ...state, orientation: action.orientation };

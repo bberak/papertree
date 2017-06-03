@@ -6,7 +6,8 @@ import {
 	call,
 	takeLatest,
 	select,
-	throttle
+	throttle,
+	take
 } from "redux-saga/effects";
 import Api from "../utils/papertrailApi";
 import Browser from "../utils/browser";
@@ -128,17 +129,21 @@ function* showOrHideBookmark() {
 		orientation,
 		lastSearch,
 		saveSearchActionSheetVisible,
-		deleteSearchActionSheetVisible
+		deleteSearchActionSheetVisible,
+		keyboardVisible
 	} = yield select();
 
 	const bookmarkShouldShow =
 		orientation === "portrait" &&
 		Str.isNotNullOrWhiteSpace(lastSearch) &&
 		saveSearchActionSheetVisible === false &&
-		deleteSearchActionSheetVisible === false;
+		deleteSearchActionSheetVisible === false &&
+		keyboardVisible == false;
 
-	if (bookmarkShouldShow) yield put({ type: "SHOW_BOOKMARK" });
-	else yield put({ type: "HIDE_BOOKMARK" });
+	if (bookmarkShouldShow)
+		yield put({ type: "SHOW_BOOKMARK" });
+	else 
+		yield put({ type: "HIDE_BOOKMARK" });
 }
 
 function* openActionSheet() {
@@ -293,6 +298,8 @@ export default function* businessLogic() {
 				"OPEN_DELETE_SEARCH_ACTIONSHEET",
 				"CLOSE_DELETE_SEARCH_ACTIONSHEET",
 				"ORIENTATION_CHANGED",
+				"KEYBOARD_SHOWN",
+				"KEYBOARD_HIDDEN",
 				"SEARCH_SUBMITTED",
 				"SEARCH_TERM_CLEARED",
 				"SEARCHING",

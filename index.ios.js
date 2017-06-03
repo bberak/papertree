@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, View } from "react";
 import { AppRegistry } from "react-native";
 import Login from "./app/components/login";
 import Home from "./app/components/home";
