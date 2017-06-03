@@ -15,7 +15,7 @@ import { Actions as Navigation } from "react-native-router-flux";
 import _ from "lodash";
 import { Dimensions } from "react-native";
 import * as Str from "../utils/str";
-import * as Help from "../utils/help"; 
+import * as Help from "../utils/help";
 
 function* load() {
 	yield call(Navigation.login);
@@ -34,7 +34,8 @@ function* showHomeScreen() {
 
 	yield all([
 		put({ type: "SEARCH_SUBMITTED", override: true }),
-		put({ type: "REFRESH_SAVED_SEARCHES" })
+		put({ type: "REFRESH_SAVED_SEARCHES" }),
+		put({ type: "REFRESH_SYSTEMS_AND_GROUPS" })
 	]);
 }
 
@@ -95,8 +96,8 @@ function* saveSearch({ searchName, searchTerm, filter }) {
 	}
 }
 
-function* deleteSearch(){
-	const selectedSearch = yield select(s => s.selectedSearch)
+function* deleteSearch() {
+	const selectedSearch = yield select(s => s.selectedSearch);
 
 	if (selectedSearch) {
 		yield put({ type: "DELETING_SEARCH" });
@@ -104,9 +105,10 @@ function* deleteSearch(){
 		try {
 			yield call(Api.deleteSearch, selectedSearch.id);
 
-			yield put({ type: "DELETE_SEARCH_SUCCEEDED", deletedSearch: selectedSearch })
-
-			yield put({ type: "SEARCH_SUBMITTED"})
+			yield put({
+				type: "DELETE_SEARCH_SUCCEEDED",
+				deletedSearch: selectedSearch
+			});
 		} catch (err) {
 			console.log(err);
 
@@ -140,10 +142,8 @@ function* showOrHideBookmark() {
 		deleteSearchActionSheetVisible === false &&
 		keyboardVisible == false;
 
-	if (bookmarkShouldShow)
-		yield put({ type: "SHOW_BOOKMARK" });
-	else 
-		yield put({ type: "HIDE_BOOKMARK" });
+	if (bookmarkShouldShow) yield put({ type: "SHOW_BOOKMARK" });
+	else yield put({ type: "HIDE_BOOKMARK" });
 }
 
 function* openActionSheet() {
@@ -155,17 +155,20 @@ function* openActionSheet() {
 
 function* clear() {
 	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" });
-
-	yield put({ type: "SEARCH_SUBMITTED" });
 }
 
 function* search({ override }) {
-	const { searchTerm, lastSearch, filter } = yield select();
+	const { searchTerm, lastSearch, filter, lastFilter } = yield select();
 
-	if (_.trim(searchTerm) !== _.trim(lastSearch) || override === true) {
+	if (
+		_.trim(searchTerm) !== _.trim(lastSearch) ||
+		Help.areFiltersDifferent(filter, lastFilter) ||
+		override === true
+	) {
 		yield put({
 			type: "SEARCHING",
-			lastSearch: searchTerm
+			lastSearch: searchTerm,
+			lastFilter: filter
 		});
 
 		try {
@@ -183,14 +186,14 @@ function* search({ override }) {
 	}
 }
 
-function* endReached({ lastSearch, filter, events }) {
+function* endReached({ lastSearch, lastFilter, events }) {
 	if (events && events.length > 0) {
 		try {
 			let maxId = _.minBy(events, "id").id; //-- Searching tail, therefore min id becomes the max param
 			let results = yield call(
 				Api.search,
 				lastSearch,
-				filter,
+				lastFilter,
 				null,
 				maxId
 			);
@@ -205,7 +208,7 @@ function* endReached({ lastSearch, filter, events }) {
 	}
 }
 
-function* refresh({ lastSearch, filter, events }) {
+function* refresh({ lastSearch, lastFilter, events }) {
 	yield put({ type: "REFRESHING" });
 
 	try {
@@ -216,7 +219,7 @@ function* refresh({ lastSearch, filter, events }) {
 		let results = yield call(
 			Api.search,
 			lastSearch,
-			filter,
+			lastFilter,
 			minId,
 			null,
 			limit
@@ -256,25 +259,47 @@ function* selectSearch({ selectedSearch }) {
 	current = current || {};
 	selectedSearch = selectedSearch || {};
 
-	if (current.id === selectedSearch.id) {
+	if (current.id === selectedSearch.id)
 		yield put({ type: "SELECTED_SEARCH_CLEARED" });
-		yield put({ type: "SEARCH_SUBMITTED"});
-	} else {
-		yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
-		yield put({ type: "SEARCH_SUBMITTED"});
-	}
+	else yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
 }
 
-function* checkIfSearchShouldBeCleared() {
-	const { selectedSearch, lastSearch, filter} = yield select();
+function* checkIfSelectedSearchShouldBeCleared() {
+	const { selectedSearch, lastSearch, lastFilter } = yield select();
 
 	if (selectedSearch) {
-		let selectedSearchFilter = { groupId: selectedSearch.group.id, groupName: selectedSearch.groupName };
-		let outOfSync = _.trim(selectedSearch.query) !== _.trim(lastSearch) || Help.areFiltersDifferent(filter, selectedSearchFilter)
+		let selectedSearchFilter = {
+			groupId: selectedSearch.group.id,
+			groupName: selectedSearch.groupName
+		};
+		let outOfSync =
+			_.trim(selectedSearch.query) !== _.trim(lastSearch) ||
+			Help.areFiltersDifferent(selectedSearchFilter, lastFilter);
 
 		if (outOfSync) {
 			yield put({ type: "SELECTED_SEARCH_OUT_OF_SYNC" });
 		}
+	}
+}
+
+function* refreshSystemsAndGroups() {
+	yield put({ type: "REFRESHING_SYSTEMS_AND_GROUPS" });
+
+	try {
+		let results = yield all([call(Api.listGroups), call(Api.listSystems)]);
+
+		let groups = results[0] || [];
+		let systems = [{ name: "Any" }].concat(results[1] || []);
+
+		yield put({
+			type: "REFRESHING_SYSTEMS_AND_GROUPS_SUCCEEDED",
+			groups: groups,
+			systems: systems
+		});
+	} catch (error) {
+		console.log(error);
+
+		yield put({ type: "REFRESHING_SYSTEMS_AND_GROUPS_FAILED" });
 	}
 }
 
@@ -300,31 +325,30 @@ export default function* businessLogic() {
 				"ORIENTATION_CHANGED",
 				"KEYBOARD_SHOWN",
 				"KEYBOARD_HIDDEN",
-				"SEARCH_SUBMITTED",
-				"SEARCH_TERM_CLEARED",
-				"SEARCHING",
-				"SEARCH_SUCCEEDED",
-				"SAVE_SEARCH_SUCCEEDED",
-				"DELETE_SEARCH_SUCCEEDED"
+				"SEARCHING"
 			],
 			showOrHideBookmark
 		),
 		takeLatest("OPEN_ACTIONSHEET", openActionSheet),
 		takeLatest("SEARCH_TERM_CLEARED", clear),
-		throttle(1000, "SEARCH_SUBMITTED", search),
+		throttle(
+			1000,
+			[
+				"SEARCH_SUBMITTED",
+				"SEARCH_TERM_CLEARED",
+				"APPLY_FILTER",
+				"SEARCH_SELECTED",
+				"SELECTED_SEARCH_CLEARED",
+				"DELETE_SEARCH_SUCCEEDED"
+			],
+			search
+		),
 		takeLatest("END_REACHED", endReached),
 		takeLatest("REFRESH", refresh),
 		takeLatest("REFRESH_SAVED_SEARCHES", refreshSavedSearches),
-		takeLatest(
-			[
-				"SEARCH_TERM_CLEARED", 
-				"FILTER_CHANGED", 
-				"SEARCHING"
-			],
-			checkIfSearchShouldBeCleared
-		),
-
+		takeLatest("SEARCHING", checkIfSelectedSearchShouldBeCleared),
 		takeLatest("SELECT_SEARCH", selectSearch),
-		takeLatest("DELETE_SEARCH", deleteSearch)
+		takeLatest("DELETE_SEARCH", deleteSearch),
+		takeLatest("REFRESH_SYSTEMS_AND_GROUPS", refreshSystemsAndGroups)
 	]);
 }

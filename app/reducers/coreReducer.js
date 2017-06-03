@@ -21,6 +21,7 @@ const initState = {
 	searchTerm: null,
 	lastSearch: null,
 	filter: null,
+	lastFilter: null,
 	refreshing: false,
 	events: [],
 
@@ -29,7 +30,11 @@ const initState = {
 	selectedSearch: null,
 
 	settingsOpen: false,
-	filterOpen: false
+	filterOpen: false,
+
+	refreshingSystemsAndGroups: false,
+	systems: [],
+	groups: []
 };
 
 export default (state = initState, action = {}) => {
@@ -84,7 +89,6 @@ export default (state = initState, action = {}) => {
 					state.savedSearches || []
 				)
 			};
-		
 		//-- KEYBOARD --//
 		case "KEYBOARD_SHOWN":
 			return { ...state, keyboardVisible: true };
@@ -101,11 +105,14 @@ export default (state = initState, action = {}) => {
 		//-- SEARCH --//
 		case "SEARCH_TERM_CHANGED":
 			return { ...state, searchTerm: action.searchTerm };
+		case "APPLY_FILTER":
+			return { ...state, filter: action.filter }
 		case "SEARCHING":
 			return {
 				...state,
 				refreshing: true,
 				lastSearch: action.lastSearch,
+				lastFilter: action.lastFilter,
 				events: []
 			};
 		case "SEARCH_FAILED":
@@ -187,7 +194,7 @@ export default (state = initState, action = {}) => {
 				savedSearches: (state.savedSearches || [])
 					.filter(x => x.id !== action.deletedSearch.id)
 			};
-
+		//-- OPEN, CLOSE, FILTER AND SETTINGS --//
 		case "OPEN_SETTINGS":
 			return { ...state, settingsOpen: true, filterOpen: false };
 		case "CLOSE_SETTINGS":
@@ -196,7 +203,23 @@ export default (state = initState, action = {}) => {
 			return { ...state, settingsOpen: false, filterOpen: true };
 		case "CLOSE_FILTER":
 			return { ...state, filterOpen: false };
-
+		//-- SYSTEMS AND GROUPS --..
+		case "REFRESHING_SYSTEMS_AND_GROUPS":
+			return { ...state, refreshingSystemsAndGroups: true };
+		case "REFRESHING_SYSTEMS_AND_GROUPS_SUCCEEDED":
+			return {
+				...state,
+				refreshingSystemsAndGroups: false,
+				groups: action.groups,
+				systems: action.systems
+			};
+		case "REFRESHING_SYSTEMS_AND_GROUPS_FAILED":
+			return {
+				...state,
+				refreshingSystemsAndGroups: false,
+				groups: [],
+				systems: []
+			};
 
 		default:
 			return state;

@@ -43,8 +43,8 @@ class Main extends Component {
           events={this.props.events}
           searchTerm={this.props.lastSearch}
           filter={this.props.filter}
-          onRefresh={() => this.props.dispatch({ type: "REFRESH", lastSearch: this.props.lastSearch, filter: this.props.filter, events: this.props.events})}
-          onEndReached={() => this.props.dispatch({ type: "END_REACHED", lastSearch: this.props.lastSearch, filter: this.props.filter, events: this.props.events})}
+          onRefresh={() => this.props.dispatch({ type: "REFRESH", lastSearch: this.props.lastSearch, lastFilter: this.props.lastFilter, events: this.props.events})}
+          onEndReached={() => this.props.dispatch({ type: "END_REACHED", lastSearch: this.props.lastSearch, lastFilter: this.props.lastFilter, events: this.props.events})}
           onEndReachedThreshold={EStyleSheet.value("100%", "height")}
           selectedEvent={this.props.selectedEvent}
         />
