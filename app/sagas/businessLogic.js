@@ -33,7 +33,7 @@ function* showHomeScreen() {
 	yield call(Navigation.home);
 
 	yield all([
-		put({ type: "SEARCH_SUBMITTED", override: true }),
+		put({ type: "SEARCH_SUBMITTED", initialSearch: true }),
 		put({ type: "REFRESH_SAVED_SEARCHES" }),
 		put({ type: "REFRESH_SYSTEMS_AND_GROUPS" })
 	]);
@@ -129,15 +129,15 @@ function* onLayout() {
 function* showOrHideBookmark() {
 	const {
 		orientation,
-		lastSearch,
 		saveSearchActionSheetVisible,
 		deleteSearchActionSheetVisible,
-		keyboardVisible
+		keyboardVisible,
+		searchTerm
 	} = yield select();
 
 	const bookmarkShouldShow =
 		orientation === "portrait" &&
-		Str.isNotNullOrWhiteSpace(lastSearch) &&
+		Str.isNotNullOrWhiteSpace(searchTerm) &&
 		saveSearchActionSheetVisible === false &&
 		deleteSearchActionSheetVisible === false &&
 		keyboardVisible == false;
@@ -157,18 +157,16 @@ function* clear() {
 	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" });
 }
 
-function* search({ override }) {
+function* search({ initialSearch }) {
 	const { searchTerm, lastSearch, filter, lastFilter } = yield select();
 
 	if (
 		_.trim(searchTerm) !== _.trim(lastSearch) ||
 		Help.areFiltersDifferent(filter, lastFilter) ||
-		override === true
+		initialSearch === true
 	) {
 		yield put({
-			type: "SEARCHING",
-			lastSearch: searchTerm,
-			lastFilter: filter
+			type: "SEARCHING"
 		});
 
 		try {
@@ -176,7 +174,9 @@ function* search({ override }) {
 
 			yield put({
 				type: "SEARCH_SUCCEEDED",
-				events: results.events || []
+				events: results.events || [],
+				lastSearch: searchTerm,
+				filter: filter
 			});
 		} catch (error) {
 			console.log(error);
@@ -186,7 +186,9 @@ function* search({ override }) {
 	}
 }
 
-function* endReached({ lastSearch, lastFilter, events }) {
+function* endReached() {
+	const { lastSearch, lastFilter, events } = yield select();
+
 	if (events && events.length > 0) {
 		try {
 			let maxId = _.minBy(events, "id").id; //-- Searching tail, therefore min id becomes the max param
@@ -200,7 +202,9 @@ function* endReached({ lastSearch, lastFilter, events }) {
 
 			yield put({
 				type: "SEARCH_SUCCEEDED",
-				events: _.uniqBy((events || []).concat(results.events || []))
+				events: _.uniqBy((events || []).concat(results.events || [])),
+				lastSearch: lastSearch,
+				lastFilter: lastFilter
 			});
 		} catch (error) {
 			console.log(error);
@@ -208,14 +212,16 @@ function* endReached({ lastSearch, lastFilter, events }) {
 	}
 }
 
-function* refresh({ lastSearch, lastFilter, events }) {
+function* refresh() {
 	yield put({ type: "REFRESHING" });
+
+	const { lastSearch, lastFilter, events } = yield select();
 
 	try {
 		let minId = events && events.length > 0
 			? _.maxBy(events, "id").id //-- Searching head, therefore max id becomes the min param
 			: null;
-		let limit = 10000; //-- Try get as many events as you can - avoids polling
+		let limit = minId ? 10000 : 20; //-- Try get as many events as you can - avoids polling
 		let results = yield call(
 			Api.search,
 			lastSearch,
@@ -227,7 +233,9 @@ function* refresh({ lastSearch, lastFilter, events }) {
 
 		yield put({
 			type: "SEARCH_SUCCEEDED",
-			events: _.uniqBy((events || []).concat(results.events || []))
+			events: _.uniqBy((events || []).concat(results.events || [])),
+			lastSearch: lastSearch,
+			lastFilter: lastFilter
 		});
 	} catch (error) {
 		console.log(error);
@@ -325,14 +333,14 @@ export default function* businessLogic() {
 				"ORIENTATION_CHANGED",
 				"KEYBOARD_SHOWN",
 				"KEYBOARD_HIDDEN",
-				"SEARCHING"
+				"SEARCHING",
+				"SEARCH_SUCCEEDED"
 			],
 			showOrHideBookmark
 		),
 		takeLatest("OPEN_ACTIONSHEET", openActionSheet),
 		takeLatest("SEARCH_TERM_CLEARED", clear),
-		throttle(
-			1000,
+		takeLatest(
 			[
 				"SEARCH_SUBMITTED",
 				"SEARCH_TERM_CLEARED",

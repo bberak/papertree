@@ -111,14 +111,12 @@ export default (state = initState, action = {}) => {
 			return {
 				...state,
 				refreshing: true,
-				lastSearch: action.lastSearch,
-				lastFilter: action.lastFilter,
 				events: []
 			};
 		case "SEARCH_FAILED":
 			return { ...state, refreshing: false, events: [] };
 		case "SEARCH_SUCCEEDED":
-			return { ...state, refreshing: false, events: action.events };
+			return { ...state, refreshing: false, events: action.events, lastSearch: action.lastSearch, lastFilter: action.lastFilter };
 		case "REFRESHING":
 			return { ...state, refreshing: true };
 		//-- SAVED SEARCHES --//
