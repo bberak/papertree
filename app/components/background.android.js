@@ -11,7 +11,7 @@ const images = [],
   imgHeight = 300 / pixelRatio,
   winHeight = EStyleSheet.value("100%", "height") * 2, //-- I've modded the EStyleSheet package to always scale height percentages against the longest side..
   winWidth = winHeight / 2 + StatusBar.currentHeight,
-  imageSource = require("../images/tile.png");
+  imageSource = require("../images/noise.png");
 
 for (var row = 0; row < Math.ceil(winHeight / imgHeight); row++) {
   let top = row * imgHeight;

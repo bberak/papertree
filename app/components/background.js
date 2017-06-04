@@ -24,7 +24,7 @@ class Background extends Component {
           easing={"linear"}
           style={css.backgroundImage} 
           resizeMode={this.props.resizeMode || "repeat"}
-          source={this.props.imageSource || require('../images/tile.png')}
+          source={this.props.imageSource || require('../images/noise.png')}
           blurRadius={this.props.blurRadius}>
         </MyImage>
         <View style={css.contentContainer}>
