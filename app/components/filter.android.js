@@ -7,26 +7,22 @@ import {
   TouchableOpacity
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import api from "../utils/papertrailApi";
-import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import DatePickerAccordion from "./datePickerAccordion";
 import OptionPicker from "./optionPicker";
 import * as Help from "../utils/help"
+import { connect } from "react-redux";
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false,
       filterByStartTime: false,
       filterByEndTime: false,
       startDate: null,
       endDate: null,
       systemsOpen: false,
       groupsOpen: false,
-      systems: [],
-      groups: [],
       selectedGroup: null,
       selectedSystem: null
     };
@@ -37,7 +33,7 @@ class Filter extends Component {
     let currentFilter = this.buildFilter();
     let same = Help.areFiltersTheSame(incomingFilter, currentFilter);
 
-    if (!same && nextProps.selectedSearch != this.props.selectedSearch) {
+    if (!same) {
       this.setState({
         filterByStartTime: incomingFilter.minTime ? true : false,
         startDate: incomingFilter.minTime ? new Date(incomingFilter.minTime) : null,
@@ -49,43 +45,16 @@ class Filter extends Component {
     }
   }
 
-  componentDidMount = () => {
-    this.onRefresh();
-  };
-
-  onRefresh = async () => {
-    this.setState({
-      refreshing: true
-    });
-
-    try {
-      let results = await Promise.all([api.listGroups(), api.listSystems()]);
-      let groups = results[0] || [];
-      let systems = [{ name: "Any" }].concat(results[1] || []);
-
-      this.setState({
-        refreshing: false,
-        groups: groups,
-        systems: systems
-      });
-    } catch (error) {
-      console.log(error);
-      this.setState({
-        refreshing: false
-      });
-    }
-  };
-
   getSelectedGroup = () => {
-    return this.state.selectedGroup || _.minBy(this.state.groups || [], "id");
+    return this.state.selectedGroup || _.minBy(this.props.groups || [], "id");
   };
 
   getSelectedSystem = () => {
-    return this.state.selectedSystem || this.state.systems[0];
+    return this.state.selectedSystem || this.props.systems[0];
   };
 
   onGroupSelected = id => {
-    let group = (this.state.groups || []).find(x => x.id === id);
+    let group = (this.props.groups || []).find(x => x.id === id);
 
     this.setState({
       selectedGroup: group
@@ -93,7 +62,7 @@ class Filter extends Component {
   };
 
   onSystemSelected = id => {
-    let system = (this.state.systems || []).find(x => x.id === id);
+    let system = (this.props.systems || []).find(x => x.id === id);
     
     this.setState({
       selectedSystem: system
@@ -124,6 +93,10 @@ class Filter extends Component {
     return filter;
   }
 
+  onRefresh = () => {
+    this.props.dispatch({ type: "REFRESH_SYSTEMS_AND_GROUPS" })
+  }
+
   onResetFilters = () => {
     this.setState({
       filterByStartTime: false,
@@ -140,7 +113,7 @@ class Filter extends Component {
   onApplyFilters = () => {
     let newFilter = this.buildFilter();
 
-    Actions.refresh({ key: "home", filter: newFilter, selectedSearch: null});
+    this.props.dispatch({ type: "APPLY_FILTER", filter: newFilter })
   }
 
   onOpenOrCloseStartTime = (v) => {
@@ -160,7 +133,7 @@ class Filter extends Component {
   render() {
     let refreshControl = (
       <RefreshControl
-        refreshing={this.state.refreshing}
+        refreshing={this.props.refreshingSavedSearches}
         tintColor={EStyleSheet.value("$filterIndicatorColor")}
         colors={[
           EStyleSheet.value("$secondaryColor"),
@@ -216,7 +189,7 @@ class Filter extends Component {
             <OptionPicker
               label={"Group"}
               value={this.getSelectedGroup()}
-              values={this.state.groups}
+              values={this.props.groups}
               open={this.state.groupsOpen}
               onOpenOrClose={v => this.setState({ groupsOpen: v })}
               onValueChange={this.onGroupSelected}
@@ -231,7 +204,7 @@ class Filter extends Component {
             <OptionPicker
               label={"System"}
               value={this.getSelectedSystem()}
-              values={this.state.systems}
+              values={this.props.systems}
               open={this.state.systemsOpen}
               onOpenOrClose={v => this.setState({ systemsOpen: v })}
               onValueChange={this.onSystemSelected}
@@ -329,4 +302,4 @@ const css = EStyleSheet.create({
   }
 });
 
-export default Filter;
+export default connect(s => s)(Filter);
