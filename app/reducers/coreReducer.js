@@ -57,7 +57,10 @@ export default (state = initState, action = {}) => {
 				loading: false
 			};
 		case "LOGGED_OUT":
-			return { ...state, loggedIn: false };
+			return {
+				...initState,
+				loading: false
+			};
 		//-- SAVE SEARCH ACTION SHEET --//
 		case "OPEN_SAVE_SEARCH_ACTIONSHEET":
 			return {
@@ -108,8 +111,8 @@ export default (state = initState, action = {}) => {
 			return { ...state, filter: action.filter, selectedEvent: null };
 		case "SEARCH_TERM_CHANGED":
 			return { ...state, searchTerm: action.searchTerm };
-		case "SEARCH_SUBMITTED": 
-			return { ...state, selectedEvent: null }
+		case "SEARCH_SUBMITTED":
+			return { ...state, selectedEvent: null };
 		case "SEARCHING":
 			return {
 				...state,
@@ -232,7 +235,11 @@ export default (state = initState, action = {}) => {
 		case "SELECTED_EVENT_CLEARED":
 			return { ...state, selectedEvent: null, events: [] };
 		case "EVENT_SELECTED":
-			return { ...state, selectedEvent: action.selectedEvent, selectedSearch: null };
+			return {
+				...state,
+				selectedEvent: action.selectedEvent,
+				selectedSearch: null
+			};
 		case "SEARCHING_EVENTS":
 			return {
 				...state,
@@ -243,10 +250,10 @@ export default (state = initState, action = {}) => {
 				lastFilter: null,
 				events: action.siblings
 			};
-		case "EVENT_SEARCH_SUCCEEDED": 
-			return { ...state, refreshing: false, events: action.events }
+		case "EVENT_SEARCH_SUCCEEDED":
+			return { ...state, refreshing: false, events: action.events };
 		case "EVENT_SEARCH_FAILED":
-			return { ...state, refreshing: false, events: [] }
+			return { ...state, refreshing: false, events: [] };
 
 		default:
 			return state;
