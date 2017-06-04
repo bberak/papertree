@@ -20,7 +20,7 @@ class Login extends Component {
         <LoginForm />
     
     return (
-      <Background>
+      <Background animate={this.props.loggedIn === false}>
         
         <StatusBar hidden={false} barStyle="light-content" />
         

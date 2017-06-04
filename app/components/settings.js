@@ -54,7 +54,7 @@ class Settings extends Component {
       : <Link value={"* * *"} disabled={true} />;
 
     return (
-      <Background>
+      <Background animate={this.props.settingsOpen}>
 
         <Image style={css.logo} source={require("../images/logo-small.png")} />
 
