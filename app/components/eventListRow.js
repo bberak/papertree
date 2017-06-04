@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import _ from "lodash";
-import * as Animatable from "react-native-animatable";
 import { Actions } from "react-native-router-flux";
 
 class EventListRow extends Component {

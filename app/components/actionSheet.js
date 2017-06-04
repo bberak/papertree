@@ -44,6 +44,7 @@ class Form extends Component {
           backdropOpacity={this.props.backdropOpacity || 0.4}
           isVisible={this.props.visible}
           supportedOrientations={['portrait']}
+          useNativeDriver={true}
         >
 
           {form}

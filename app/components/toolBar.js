@@ -3,8 +3,7 @@ import { View, Text, Platform } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import TextBox from "./textBox";
 import ToolBarButton from "./toolBarButton";
-import { Actions } from "react-native-router-flux"
-import FilterActionSheet from "./filterActionSheet";
+import { Actions } from "react-native-router-flux";
 import * as Help from "../utils/help"
 import { connect } from "react-redux";
 

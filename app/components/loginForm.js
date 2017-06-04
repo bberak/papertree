@@ -36,9 +36,9 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <Animatable.View animation={"fadeIn"} ref={"form"} style={css.form}>
+      <Animatable.View animation={"fadeIn"} ref={"form"} style={css.form} useNativeDriver={true}>
 
-        <Animatable.View ref={"textBoxes"} animation={this.props.loginFailed ? "shake" : null} duration={400}>
+        <Animatable.View ref={"textBoxes"} animation={this.props.loginFailed ? "shake" : null} duration={400} useNativeDriver={true}>
 
           <TextBox
             ref={"email"}

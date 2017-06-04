@@ -23,7 +23,7 @@ class SaveSearchActionSheet extends Component {
 
         <ActionSheet.HR />
 
-        <Animatable.View ref="textBoxContainer" animation={this.props.saveFailed ? "shake" : null} duration={400}>
+        <Animatable.View ref="textBoxContainer" animation={this.props.saveFailed ? "shake" : null} duration={400} useNativeDriver={true}>
           <ActionSheet.TextBox
             placeholder={"Name"}
             autoCorrect={false}

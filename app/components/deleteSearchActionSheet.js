@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import * as ActionSheet from "./actionSheet";
-import * as Animatable from "react-native-animatable";
 import _ from "lodash";
 import api from "../utils/papertrailApi";
 import { Actions } from "react-native-router-flux";
