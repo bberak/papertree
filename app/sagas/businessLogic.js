@@ -72,9 +72,13 @@ function* logout() {
 		console.log(err);
 	}
 
-	yield call(Navigation.pop);
+	yield put({ type: "CLOSE_SETTINGS" });
+
+	yield delay(500);
 
 	yield put({ type: "LOGGED_OUT" });
+
+	yield call(Navigation.pop);
 }
 
 function* saveSearch({ searchName, searchTerm, filter }) {

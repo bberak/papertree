@@ -1,6 +1,5 @@
 import * as Keychain from "react-native-keychain";
 import base64 from "base-64";
-import { Actions } from "react-native-router-flux";
 import * as Help from "./help";
 
 let _authHeader = null;
