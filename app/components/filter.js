@@ -33,7 +33,7 @@ class Filter extends Component {
     let currentFilter = this.buildFilter();
     let same = Help.areFiltersTheSame(incomingFilter, currentFilter);
 
-    if (!same && nextProps.selectedSearch != this.props.selectedSearch) {
+    if (!same) {
       this.setState({
         filterByStartTime: incomingFilter.minTime ? true : false,
         startDate: incomingFilter.minTime ? new Date(incomingFilter.minTime) : null,

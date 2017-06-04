@@ -230,9 +230,9 @@ export default (state = initState, action = {}) => {
 			};
 		//-- EVENT SELECTION --//
 		case "SELECTED_EVENT_CLEARED":
-			return { ...state, selectedEvent: null };
+			return { ...state, selectedEvent: null, events: [] };
 		case "EVENT_SELECTED":
-			return { ...state, selectedEvent: action.selectedEvent };
+			return { ...state, selectedEvent: action.selectedEvent, selectedSearch: null };
 		case "SEARCHING_EVENTS":
 			return {
 				...state,
@@ -246,7 +246,7 @@ export default (state = initState, action = {}) => {
 		case "EVENT_SEARCH_SUCCEEDED": 
 			return { ...state, refreshing: false, events: action.events }
 		case "EVENT_SEARCH_FAILED":
-			return { ...state, refreshing: false }
+			return { ...state, refreshing: false, events: [] }
 
 		default:
 			return state;

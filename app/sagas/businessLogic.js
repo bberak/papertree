@@ -33,7 +33,7 @@ function* showHomeScreen() {
 	yield call(Navigation.home);
 
 	yield all([
-		put({ type: "SEARCH_SUBMITTED", searchAnyway: true }),
+		put({ type: "SEARCH_SUBMITTED" }),
 		put({ type: "REFRESH_SAVED_SEARCHES" }),
 		put({ type: "REFRESH_SYSTEMS_AND_GROUPS" })
 	]);
@@ -157,13 +157,13 @@ function* clear() {
 	yield put({ type: "SEARCH_TERM_CHANGED", searchTerm: "" });
 }
 
-function* search({ searchAnyway }) {
-	const { searchTerm, lastSearch, filter, lastFilter } = yield select();
+function* search() {
+	const { searchTerm, lastSearch, filter, lastFilter, events } = yield select();
 
 	if (
 		_.trim(searchTerm) !== _.trim(lastSearch) ||
 		Help.areFiltersDifferent(filter, lastFilter) ||
-		searchAnyway === true
+		(events || []).length === 0
 	) {
 		yield put({
 			type: "SEARCHING"
@@ -274,7 +274,7 @@ function* selectSearch({ selectedSearch }) {
 }
 
 function* checkIfSelectedSearchShouldBeCleared() {
-	const { selectedSearch, lastSearch, lastFilter } = yield select();
+	const { selectedSearch, searchTerm, filter } = yield select();
 
 	if (selectedSearch) {
 		let selectedSearchFilter = {
@@ -282,8 +282,8 @@ function* checkIfSelectedSearchShouldBeCleared() {
 			groupName: selectedSearch.groupName
 		};
 		let outOfSync =
-			_.trim(selectedSearch.query) !== _.trim(lastSearch) ||
-			Help.areFiltersDifferent(selectedSearchFilter, lastFilter);
+			_.trim(selectedSearch.query) !== _.trim(searchTerm) ||
+			Help.areFiltersDifferent(selectedSearchFilter, filter);
 
 		if (outOfSync) {
 			yield put({ type: "SELECTED_SEARCH_OUT_OF_SYNC" });
@@ -321,7 +321,7 @@ function* selectEvent({ id }) {
 	const nextSelectedEvent = events.find(x => x.id === id) || {};
 
 	if (nextSelectedEvent.id === selectedEvent.id)
-		yield put({ type: "SELECTED_EVENT_CLEARED", searchAnyway: true });
+		yield put({ type: "SELECTED_EVENT_CLEARED" });
 	else
 		yield put({ type: "EVENT_SELECTED", selectedEvent: nextSelectedEvent });
 }
@@ -398,7 +398,9 @@ export default function* businessLogic() {
 		takeLatest("END_REACHED", endReached),
 		takeLatest("REFRESH", refresh),
 		takeLatest("REFRESH_SAVED_SEARCHES", refreshSavedSearches),
+
 		takeLatest("SEARCHING", checkIfSelectedSearchShouldBeCleared),
+
 		takeLatest("SELECT_SEARCH", selectSearch),
 		takeLatest("DELETE_SEARCH", deleteSearch),
 		takeLatest("REFRESH_SYSTEMS_AND_GROUPS", refreshSystemsAndGroups),
