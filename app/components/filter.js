@@ -30,10 +30,10 @@ class Filter extends Component {
 
   componentWillReceiveProps = (nextProps) => {
     let incomingFilter = nextProps.filter || {};
-    let currentFilter = this.buildFilter();
-    let same = Help.areFiltersTheSame(incomingFilter, currentFilter);
+    let previousFilter = this.props.filter || {};
+    let internalFilter = this.buildFilter();
 
-    if (!same) {
+    if (Help.areFiltersDifferent(incomingFilter, previousFilter) && Help.areFiltersDifferent(incomingFilter, internalFilter)) {
       this.setState({
         filterByStartTime: incomingFilter.minTime ? true : false,
         startDate: incomingFilter.minTime ? new Date(incomingFilter.minTime) : null,
