@@ -6,16 +6,12 @@ import {
   StatusBar,
   Animated,
   Keyboard,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Dimensions
 } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import Background from "./background";
 import LoginForm from "./loginForm";
-import {
-  KeyboardAwareScrollView
-} from "react-native-keyboard-aware-scroll-view";
 import { connect } from "react-redux";
 
 const LOGO_HEIGHT = 201;
@@ -46,6 +42,7 @@ class Login extends Component {
   }
 
   keyboardWillShow = event => {
+    console.log(event);
     let factor = event.endCoordinates.height / WINDOW_HEIGHT;
     Animated.parallel([
       Animated.timing(this.keyboardHeight, {
