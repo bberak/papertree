@@ -2576,8 +2576,8 @@
     },
     "react-native-extended-stylesheet": {
       "version": "0.4.2",
-      "from": "git+https://github.com/neapers/react-native-extended-stylesheet.git",
-      "resolved": "git+https://github.com/neapers/react-native-extended-stylesheet.git#5b913a21b5a86cd995bec1e3b201dc9127a27749"
+      "from": "git+https://github.com/bberak/react-native-extended-stylesheet.git",
+      "resolved": "git+https://github.com/bberak/react-native-extended-stylesheet.git#5b913a21b5a86cd995bec1e3b201dc9127a27749"
     },
     "react-native-keyboard-aware-scroll-view": {
       "version": "0.2.8",
