@@ -10,7 +10,7 @@ import {
 import EStyleSheet from "react-native-extended-stylesheet";
 import Collapsible from "react-native-collapsible";
 import * as Animatable from "react-native-animatable";
-import moment from "moment"
+import moment from "moment";
 
 class DatePickerAccordion extends Component {
   constructor(props) {

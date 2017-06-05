@@ -6,6 +6,7 @@ import EventListRow from "./eventListRow";
 import _ from "lodash";
 import Label from "./label";
 import * as Help from "../utils/help";
+import moment from "moment";
 
 const ds = new ListView.DataSource({
   getSectionData: (blob, sectionId) => blob[sectionId],
@@ -36,7 +37,7 @@ class EventList extends Component {
       .map((group, key) => {
         return {
           id: key,
-          display_received_at: group[0].display_received_at,
+          display_received_at: moment(new Date(group[0].display_received_at)).format("MMM DD, h:mm a"),
           events: _.chain(group)
             .orderBy(["id"])
             .map((e, idx) => {
