@@ -16,20 +16,27 @@ import _ from "lodash";
 import { Dimensions } from "react-native";
 import * as Str from "../utils/str";
 import * as Help from "../utils/help";
+import Orientation from 'react-native-orientation';
 
 function* load() {
+	Orientation.lockToPortrait();
+
 	yield call(Navigation.login);
 
 	let loggedIn = yield call(Api.isLoggedIn);
+
+	yield put({ type: "LOADED" });
 
 	if (loggedIn) {
 		yield put({ type: "LOGIN_SUCCEEDED" });
 
 		yield put({ type: "SHOW_HOME_SCREEN" });
-	} else yield put({ type: "SHOW_LOGIN_SCREEN" });
+	}
 }
 
 function* showHomeScreen() {
+	Orientation.unlockAllOrientations();
+
 	yield call(Navigation.home);
 
 	yield all([
@@ -37,12 +44,6 @@ function* showHomeScreen() {
 		put({ type: "REFRESH_SAVED_SEARCHES" }),
 		put({ type: "REFRESH_SYSTEMS_AND_GROUPS" })
 	]);
-}
-
-function* showLoginScreen() {
-	yield put({ type: "LOADED" });
-
-	yield call(Navigation.login);
 }
 
 function* login({ email, password } = {}) {
@@ -77,6 +78,8 @@ function* logout() {
 	yield delay(500);
 
 	yield put({ type: "LOGGED_OUT" });
+
+	Orientation.lockToPortrait();
 
 	yield call(Navigation.pop);
 }
@@ -366,7 +369,6 @@ export default function* businessLogic() {
 		load(),
 		takeLatest("LOGIN", login),
 		takeLatest("SHOW_HOME_SCREEN", showHomeScreen),
-		takeLatest("SHOW_LOGIN_SCREEN", showLoginScreen),
 		takeLatest("CREATE_ACCOUNT", createAccount),
 		takeLatest("LOGOUT", logout),
 		takeLatest("SAVE_SEARCH", saveSearch),

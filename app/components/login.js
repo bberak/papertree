@@ -13,16 +13,19 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import Background from "./background";
 import LoginForm from "./loginForm";
 import { connect } from "react-redux";
+import Orientation from "react-native-orientation";
 
 const LOGO_HEIGHT = 201;
-const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isPortrait: false
+    };
 
     this.keyboardHeight = new Animated.Value(0);
-    this.imageHeight = new Animated.Value(201);
+    this.imageHeight = new Animated.Value(LOGO_HEIGHT);
   }
 
   componentWillMount() {
@@ -34,6 +37,8 @@ class Login extends Component {
       "keyboardWillHide",
       this.keyboardWillHide
     );
+
+    this.updateOrientationState(Orientation.getInitialOrientation());
   }
 
   componentWillUnmount() {
@@ -42,8 +47,7 @@ class Login extends Component {
   }
 
   keyboardWillShow = event => {
-    console.log(event);
-    let factor = event.endCoordinates.height / WINDOW_HEIGHT;
+    let factor = event.endCoordinates.height / Dimensions.get("window").height;
     Animated.parallel([
       Animated.timing(this.keyboardHeight, {
         duration: event.duration,
@@ -69,7 +73,29 @@ class Login extends Component {
     ]).start();
   };
 
+  updateOrientationState = orientation => {
+    if (orientation !== "PORTRAIT" && orientation !== "PORTRAITUPSIDEDOWN") {
+      this.setState({
+        isPortrait: false
+      });
+    } else {
+      this.setState({
+        isPortrait: true
+      });
+    }
+  };
+
+  onLayout = () => {
+    const { width, height } = Dimensions.get("window")
+    this.updateOrientationState(height > width ? "PORTRAIT" : "LANDSCAPE")
+  }
+
   render() {
+    if (this.state.isPortrait) return this.renderInPortraitMode();
+    else return this.renderInLandscapeMode();
+  }
+
+  renderInPortraitMode() {
     let form = this.props.loading
       ? <View style={css.activityIndicatorContainer}>
           <ActivityIndicator color={EStyleSheet.value("$indicatorColor")} />
@@ -81,15 +107,13 @@ class Login extends Component {
 
         <StatusBar hidden={false} barStyle="light-content" />
 
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} onLayout={this.onLayout}>
+
           <Animated.View
-            style={[
-              css.container,
-              { paddingBottom: this.keyboardHeight }
-            ]}
+            style={[css.container, { paddingBottom: this.keyboardHeight }]}
           >
 
-            <View style={css.logoContainer} pointerEvents={"auto"}>
+            <View style={css.logoContainer}>
               <Animated.Image
                 resizeMode={"contain"}
                 source={require("../images/logo.png")}
@@ -102,7 +126,32 @@ class Login extends Component {
             </View>
 
           </Animated.View>
+
         </TouchableWithoutFeedback>
+
+      </Background>
+    );
+  }
+
+  renderInLandscapeMode() {
+    return (
+      <Background animate={this.props.loggedIn === false}>
+
+        <StatusBar hidden={false} barStyle="light-content" />
+
+        <Animated.View
+          style={[css.container, { paddingBottom: this.keyboardHeight }]} onLayout={this.onLayout}
+        >
+
+          <View style={[css.logoContainer, { flex: 1 }]}>
+            <Animated.Image
+              resizeMode={"contain"}
+              source={require("../images/logo.png")}
+              style={[{ height: this.imageHeight }]}
+            />
+          </View>
+
+        </Animated.View>
 
       </Background>
     );
