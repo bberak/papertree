@@ -15,8 +15,6 @@ import LoginForm from "./loginForm";
 import { connect } from "react-redux";
 import Orientation from "react-native-orientation";
 
-const LOGO_HEIGHT = 201;
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +23,7 @@ class Login extends Component {
     };
 
     this.keyboardHeight = new Animated.Value(0);
-    this.imageHeight = new Animated.Value(LOGO_HEIGHT);
+    this.logoScale = new Animated.Value(1);
   }
 
   componentWillMount() {
@@ -53,9 +51,10 @@ class Login extends Component {
         duration: event.duration,
         toValue: event.endCoordinates.height
       }),
-      Animated.timing(this.imageHeight, {
+      Animated.timing(this.logoScale, {
         duration: event.duration,
-        toValue: (1 - factor) * LOGO_HEIGHT
+        toValue: (1 - factor),
+        useNativeDriver: true
       })
     ]).start();
   };
@@ -66,9 +65,10 @@ class Login extends Component {
         duration: event.duration,
         toValue: 0
       }),
-      Animated.timing(this.imageHeight, {
+      Animated.timing(this.logoScale, {
         duration: event.duration,
-        toValue: LOGO_HEIGHT
+        toValue: 1,
+        useNativeDriver: true
       })
     ]).start();
   };
@@ -115,9 +115,8 @@ class Login extends Component {
 
             <View style={css.logoContainer}>
               <Animated.Image
-                resizeMode={"contain"}
                 source={require("../images/logo.png")}
-                style={[{ height: this.imageHeight }]}
+                style={[{ transform: [{ scale: this.logoScale }] }]}
               />
             </View>
 
@@ -147,7 +146,7 @@ class Login extends Component {
             <Animated.Image
               resizeMode={"contain"}
               source={require("../images/logo.png")}
-              style={[{ height: this.imageHeight }]}
+              style={[{ transform: [{ scale: this.logoScale }] }]}
             />
           </View>
 
