@@ -56,7 +56,6 @@ class Login extends Component {
         <StatusBar hidden={false} barStyle="light-content" />
 
         <KeyboardAwareScrollView
-          ref={"scroll"}
           style={css.scrollContainer}
           contentContainerStyle={css.scrollContentContainer}
           resetScrollToCoords={{ x: 0, y: 0 }}
@@ -90,12 +89,8 @@ class Login extends Component {
 
         <StatusBar hidden={false} barStyle="light-content" />
 
-        <KeyboardAwareScrollView
-          ref={"scroll"}
+        <View
           style={css.scrollContainer}
-          contentContainerStyle={css.scrollContentContainer}
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          scrollEnabled={false}
           onLayout={this.onLayout}
         >
 
@@ -103,7 +98,7 @@ class Login extends Component {
             <Image source={require("../images/logo.png")} />
           </View>
 
-        </KeyboardAwareScrollView>
+        </View>
 
       </Background>
     );

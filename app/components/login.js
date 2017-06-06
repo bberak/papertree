@@ -138,19 +138,18 @@ class Login extends Component {
 
         <StatusBar hidden={false} barStyle="light-content" />
 
-        <Animated.View
-          style={[css.container, { paddingBottom: this.keyboardHeight }]} onLayout={this.onLayout}
+        <View
+          style={css.container} onLayout={this.onLayout}
         >
 
           <View style={[css.logoContainer, { flex: 1 }]}>
-            <Animated.Image
+            <Image
               resizeMode={"contain"}
               source={require("../images/logo.png")}
-              style={[{ transform: [{ scale: this.logoScale }] }]}
             />
           </View>
 
-        </Animated.View>
+        </View>
 
       </Background>
     );
