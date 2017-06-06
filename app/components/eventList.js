@@ -26,7 +26,7 @@ class EventList extends Component {
       Help.areFiltersDifferent(this.props.filter, nextProps.filter) ||
       this.props.selectedEvent !== nextProps.selectedEvent
     ) {
-      this.refs.list.scrollTo({ x: 0, y: 0, animated: true });
+      this.refs.list.scrollTo({ x: 0, y: 0, animated: false });
     }
   }
 
@@ -39,7 +39,7 @@ class EventList extends Component {
           id: key,
           display_received_at: moment(new Date(group[0].display_received_at)).format("MMM DD, h:mm a"),
           events: _.chain(group)
-            .orderBy(["id"])
+            .orderBy(["id"], ["desc"])
             .map((e, idx) => {
               return {
                 id: e.id,

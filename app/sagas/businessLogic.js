@@ -16,7 +16,7 @@ import _ from "lodash";
 import { Dimensions } from "react-native";
 import * as Str from "../utils/str";
 import * as Help from "../utils/help";
-import Orientation from 'react-native-orientation';
+import Orientation from "react-native-orientation";
 
 function* load() {
 	Orientation.lockToPortrait();
@@ -165,7 +165,13 @@ function* clear() {
 }
 
 function* search() {
-	const { searchTerm, lastSearch, filter, lastFilter, events } = yield select();
+	const {
+		searchTerm,
+		lastSearch,
+		filter,
+		lastFilter,
+		events
+	} = yield select();
 
 	if (
 		_.trim(searchTerm) !== _.trim(lastSearch) ||
@@ -222,20 +228,28 @@ function* endReached() {
 function* refresh() {
 	yield put({ type: "REFRESHING" });
 
-	const { lastSearch, lastFilter, events } = yield select();
+	const { lastSearch, lastFilter, events, selectedEvent } = yield select();
 
 	try {
 		let minId = events && events.length > 0
 			? _.maxBy(events, "id").id //-- Searching head, therefore max id becomes the min param
 			: null;
-		let limit = minId ? 10000 : 20; //-- Try get as many events as you can - avoids polling
+
+		//-- If an event is selected, get the next 3 events.
+		//-- Get 1000 if the list is stale.
+		//-- And get 20 if the list is empty.
+		let limit = selectedEvent ? 3 : minId ? 1000 : 20;
+
+		let tail = false;
+
 		let results = yield call(
 			Api.search,
 			lastSearch,
 			lastFilter,
 			minId,
 			null,
-			limit
+			limit,
+			tail
 		);
 
 		yield put({
@@ -276,8 +290,7 @@ function* selectSearch({ selectedSearch }) {
 
 	if (current.id === selectedSearch.id)
 		yield put({ type: "SELECTED_SEARCH_CLEARED" });
-	else 
-		yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
+	else yield put({ type: "SEARCH_SELECTED", selectedSearch: selectedSearch });
 }
 
 function* checkIfSelectedSearchShouldBeCleared() {
@@ -320,7 +333,7 @@ function* refreshSystemsAndGroups() {
 }
 
 function* selectEvent({ id }) {
-	let  { selectedEvent, events } = yield select();
+	let { selectedEvent, events } = yield select();
 
 	selectedEvent = selectedEvent || {};
 	events = events || [];
@@ -334,31 +347,37 @@ function* selectEvent({ id }) {
 }
 
 function* eventSearch() {
-	let  { selectedEvent, events } = yield select();
+	let { selectedEvent, events } = yield select();
 
 	if (selectedEvent) {
-      try {
-      	const siblings = (events || []).filter(x => 
-			x.display_received_at === selectedEvent.display_received_at && 
-			x.hostname === selectedEvent.hostname && 
-			x.program === selectedEvent.program) || [selectedEvent];
+		try {
+			const siblings = (events || [])
+				.filter(
+					x =>
+						x.display_received_at ===
+							selectedEvent.display_received_at &&
+						x.hostname === selectedEvent.hostname &&
+						x.program === selectedEvent.program &&
+						x.id < selectedEvent.id
+				)
+				.concat([selectedEvent]);
 
-		let maxId = _.maxBy(siblings, "id").id;
+			let maxId = _.maxBy(siblings, "id").id;
 
-		yield put({ type: "SEARCHING_EVENTS", siblings: siblings })
-        
-        let results = yield call(Api.search, null, null, null, maxId, 20);
+			yield put({ type: "SEARCHING_EVENTS", siblings: _.uniqBy(siblings, "id") });
 
-        yield put({
-			type: "EVENT_SEARCH_SUCCEEDED",
-			events: _.uniqBy(siblings.concat(results.events), "id")
-		});
-      } catch (error) {
-        console.log(error);
+			let results = yield call(Api.search, null, null, null, maxId, 20);
 
-        yield put({ type: "EVENT_SEARCH_FAILED" })
-      }
-    }
+			yield put({
+				type: "EVENT_SEARCH_SUCCEEDED",
+				events: _.uniqBy(siblings.concat(results.events), "id")
+			});
+		} catch (error) {
+			console.log(error);
+
+			yield put({ type: "EVENT_SEARCH_FAILED" });
+		}
+	}
 }
 
 export default function* businessLogic() {

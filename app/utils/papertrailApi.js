@@ -117,7 +117,7 @@ module.exports = Object.freeze({
   logout: async () => {
     await _logoutAndClean();
   },
-  search: async (searchTerm, filter, minId, maxId, limit) => {
+  search: async (searchTerm, filter, minId, maxId, limit, tail = true) => {
     filter = filter || {};
 
     if (Help.areTimeFiltersValid(filter) === false)
@@ -134,7 +134,7 @@ module.exports = Object.freeze({
     let query = {
       q: searchTerm,
       limit: limit || 20,
-      tail: true,
+      tail: tail,
       group_id: filter.groupId,
       system_id: filter.systemId,
       min_id: minId,
