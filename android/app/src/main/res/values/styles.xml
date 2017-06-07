@@ -17,4 +17,13 @@
         <item name="android:textColorPrimary">#03498F</item>
     </style>
 
+    <style name="SplashTheme" parent="AppTheme">
+        <!-- Disable window features like ActionBar, Title and Overlay. -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/screen</item>
+    </style>
+
 </resources>
+
