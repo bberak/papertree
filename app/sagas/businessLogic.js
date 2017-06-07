@@ -402,7 +402,8 @@ export default function* businessLogic() {
 				"KEYBOARD_SHOWN",
 				"KEYBOARD_HIDDEN",
 				"SEARCHING",
-				"SEARCH_SUCCEEDED"
+				"SEARCH_SUCCEEDED",
+				"SAVE_SEARCH_SUCCEEDED"
 			],
 			showOrHideBookmark
 		),
