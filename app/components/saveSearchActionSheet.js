@@ -33,6 +33,7 @@ class SaveSearchActionSheet extends Component {
             autoFocus={false}
             value={this.props.name}
             onChangeText={this.props.onChangeName}
+            onSubmitEditing={this.props.onSave}
           />
         </Animatable.View>
 
