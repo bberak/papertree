@@ -7,8 +7,8 @@ const pixelRatio = PixelRatio.get();
 
 const images = [],
   index = 0,
-  imgWidth = 300 / pixelRatio,
-  imgHeight = 300 / pixelRatio,
+  imgWidth = 300 / Math.min(2, pixelRatio),
+  imgHeight = 300 / Math.min(2, pixelRatio),
   winHeight = EStyleSheet.value("100%", "height") * 2, //-- I've modded the EStyleSheet package to always scale height percentages against the longest side..
   winWidth = winHeight / 2 + StatusBar.currentHeight,
   imageSource = require("../images/noise.png");
@@ -21,7 +21,7 @@ for (var row = 0; row < Math.ceil(winHeight / imgHeight); row++) {
       <Image
         key={index}
         source={imageSource}
-        style={{ position: "absolute", top: top, left: left }}
+        style={{ position: "absolute", top: top, left: left, width: imgWidth, height: imgHeight }}
       />
     );
     index++;
