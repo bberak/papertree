@@ -68,7 +68,7 @@ class Settings extends Component {
 
           <Label value={"Support"} />
           <Link
-            value={"papertree.io"}
+            value={"getpapertree.com"}
             onPress={() => Linking.openURL("https://getpapertree.com")}
           />
           <Link
