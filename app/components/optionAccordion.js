@@ -59,7 +59,7 @@ class OptionAccordion extends Component {
     var selectedValue = this.props.value || { name: "Default" };
 
     return (
-      <View>
+      <View style={css.container}>
 
         <View
           style={[
@@ -129,6 +129,9 @@ class OptionAccordion extends Component {
 const css = EStyleSheet.create({
   $labelFontHeight: "2.6%",
   $valueFontHeight: "1.65%",
+  container: {
+    backgroundColor: "$secionContainerBackgroundColor"
+  },
   borderContainer: {
     borderColor: "$filterItemBorderColor",
     flexDirection: "row",

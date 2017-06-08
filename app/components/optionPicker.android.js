@@ -78,7 +78,8 @@ const css = EStyleSheet.create({
     justifyContent: "center",
     paddingLeft: "5%",
     paddingRight: "5%",
-    height: "8%"
+    height: "8%",
+    backgroundColor: "$secionContainerBackgroundColor"
   }
 });
 

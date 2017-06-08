@@ -11,7 +11,7 @@ class DatePickerAccordion extends Component {
 
   render() {
     return (
-      <View>
+      <View style={css.container}>
 
         <View
           style={[
@@ -74,6 +74,9 @@ class DatePickerAccordion extends Component {
 
 const css = EStyleSheet.create({
   $fontHeight: "2.6%",
+  container: {
+    backgroundColor: "$secionContainerBackgroundColor"
+  },
   borderContainer: {
     borderColor: "$filterItemBorderColor",
     flexDirection: "row",

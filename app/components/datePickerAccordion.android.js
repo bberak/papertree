@@ -107,7 +107,7 @@ class DatePickerAccordion extends Component {
     const date = this.props.date || new Date();
     const m = moment(date);
     return (
-      <View>
+      <View style={css.container}>
 
         <View
           style={[
@@ -203,6 +203,9 @@ class DatePickerAccordion extends Component {
 const css = EStyleSheet.create({
   $labelFontHeight: "2.6%",
   $valueFontHeight: "2.3%",
+  container: {
+    backgroundColor: "$secionContainerBackgroundColor"
+  },
   borderContainer: {
     borderColor: "$filterItemBorderColor",
     flexDirection: "row",
