@@ -4,9 +4,12 @@
 	<img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/0.jpg" height="250" />
   <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/1.jpg" height="250" />
   <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/2.jpg" height="250" />
+</p>
+
+<p align="center">
   <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/3.jpg" height="250" />
   <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/4.jpg" height="250" />
-  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/login.jpg" height="250" />
+  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/login.png" height="250" />
 </p>
 
 ## Installing JS and React/React-Native dependencies
