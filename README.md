@@ -1,5 +1,14 @@
 # Getting Started
 
+<p align="center">
+	<img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/0.jpg" height="250" />
+  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/1.jpg" height="250" />
+  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/2.jpg" height="250" />
+  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/3.jpg" height="250" />
+  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/4.jpg" height="250" />
+  <img src="https://raw.githubusercontent.com/bberak/papertree/master/assets/login.jpg" height="250" />
+</p>
+
 ## Installing JS and React/React-Native dependencies
 1. Make sure react, react-native and the react-native-cli are installed
 2. Run ```npm install```
